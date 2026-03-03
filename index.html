@@ -7,61 +7,25 @@
 <title>The McNaughtons' Little Life</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #1a1a2e;
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  #bg-slideshow { position: fixed; inset: 0; z-index: 0; }
+  .bg-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 2s ease-in-out; }
+  .bg-slide.active { opacity: 1; }
+  .bg-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1; }
 
-body {
-font-family: ‘Segoe UI’, system-ui, sans-serif;
-background: #1a1a2e;
-color: #fff;
-min-height: 100vh;
-overflow-x: hidden;
-}
-
-/* Background slideshow */
-#bg-slideshow {
-position: fixed;
-inset: 0;
-z-index: 0;
-}
-.bg-slide {
-position: absolute;
-inset: 0;
-background-size: cover;
-background-position: center;
-opacity: 0;
-transition: opacity 2s ease-in-out;
-}
-.bg-slide.active { opacity: 1; }
-.bg-overlay {
-position: fixed;
-inset: 0;
-background: rgba(0,0,0,0.55);
-z-index: 1;
-}
-
-/* Layout */
-.dashboard {
-position: relative;
-z-index: 2;
-max-width: 1400px;
-margin: 0 auto;
-padding: 20px;
-}
-
-header {
-text-align: center;
-margin-bottom: 20px;
-}
-header h1 {
-font-size: clamp(1.8rem, 4vw, 3rem);
-font-weight: 300;
-letter-spacing: 2px;
-text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
+.dashboard { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; padding: 20px; }
+header { text-align: center; margin-bottom: 20px; }
+header h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
 
 .grid {
 display: grid;
 grid-template-columns: 1fr 1fr 1fr;
-grid-template-rows: auto;
 gap: 16px;
 }
 
@@ -73,7 +37,6 @@ border-radius: 16px;
 padding: 18px;
 box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
-
 .card-title {
 font-size: 0.7rem;
 text-transform: uppercase;
@@ -82,344 +45,134 @@ color: rgba(255,255,255,0.5);
 margin-bottom: 12px;
 }
 
+/* Row 1 */
+.weather-card { grid-column: 1; grid-row: 1; }
+.clock-card   { grid-column: 2; grid-row: 1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+.upcoming-card{ grid-column: 3; grid-row: 1; }
+
+/* Row 2 */
+.weekly-card  { grid-column: 1 / 3; grid-row: 2; }
+.monthly-card { grid-column: 3;     grid-row: 2 / 5; }
+
+/* Row 3 */
+.sports-card  { grid-column: 1 / 3; grid-row: 3; }
+
+/* Row 4 */
+.photos-card  { grid-column: 1 / 3; grid-row: 4; }
+
 /* Weather */
-.weather-card {
-grid-column: 1;
-grid-row: 1;
-}
-.weather-main {
-display: flex;
-align-items: center;
-gap: 12px;
-margin-bottom: 12px;
-}
-.weather-temp {
-font-size: 3rem;
-font-weight: 200;
-line-height: 1;
-}
-.weather-icon { font-size: 2.5rem; }
-.weather-desc { font-size: 0.9rem; color: rgba(255,255,255,0.7); }
-.weather-feels { font-size: 0.8rem; color: rgba(255,255,255,0.5); }
-.weather-forecast {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 6px;
-margin-top: 10px;
-}
-.forecast-day {
-text-align: center;
-background: rgba(255,255,255,0.06);
-border-radius: 10px;
-padding: 8px 4px;
-}
-.forecast-day .day-name { font-size: 0.7rem; color: rgba(255,255,255,0.6); }
-.forecast-day .day-icon { font-size: 1.2rem; margin: 4px 0; }
-.forecast-day .day-hi { font-size: 0.85rem; }
-.forecast-day .day-lo { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+.weather-main { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.weather-temp { font-size:3rem; font-weight:200; line-height:1; }
+.weather-icon { font-size:2.5rem; }
+.weather-desc { font-size:0.9rem; color:rgba(255,255,255,0.7); }
+.weather-feels{ font-size:0.8rem; color:rgba(255,255,255,0.5); }
+.weather-forecast { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:10px; }
+.forecast-day { text-align:center; background:rgba(255,255,255,0.06); border-radius:10px; padding:8px 4px; }
+.forecast-day .day-name { font-size:0.7rem; color:rgba(255,255,255,0.6); }
+.forecast-day .day-icon { font-size:1.2rem; margin:4px 0; }
+.forecast-day .day-hi   { font-size:0.85rem; }
+.forecast-day .day-lo   { font-size:0.75rem; color:rgba(255,255,255,0.5); }
 
 /* Clock */
-.clock-card {
-grid-column: 2;
-grid-row: 1;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-text-align: center;
-}
-#clock-time {
-font-size: clamp(2.5rem, 5vw, 4rem);
-font-weight: 100;
-letter-spacing: 4px;
-line-height: 1;
-}
-#clock-date {
-font-size: 1rem;
-color: rgba(255,255,255,0.6);
-margin-top: 8px;
-}
+#clock-time { font-size:clamp(2.5rem,5vw,4rem); font-weight:100; letter-spacing:4px; line-height:1; }
+#clock-date { font-size:1rem; color:rgba(255,255,255,0.6); margin-top:8px; }
 
-/* Upcoming events */
-.upcoming-card {
-grid-column: 3;
-grid-row: 1;
-overflow: hidden;
-}
-.event-item {
-display: flex;
-gap: 10px;
-margin-bottom: 10px;
-padding-bottom: 10px;
-border-bottom: 1px solid rgba(255,255,255,0.08);
-align-items: flex-start;
-}
-.event-item:last-child { border-bottom: none; margin-bottom: 0; }
-.event-date-badge {
-min-width: 38px;
-text-align: center;
-background: rgba(100,180,255,0.2);
-border-radius: 8px;
-padding: 4px;
-}
-.event-date-badge .badge-day { font-size: 1.1rem; font-weight: 600; line-height: 1; }
-.event-date-badge .badge-month { font-size: 0.6rem; color: rgba(255,255,255,0.6); text-transform: uppercase; }
-.event-info { flex: 1; }
-.event-title { font-size: 0.85rem; font-weight: 500; }
-.event-time { font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-top: 2px; }
+/* Upcoming */
+.event-item { display:flex; gap:10px; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.08); align-items:flex-start; }
+.event-item:last-child { border-bottom:none; margin-bottom:0; }
+.event-date-badge { min-width:38px; text-align:center; background:rgba(100,180,255,0.2); border-radius:8px; padding:4px; }
+.event-date-badge .badge-day { font-size:1.1rem; font-weight:600; line-height:1; }
+.event-date-badge .badge-month { font-size:0.6rem; color:rgba(255,255,255,0.6); text-transform:uppercase; }
+.event-info { flex:1; }
+.event-title { font-size:0.85rem; font-weight:500; }
+.event-time  { font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:2px; }
 
-/* Weekly calendar */
-.weekly-card {
-grid-column: 1 / 3;
-grid-row: 2;
-}
-.week-grid {
-display: grid;
-grid-template-columns: repeat(7, 1fr);
-gap: 6px;
-}
-.week-day-col { text-align: center; }
-.week-day-name {
-font-size: 0.65rem;
-color: rgba(255,255,255,0.5);
-text-transform: uppercase;
-margin-bottom: 6px;
-}
-.week-day-num {
-width: 32px;
-height: 32px;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-margin: 0 auto 6px;
-font-size: 0.9rem;
-cursor: default;
-}
-.week-day-num.today {
-background: rgba(100,180,255,0.6);
-font-weight: 700;
-}
-.week-event {
-font-size: 0.62rem;
-background: rgba(100,200,120,0.25);
-border-left: 2px solid rgba(100,200,120,0.8);
-border-radius: 3px;
-padding: 2px 4px;
-margin-bottom: 3px;
-text-align: left;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-}
+/* Weekly */
+.week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+.week-day-col { text-align:center; }
+.week-day-name { font-size:0.65rem; color:rgba(255,255,255,0.5); text-transform:uppercase; margin-bottom:6px; }
+.week-day-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:0.9rem; }
+.week-day-num.today { background:rgba(100,180,255,0.6); font-weight:700; }
+.week-event { font-size:0.62rem; background:rgba(100,200,120,0.25); border-left:2px solid rgba(100,200,120,0.8); border-radius:3px; padding:2px 4px; margin-bottom:3px; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-/* Monthly calendar */
-.monthly-card {
-grid-column: 3;
-grid-row: 2 / 4;
-overflow: hidden;
-}
-.month-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 10px;
-}
-.month-nav {
-background: rgba(255,255,255,0.1);
-border: none;
-color: #fff;
-width: 28px;
-height: 28px;
-border-radius: 50%;
-cursor: pointer;
-font-size: 1rem;
-display: flex;align-items:center;justify-content:center;
-}
-.month-title { font-size: 1rem; font-weight: 500; }
-.month-grid {
-display: grid;
-grid-template-columns: repeat(7, 1fr);
-gap: 2px;
-}
-.month-weekday {
-text-align: center;
-font-size: 0.6rem;
-color: rgba(255,255,255,0.4);
-padding: 4px 0;
-text-transform: uppercase;
-}
-.month-day {
-text-align: center;
-padding: 4px 2px;
-border-radius: 6px;
-font-size: 0.75rem;
-min-height: 32px;
-cursor: default;
-position: relative;
-}
-.month-day.other-month { color: rgba(255,255,255,0.2); }
-.month-day.today-month {
-background: rgba(100,180,255,0.4);
-font-weight: 700;
-}
-.month-day.has-event::after {
-content: ‘’;
-display: block;
-width: 4px;
-height: 4px;
-background: #7ecfff;
-border-radius: 50%;
-margin: 2px auto 0;
-}
+/* Monthly */
+.month-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.month-nav { background:rgba(255,255,255,0.1); border:none; color:#fff; width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; }
+.month-title { font-size:1rem; font-weight:500; }
+.month-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.month-weekday { text-align:center; font-size:0.6rem; color:rgba(255,255,255,0.4); padding:4px 0; text-transform:uppercase; }
+.month-day { text-align:center; padding:4px 2px; border-radius:6px; font-size:0.75rem; min-height:32px; }
+.month-day.other-month { color:rgba(255,255,255,0.2); }
+.month-day.today-month { background:rgba(100,180,255,0.4); font-weight:700; }
+.month-day.has-event::after { content:’’; display:block; width:4px; height:4px; background:#7ecfff; border-radius:50%; margin:2px auto 0; }
 
-.sports-card {
-grid-column: 1 / 4;
-grid-row: 4;
-}
-.sports-section { margin-bottom: 14px; }
-.sports-league-title {
-font-size: 0.7rem;
-text-transform: uppercase;
-letter-spacing: 2px;
-color: rgba(255,255,255,0.4);
-margin-bottom: 8px;
-}
-.games-row {
-display: flex;
-gap: 10px;
-flex-wrap: wrap;
-}
-.game-chip {
-background: rgba(255,255,255,0.07);
-border: 1px solid rgba(255,255,255,0.1);
-border-radius: 12px;
-padding: 8px 14px;
-display: flex;
-flex-direction: column;
-align-items: center;
-min-width: 160px;
-flex: 1;
-}
-.game-chip.final { border-color: rgba(255,255,255,0.15); }
-.game-chip.live { border-color: rgba(100,255,100,0.4); background: rgba(100,255,100,0.06); }
-.game-chip.upcoming { border-color: rgba(100,180,255,0.3); }
-.game-teams {
-display: flex;
-align-items: center;
-gap: 10px;
-font-size: 0.9rem;
-font-weight: 500;
-width: 100%;
-justify-content: center;
-}
-.game-team { text-align: center; flex: 1; }
-.game-team-name { font-size: 0.8rem; }
-.game-team-score { font-size: 1.3rem; font-weight: 700; line-height: 1.1; }
-.game-vs { font-size: 0.7rem; color: rgba(255,255,255,0.4); }
-.game-status {
-font-size: 0.65rem;
-color: rgba(255,255,255,0.45);
-margin-top: 5px;
-text-transform: uppercase;
-letter-spacing: 1px;
-}
-.game-status.live-status { color: rgba(100,255,100,0.9); }
-.game-winner { font-weight: 700; color: #fff; }
+/* Sports */
+.sports-section { margin-bottom:14px; }
+.sports-section:last-child { margin-bottom:0; }
+.sports-league-title { font-size:0.7rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:8px; }
+.games-row { display:flex; gap:10px; flex-wrap:wrap; }
+.game-chip { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:8px 14px; display:flex; flex-direction:column; align-items:center; min-width:150px; flex:1; max-width:220px; }
+.game-chip.final   { border-color:rgba(255,255,255,0.15); }
+.game-chip.live    { border-color:rgba(100,255,100,0.4); background:rgba(100,255,100,0.06); }
+.game-chip.upcoming{ border-color:rgba(100,180,255,0.3); }
+.game-teams { display:flex; align-items:center; gap:10px; width:100%; justify-content:center; }
+.game-team  { text-align:center; flex:1; }
+.game-team-name  { font-size:0.8rem; }
+.game-team-score { font-size:1.3rem; font-weight:700; line-height:1.1; }
+.game-vs    { font-size:0.7rem; color:rgba(255,255,255,0.4); }
+.game-status { font-size:0.65rem; color:rgba(255,255,255,0.45); margin-top:5px; text-transform:uppercase; letter-spacing:1px; }
+.game-status.live-status { color:rgba(100,255,100,0.9); }
+.game-winner { font-weight:700; color:#fff; }
 
-/* adjust photo/weekly rows */
-.photos-card { grid-row: 5; }
-.weekly-card { grid-row: 2; }
-.monthly-card { grid-row: 2 / 5; }
-.photo-strip {
-display: flex;
-gap: 8px;
-overflow-x: auto;
-scrollbar-width: none;
-padding-bottom: 4px;
-}
-.photo-strip::-webkit-scrollbar { display: none; }
-.photo-thumb {
-min-width: 120px;
-height: 90px;
-border-radius: 10px;
-object-fit: cover;
-flex-shrink: 0;
-background: rgba(255,255,255,0.1);
-}
-.photo-placeholder {
-min-width: 120px;
-height: 90px;
-border-radius: 10px;
-background: rgba(255,255,255,0.08);
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-color: rgba(255,255,255,0.4);
-font-size: 0.7rem;
-text-align: center;
-padding: 8px;
-flex-shrink: 0;
-}
+/* Photos */
+.photo-strip { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px; }
+.photo-strip::-webkit-scrollbar { display:none; }
+.photo-thumb { min-width:120px; height:90px; border-radius:10px; object-fit:cover; flex-shrink:0; cursor:pointer; }
+.photo-placeholder { min-width:120px; height:90px; border-radius:10px; background:rgba(255,255,255,0.08); display:flex; flex-direction:column; align-items:center; justify-content:center; color:rgba(255,255,255,0.4); font-size:0.7rem; text-align:center; padding:8px; flex-shrink:0; }
 
-.loading { color: rgba(255,255,255,0.4); font-size: 0.85rem; text-align: center; padding: 20px; }
-.error-msg { color: rgba(255,150,150,0.8); font-size: 0.75rem; padding: 6px; }
+.loading   { color:rgba(255,255,255,0.4); font-size:0.85rem; text-align:center; padding:20px; }
+.error-msg { color:rgba(255,150,150,0.8); font-size:0.75rem; padding:6px; }
 
-@media (max-width: 900px) {
-.grid {
-grid-template-columns: 1fr 1fr;
-}
-.weekly-card { grid-column: 1 / 3; grid-row: 3; }
-.monthly-card { grid-column: 1 / 3; grid-row: 2; }
-.photos-card { grid-column: 1 / 3; grid-row: 4; }
-.clock-card { grid-column: 2; grid-row: 1; }
-.upcoming-card { grid-column: 1 / 3; grid-row: 5; }
-}
-@media (max-width: 600px) {
-.grid { grid-template-columns: 1fr; }
-.weekly-card, .monthly-card, .photos-card, .upcoming-card { grid-column: 1; }
+@media(max-width:900px){
+.grid { grid-template-columns:1fr 1fr; }
+.weekly-card  { grid-column:1/3; grid-row:3; }
+.monthly-card { grid-column:1/3; grid-row:2; }
+.sports-card  { grid-column:1/3; grid-row:4; }
+.photos-card  { grid-column:1/3; grid-row:5; }
+.upcoming-card{ grid-column:1/3; grid-row:6; }
 }
 </style>
 
 </head>
 <body>
-
 <div id="bg-slideshow"></div>
 <div class="bg-overlay"></div>
 
 <div class="dashboard">
-  <header>
-    <h1>The McNaughtons' Little Life</h1>
-  </header>
-
+  <header><h1>The McNaughtons' Little Life</h1></header>
   <div class="grid">
-    <!-- Weather -->
-    <div class="card weather-card">
-      <div class="card-title">Weather</div>
-      <div id="weather-content"><div class="loading">Loading weather…</div></div>
-    </div>
 
 ```
-<!-- Clock -->
+<div class="card weather-card">
+  <div class="card-title">Weather</div>
+  <div id="weather-content"><div class="loading">Loading weather…</div></div>
+</div>
+
 <div class="card clock-card">
   <div id="clock-time">--:--</div>
   <div id="clock-date">Loading…</div>
 </div>
 
-<!-- Upcoming -->
 <div class="card upcoming-card">
   <div class="card-title">Upcoming Events</div>
   <div id="upcoming-content"><div class="loading">Loading calendar…</div></div>
 </div>
 
-<!-- Weekly -->
 <div class="card weekly-card">
   <div class="card-title">This Week</div>
   <div id="weekly-content"><div class="loading">Loading…</div></div>
 </div>
 
-<!-- Monthly -->
 <div class="card monthly-card">
   <div id="month-header-row" class="month-header">
     <button class="month-nav" id="prev-month">‹</button>
@@ -429,18 +182,16 @@ grid-template-columns: 1fr 1fr;
   <div id="monthly-content"><div class="loading">Loading…</div></div>
 </div>
 
-<!-- Sports -->
 <div class="card sports-card">
-  <div class="card-title">Scores & Schedule</div>
+  <div class="card-title">Scores &amp; Schedule</div>
   <div id="sports-content"><div class="loading">Loading scores…</div></div>
 </div>
 
-<!-- Photos -->
 <div class="card photos-card">
   <div class="card-title">Family Photos</div>
   <div id="photos-content">
     <div class="photo-strip" id="photo-strip">
-      <div class="photo-placeholder">📷<br/>Drop photos here or click to add</div>
+      <div class="photo-placeholder">📷<br/>Click + Add to load photos</div>
     </div>
     <input type="file" id="photo-input" accept="image/*" multiple style="display:none">
     <button onclick="document.getElementById('photo-input').click()" style="margin-top:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.75rem;">+ Add Photos</button>
@@ -457,212 +208,112 @@ function updateClock() {
   const now = new Date();
   const h = String(now.getHours()).padStart(2,'0');
   const m = String(now.getMinutes()).padStart(2,'0');
-  const s = String(now.getSeconds()).padStart(2,'0');
   document.getElementById('clock-time').textContent = `${h}:${m}`;
-  document.getElementById('clock-date').textContent = now.toLocaleDateString('en-CA', {
-    weekday:'long', year:'numeric', month:'long', day:'numeric'
-  });
+  document.getElementById('clock-date').textContent = now.toLocaleDateString('en-CA',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 }
 updateClock();
 setInterval(updateClock, 1000);
 
 // ── WEATHER ────────────────────────────────────────────────────────
-const WX_ICONS = {
-  0:'☀️',1:'🌤️',2:'⛅',3:'☁️',
-  45:'🌫️',48:'🌫️',
-  51:'🌦️',53:'🌦️',55:'🌧️',
-  61:'🌧️',63:'🌧️',65:'🌧️',
-  71:'🌨️',73:'🌨️',75:'❄️',
-  80:'🌦️',81:'🌧️',82:'⛈️',
-  95:'⛈️',96:'⛈️',99:'⛈️'
-};
-const WX_DESC = {
-  0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
-  45:'Foggy',48:'Icy fog',
-  51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
-  61:'Light rain',63:'Rain',65:'Heavy rain',
-  71:'Light snow',73:'Snow',75:'Heavy snow',
-  80:'Light showers',81:'Showers',82:'Heavy showers',
-  95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'
-};
+const WX_ICONS = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
+const WX_DESC = {0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Light showers',81:'Showers',82:'Heavy showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'};
 
 async function loadWeather(lat, lon) {
   const el = document.getElementById('weather-content');
   const urls = [
     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=5`,
-    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&daily=weathercode,temperature_2m_max,temperature_2m_min&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=5`
   ];
   let d = null;
   for (const url of urls) {
-    try {
-      const r = await fetch(url);
-      if (r.ok) { d = await r.json(); break; }
-    } catch(e) {}
+    try { const r = await fetch(url); if (r.ok) { d = await r.json(); break; } } catch(e) {}
   }
-  if (!d) {
-    el.innerHTML = '<div class="error-msg">⚠️ Weather will load when running as a local file on your Mac.<br><br>Open-Meteo is blocked inside the Claude preview sandbox.</div>';
-    return;
-  }
-  // support both API response shapes
-  const cur = d.current || d.current_weather || {};
-  const code = cur.weather_code ?? cur.weathercode ?? 0;
-  const temp = cur.temperature_2m ?? cur.temperature ?? '–';
+  if (!d) { el.innerHTML = '<div class="error-msg">Weather unavailable</div>'; return; }
+  const cur = d.current || {};
+  const code = cur.weather_code ?? 0;
+  const temp = cur.temperature_2m ?? '–';
   const feels = cur.apparent_temperature ?? '–';
   const daily = d.daily || {};
-  const times = daily.time || [];
   const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  let forecastHTML = '';
-  for (let i = 1; i <= Math.min(4, times.length-1); i++) {
-    const dt = new Date(times[i]+'T12:00:00');
-    const dc = (daily.weather_code||daily.weathercode||[])[i] ?? 0;
-    forecastHTML += `<div class="forecast-day">
+  let fc = '';
+  for (let i = 1; i <= 4; i++) {
+    const dt = new Date((daily.time||[])[i]+'T12:00:00');
+    const dc = (daily.weather_code||[])[i] ?? 0;
+    fc += `<div class="forecast-day">
       <div class="day-name">${days[dt.getDay()]}</div>
       <div class="day-icon">${WX_ICONS[dc]||'🌡️'}</div>
       <div class="day-hi">${Math.round((daily.temperature_2m_max||[])[i]??0)}°</div>
       <div class="day-lo">${Math.round((daily.temperature_2m_min||[])[i]??0)}°</div>
     </div>`;
   }
-  el.innerHTML = `
-    <div class="weather-main">
-      <div class="weather-icon">${WX_ICONS[code]||'🌡️'}</div>
-      <div>
-        <div class="weather-temp">${typeof temp==='number'?Math.round(temp):temp}°C</div>
-        <div class="weather-desc">${WX_DESC[code]||'–'}</div>
-        ${feels!=='–'?`<div class="weather-feels">Feels like ${Math.round(feels)}°</div>`:''}
-      </div>
+  el.innerHTML = `<div class="weather-main">
+    <div class="weather-icon">${WX_ICONS[code]||'🌡️'}</div>
+    <div>
+      <div class="weather-temp">${typeof temp==='number'?Math.round(temp):temp}°C</div>
+      <div class="weather-desc">${WX_DESC[code]||'–'}</div>
+      ${feels!=='–'?`<div class="weather-feels">Feels like ${Math.round(feels)}°</div>`:''}
     </div>
-    <div class="weather-forecast">${forecastHTML}</div>`;
+  </div>
+  <div class="weather-forecast">${fc}</div>`;
 }
-// refresh weather every 10 minutes
-setInterval(() => loadWeather(51.0447, -114.0719), 600000);
-
-// Calgary, AB coordinates
 loadWeather(51.0447, -114.0719);
+setInterval(() => loadWeather(51.0447, -114.0719), 600000);
 
 // ── CALENDAR ───────────────────────────────────────────────────────
 const PROXY_URL = 'https://p58-caldav.icloud.com/published/2/MTAwMzMzOTgxMTAwMzMzOeRx7owgHoBn3si23dlCBoVPkDfkX3KzWwXgtKqyboafExi6t2dl4GIQtBaVq-ZyfDaJ6Bfa4ugJ5I8GjgjoqLs';
 let allEvents = [];
-let viewYear = new Date().getFullYear();
-let viewMonth = new Date().getMonth();
+let viewYear = new Date().getFullYear(), viewMonth = new Date().getMonth();
 
 function parseICS(text) {
   const events = [];
   const blocks = text.split('BEGIN:VEVENT');
   for (let i = 1; i < blocks.length; i++) {
     const b = blocks[i];
-    const get = (k) => {
-      const m = b.match(new RegExp(k + '[^:]*:([^\r\n]+)'));
-      return m ? m[1].trim() : '';
-    };
-    const dtraw = get('DTSTART') || get('DTSTART;VALUE=DATE') || get('DTSTART;TZID=[^:]+');
-    const dtend = get('DTEND') || get('DTEND;VALUE=DATE') || '';
+    const get = k => { const m = b.match(new RegExp(k+'[^:]*:([^\r\n]+')); return m?m[1].trim():''; };
+    const dtraw = get('DTSTART');
     const title = get('SUMMARY').replace(/\\,/g,',').replace(/\\n/g,' ');
-    if (!dtraw || !title) continue;
-    const parseDate = (s) => {
+    if (!dtraw||!title) continue;
+    const parseDate = s => {
       s = s.replace(/[^0-9T]/g,'');
-      if (s.length === 8) return new Date(s.slice(0,4), +s.slice(4,6)-1, +s.slice(6,8));
-      if (s.length >= 15) return new Date(+s.slice(0,4), +s.slice(4,6)-1, +s.slice(6,8), +s.slice(9,11), +s.slice(11,13));
+      if (s.length===8) return new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8));
+      if (s.length>=15) return new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8),+s.slice(9,11),+s.slice(11,13));
       return null;
     };
     const start = parseDate(dtraw);
-    if (start && !isNaN(start)) {
-      events.push({ title, start, allDay: dtraw.length === 8 });
-    }
+    if (start && !isNaN(start)) events.push({title, start});
   }
-  events.sort((a,b) => a.start - b.start);
-  return events;
+  return events.sort((a,b)=>a.start-b.start);
 }
-
-async function loadCalendar() {
-  const statusEl = document.getElementById('upcoming-content');
-  statusEl.innerHTML = '<div class="loading">Fetching calendar…</div>';
-
-  // Try direct fetch first (works when running as local file on Mac)
-  // Then fall back to CORS proxies
-  const attempts = [
-    `https://corsproxy.io/?url=${encodeURIComponent(PROXY_URL)}`,
-    `https://proxy.cors.sh/${PROXY_URL}`,
-    `https://yacdn.org/proxy/${PROXY_URL}`,
-    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(PROXY_URL)}`,
-    `https://cors.eu.org/${PROXY_URL}`
-  ];
-
-  let text = null;
-  let lastErr = '';
-  for (const url of attempts) {
-    try {
-      const r = await fetch(url, {
-        signal: AbortSignal.timeout(8000),
-        headers: { 'Accept': 'text/calendar, */*' }
-      });
-      const t = await r.text();
-      if (t.includes('BEGIN:VCALENDAR')) {
-        text = t;
-        console.log('✅ Calendar fetched from:', url);
-        break;
-      } else {
-        lastErr = `Bad response from ${url.slice(0,40)}`;
-        console.warn(lastErr, t.slice(0,100));
-      }
-    } catch(e) {
-      lastErr = e.message;
-      console.warn('Calendar fetch failed:', url.slice(0,40), e.message);
-    }
-  }
-
-  if (!text) {
-    allEvents = getDemoEvents();
-    renderAll();
-    document.getElementById('upcoming-content').insertAdjacentHTML('beforeend',
-      `<div class="error-msg" style="margin-top:8px">
-        ⚠️ Could not load live calendar.<br>
-        Try: <strong>Safari → Develop menu → Disable Local File Restrictions</strong><br>
-        Or in Chrome, launch with: <code style="font-size:0.7rem">open -a "Google Chrome" --args --disable-web-security --user-data-dir=/tmp/chrome-dev dashboard.html</code>
-      </div>`);
-    return;
-  }
-
-  allEvents = parseICS(text);
-  console.log(`✅ Parsed ${allEvents.length} events`);
-  renderAll();
-}
-
-setInterval(loadCalendar, 900000);
 
 function getDemoEvents() {
-  const y = new Date().getFullYear(), m = new Date().getMonth();
+  const y=new Date().getFullYear(), m=new Date().getMonth();
   return [
-    { title: 'Luca appt w Braxtyn', start: new Date(y,m,3,11,0) },
-    { title: 'Ross field', start: new Date(y,m,5,7,0) },
-    { title: 'U9 Northwest Warriors 3', start: new Date(y,m,7,8,30) },
-    { title: 'Willa hockey', start: new Date(y,m,7,13,30) },
-    { title: 'Luca Swim', start: new Date(y,m,7,15,45) },
-    { title: 'U9 NW Warriors vs SW 3 Blue', start: new Date(y,m,8,9,0) },
-    { title: 'Jake b day', start: new Date(y,m,8,14,30) },
-    { title: 'Mum & Willa nails w Kendall', start: new Date(y,m,14,0,0) },
+    {title:'Luca appt w Braxtyn',start:new Date(y,m,3,11,0)},
+    {title:'Ross field',start:new Date(y,m,5,7,0)},
+    {title:'U9 Northwest Warriors 3',start:new Date(y,m,7,8,30)},
+    {title:'Willa hockey',start:new Date(y,m,7,13,30)},
+    {title:'Luca Swim',start:new Date(y,m,7,15,45)},
+    {title:'U9 NW Warriors vs SW 3 Blue',start:new Date(y,m,8,9,0)},
+    {title:'Jake b day',start:new Date(y,m,8,14,30)},
+    {title:'Mum & Willa nails w Kendall',start:new Date(y,m,14,0,0)},
   ];
 }
 
 function fmtTime(d) {
-  if (d.getHours()===0 && d.getMinutes()===0) return 'All day';
-  const h = d.getHours()%12||12, mn = String(d.getMinutes()).padStart(2,'0');
+  if (d.getHours()===0&&d.getMinutes()===0) return 'All day';
+  const h=d.getHours()%12||12, mn=String(d.getMinutes()).padStart(2,'0');
   return `${h}:${mn} ${d.getHours()<12?'AM':'PM'}`;
 }
 
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const WDAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const WDAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-function renderAll() {
-  renderUpcoming();
-  renderWeekly();
-  renderMonthly();
-}
+function renderAll() { renderUpcoming(); renderWeekly(); renderMonthly(); }
 
 function renderUpcoming() {
-  const now = new Date(); now.setHours(0,0,0,0);
-  const upcoming = allEvents.filter(e => e.start >= now).slice(0,6);
-  if (!upcoming.length) { document.getElementById('upcoming-content').innerHTML = '<div class="loading">No upcoming events</div>'; return; }
-  document.getElementById('upcoming-content').innerHTML = upcoming.map(e => `
+  const now=new Date(); now.setHours(0,0,0,0);
+  const up=allEvents.filter(e=>e.start>=now).slice(0,6);
+  if (!up.length){document.getElementById('upcoming-content').innerHTML='<div class="loading">No upcoming events</div>';return;}
+  document.getElementById('upcoming-content').innerHTML=up.map(e=>`
     <div class="event-item">
       <div class="event-date-badge">
         <div class="badge-day">${e.start.getDate()}</div>
@@ -676,248 +327,244 @@ function renderUpcoming() {
 }
 
 function renderWeekly() {
-  const now = new Date();
-  const dow = now.getDay();
-  const weekStart = new Date(now); weekStart.setDate(now.getDate() - dow); weekStart.setHours(0,0,0,0);
-  let html = '<div class="week-grid">';
-  for (let d = 0; d < 7; d++) {
-    const day = new Date(weekStart); day.setDate(weekStart.getDate() + d);
-    const isToday = day.toDateString() === now.toDateString();
-    const dayEvts = allEvents.filter(e => e.start.toDateString() === day.toDateString());
-    const evtHTML = dayEvts.slice(0,3).map(e => `<div class="week-event" title="${e.title}">${e.title}</div>`).join('');
-    html += `<div class="week-day-col">
+  const now=new Date(), dow=now.getDay();
+  const ws=new Date(now); ws.setDate(now.getDate()-dow); ws.setHours(0,0,0,0);
+  let html='<div class="week-grid">';
+  for (let d=0;d<7;d++){
+    const day=new Date(ws); day.setDate(ws.getDate()+d);
+    const isToday=day.toDateString()===now.toDateString();
+    const evts=allEvents.filter(e=>e.start.toDateString()===day.toDateString());
+    html+=`<div class="week-day-col">
       <div class="week-day-name">${WDAYS[d]}</div>
       <div class="week-day-num${isToday?' today':''}">${day.getDate()}</div>
-      ${evtHTML}
+      ${evts.slice(0,3).map(e=>`<div class="week-event" title="${e.title}">${e.title}</div>`).join('')}
     </div>`;
   }
-  html += '</div>';
-  document.getElementById('weekly-content').innerHTML = html;
+  html+='</div>';
+  document.getElementById('weekly-content').innerHTML=html;
 }
 
 function renderMonthly() {
-  document.getElementById('month-title').textContent = `${MONTHS[viewMonth]} ${viewYear}`;
-  const first = new Date(viewYear, viewMonth, 1);
-  const last = new Date(viewYear, viewMonth+1, 0);
-  const today = new Date(); today.setHours(0,0,0,0);
-  let html = '<div class="month-grid">';
-  WDAYS.forEach(d => html += `<div class="month-weekday">${d}</div>`);
-  for (let i = 0; i < first.getDay(); i++) {
-    const prev = new Date(viewYear, viewMonth, -first.getDay()+i+1);
-    html += `<div class="month-day other-month">${prev.getDate()}</div>`;
+  document.getElementById('month-title').textContent=`${MONTHS[viewMonth]} ${viewYear}`;
+  const first=new Date(viewYear,viewMonth,1), last=new Date(viewYear,viewMonth+1,0);
+  const today=new Date(); today.setHours(0,0,0,0);
+  let html='<div class="month-grid">';
+  WDAYS.forEach(d=>html+=`<div class="month-weekday">${d}</div>`);
+  for (let i=0;i<first.getDay();i++){const p=new Date(viewYear,viewMonth,-first.getDay()+i+1);html+=`<div class="month-day other-month">${p.getDate()}</div>`;}
+  for (let d=1;d<=last.getDate();d++){
+    const dt=new Date(viewYear,viewMonth,d);
+    const isToday=dt.toDateString()===today.toDateString();
+    const hasEvt=allEvents.some(e=>e.start.toDateString()===dt.toDateString());
+    html+=`<div class="month-day${isToday?' today-month':''}${hasEvt?' has-event':''}">${d}</div>`;
   }
-  for (let d = 1; d <= last.getDate(); d++) {
-    const dt = new Date(viewYear, viewMonth, d);
-    const isToday = dt.toDateString() === today.toDateString();
-    const hasEvt = allEvents.some(e => e.start.toDateString() === dt.toDateString());
-    html += `<div class="month-day${isToday?' today-month':''}${hasEvt?' has-event':''}">${d}</div>`;
-  }
-  const remain = 42 - (first.getDay() + last.getDate());
-  for (let d = 1; d <= remain; d++) html += `<div class="month-day other-month">${d}</div>`;
-  html += '</div>';
-  document.getElementById('monthly-content').innerHTML = html;
+  const rem=42-(first.getDay()+last.getDate());
+  for (let d=1;d<=rem;d++) html+=`<div class="month-day other-month">${d}</div>`;
+  html+='</div>';
+  document.getElementById('monthly-content').innerHTML=html;
 }
 
-document.getElementById('prev-month').onclick = () => {
-  viewMonth--; if(viewMonth<0){viewMonth=11;viewYear--;} renderMonthly();
-};
-document.getElementById('next-month').onclick = () => {
-  viewMonth++; if(viewMonth>11){viewMonth=0;viewYear++;} renderMonthly();
-};
+document.getElementById('prev-month').onclick=()=>{viewMonth--;if(viewMonth<0){viewMonth=11;viewYear--;}renderMonthly();};
+document.getElementById('next-month').onclick=()=>{viewMonth++;if(viewMonth>11){viewMonth=0;viewYear++;}renderMonthly();};
 
+async function loadCalendar() {
+  document.getElementById('upcoming-content').innerHTML='<div class="loading">Fetching calendar…</div>';
+  const attempts=[
+    `https://corsproxy.io/?url=${encodeURIComponent(PROXY_URL)}`,
+    `https://proxy.cors.sh/${PROXY_URL}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(PROXY_URL)}`,
+    `https://cors.eu.org/${PROXY_URL}`
+  ];
+  let text=null;
+  for (const url of attempts){
+    try{
+      const r=await fetch(url,{signal:AbortSignal.timeout(8000),headers:{'Accept':'text/calendar, */*'}});
+      const t=await r.text();
+      if(t.includes('BEGIN:VCALENDAR')){text=t;break;}
+    }catch(e){}
+  }
+  if(!text){allEvents=getDemoEvents();renderAll();return;}
+  allEvents=parseICS(text);
+  renderAll();
+}
 loadCalendar();
-
-// ── PHOTO LOADER ──────────────────────────────────────────────────
-const photoInput = document.getElementById('photo-input');
-const photoStrip = document.getElementById('photo-strip');
-let photoURLs = JSON.parse(localStorage.getItem('dashPhotos') || '[]');
-
-function renderPhotos() {
-  if (!photoURLs.length) return;
-  photoStrip.innerHTML = '';
-  photoURLs.forEach((src, i) => {
-    const img = document.createElement('img');
-    img.className = 'photo-thumb';
-    img.src = src;
-    img.title = 'Click to remove';
-    img.onclick = () => { photoURLs.splice(i,1); saveAndRender(); };
-    photoStrip.appendChild(img);
-  });
-}
-
-function saveAndRender() {
-  try { localStorage.setItem('dashPhotos', JSON.stringify(photoURLs)); } catch(e) {}
-  renderPhotos();
-}
-
-photoInput.addEventListener('change', (e) => {
-  const files = Array.from(e.target.files);
-  let loaded = 0;
-  files.forEach(f => {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      photoURLs.push(ev.target.result);
-      loaded++;
-      if (loaded === files.length) saveAndRender();
-    };
-    reader.readAsDataURL(f);
-  });
-  e.target.value = '';
-});
-
-renderPhotos();
+setInterval(loadCalendar, 900000);
 
 // ── SPORTS ────────────────────────────────────────────────────────
 async function loadSports() {
   const el = document.getElementById('sports-content');
   try {
     const today = new Date();
-    const fmt = d => `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
     const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
-    const todayStr = fmt(today), yestStr = fmt(yesterday);
+    const todayISO = today.toISOString().slice(0,10);
+    const yestISO  = yesterday.toISOString().slice(0,10);
 
-    const [nhlYest, nhlToday, mlbToday] = await Promise.all([
-      fetch(`https://api-web.nhle.com/v1/score/${yesterday.toISOString().slice(0,10)}`).then(r=>r.json()).catch(()=>null),
-      fetch(`https://api-web.nhle.com/v1/score/now`).then(r=>r.json()).catch(()=>null),
-      fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date=${today.toISOString().slice(0,10)}&hydrate=linescore`).then(r=>r.json()).catch(()=>null),
+    // NHL uses their own API
+    const [nhlYest, nhlToday] = await Promise.all([
+      fetch(`https://api-web.nhle.com/v1/score/${yestISO}`).then(r=>r.json()).catch(()=>({games:[]})),
+      fetch(`https://api-web.nhle.com/v1/score/${todayISO}`).then(r=>r.json()).catch(()=>({games:[]})),
+    ]);
+
+    // Blue Jays via MLB Stats API (teamId 141)
+    const [bjYestData, bjTodayData] = await Promise.all([
+      fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date=${yestISO}&hydrate=linescore`).then(r=>r.json()).catch(()=>null),
+      fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date=${todayISO}&hydrate=linescore`).then(r=>r.json()).catch(()=>null),
     ]);
 
     let html = '';
 
     // ── NHL Yesterday ──
-    const nhlYestGames = (nhlYest?.games || []).filter(g => g.gameState === 'OFF' || g.gameState === 'FINAL');
-    if (nhlYestGames.length) {
-      html += `<div class="sports-section">
-        <div class="sports-league-title">🏒 NHL — Yesterday's Results</div>
-        <div class="games-row">`;
-      nhlYestGames.forEach(g => {
-        const home = g.homeTeam, away = g.awayTeam;
-        const homeWin = home.score > away.score;
-        html += `<div class="game-chip final">
-          <div class="game-teams">
-            <div class="game-team">
-              <div class="game-team-name">${away.abbrev}</div>
-              <div class="game-team-score ${!homeWin?'game-winner':''}">${away.score}</div>
-            </div>
-            <div class="game-vs">vs</div>
-            <div class="game-team">
-              <div class="game-team-name">${home.abbrev}</div>
-              <div class="game-team-score ${homeWin?'game-winner':''}">${home.score}</div>
-            </div>
-          </div>
-          <div class="game-status">Final</div>
-        </div>`;
-      });
-      html += `</div></div>`;
+    const nhlYestFinal = (nhlYest.games||[]).filter(g=>['OFF','FINAL','OVER'].includes(g.gameState));
+    if (nhlYestFinal.length) {
+      html += buildNHLSection('🏒 NHL — Yesterday', nhlYestFinal);
     }
 
     // ── NHL Today ──
-    const nhlTodayGames = nhlToday?.games || [];
+    const nhlTodayGames = nhlToday.games||[];
     if (nhlTodayGames.length) {
-      html += `<div class="sports-section">
-        <div class="sports-league-title">🏒 NHL — Today</div>
-        <div class="games-row">`;
-      nhlTodayGames.forEach(g => {
-        const home = g.homeTeam, away = g.awayTeam;
-        const isLive = g.gameState === 'LIVE' || g.gameState === 'CRIT';
-        const isFinal = g.gameState === 'OFF' || g.gameState === 'FINAL';
-        const isUpcoming = g.gameState === 'FUT' || g.gameState === 'PRE';
-        const chipClass = isLive ? 'live' : isFinal ? 'final' : 'upcoming';
-        const homeWin = isFinal && home.score > away.score;
-        const awayWin = isFinal && away.score > home.score;
-        let statusText = isLive ? `Live — P${g.period || ''}` : isFinal ? 'Final' : new Date(g.startTimeUTC).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
-        html += `<div class="game-chip ${chipClass}">
-          <div class="game-teams">
-            <div class="game-team">
-              <div class="game-team-name">${away.abbrev}</div>
-              <div class="game-team-score ${awayWin?'game-winner':''}">${isUpcoming?'–':away.score}</div>
-            </div>
-            <div class="game-vs">vs</div>
-            <div class="game-team">
-              <div class="game-team-name">${home.abbrev}</div>
-              <div class="game-team-score ${homeWin?'game-winner':''}">${isUpcoming?'–':home.score}</div>
-            </div>
-          </div>
-          <div class="game-status ${isLive?'live-status':''}">${statusText}</div>
-        </div>`;
-      });
-      html += `</div></div>`;
+      html += buildNHLSection('🏒 NHL — Today', nhlTodayGames);
+    } else if (!nhlYestFinal.length) {
+      html += `<div class="sports-section"><div class="sports-league-title">🏒 NHL</div><div style="color:rgba(255,255,255,0.4);font-size:0.8rem">No games scheduled</div></div>`;
     }
 
     // ── Blue Jays ──
-    const bjGames = mlbToday?.dates?.[0]?.games || [];
-    // Also fetch yesterday's Jays
-    const mlbYest = await fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date=${yesterday.toISOString().slice(0,10)}&hydrate=linescore`).then(r=>r.json()).catch(()=>null);
-    const bjYest = mlbYest?.dates?.[0]?.games || [];
-
-    const renderBJGame = (g, label) => {
-      const home = g.teams.home, away = g.teams.away;
-      const status = g.status.detailedState;
-      const isFinal = status.includes('Final');
-      const isLive = status.includes('In Progress') || status.includes('Live');
-      const isUpcoming = !isFinal && !isLive;
-      const chipClass = isLive?'live':isFinal?'final':'upcoming';
-      const homeWin = isFinal && home.score > away.score;
-      const awayWin = isFinal && away.score > home.score;
-      const gameTime = new Date(g.gameDate).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
-      return `<div class="game-chip ${chipClass}">
-        <div class="game-teams">
-          <div class="game-team">
-            <div class="game-team-name">${away.team.abbreviation}</div>
-            <div class="game-team-score ${awayWin?'game-winner':''}">${isUpcoming?'–':away.score??'–'}</div>
-          </div>
-          <div class="game-vs">vs</div>
-          <div class="game-team">
-            <div class="game-team-name">${home.team.abbreviation}</div>
-            <div class="game-team-score ${homeWin?'game-winner':''}">${isUpcoming?'–':home.score??'–'}</div>
-          </div>
-        </div>
-        <div class="game-status ${isLive?'live-status':''}">${isFinal?'Final':isLive?'Live':gameTime}</div>
-      </div>`;
-    };
-
-    if (bjYest.length || bjGames.length) {
-      html += `<div class="sports-section">
-        <div class="sports-league-title">⚾ Toronto Blue Jays</div>
-        <div class="games-row">`;
-      bjYest.forEach(g => html += renderBJGame(g, 'Yesterday'));
-      bjGames.forEach(g => html += renderBJGame(g, 'Today'));
-      if (!bjYest.length && !bjGames.length) html += `<div style="color:rgba(255,255,255,0.4);font-size:0.8rem">No games scheduled</div>`;
+    const bjYest  = bjYestData?.dates?.[0]?.games  || [];
+    const bjToday = bjTodayData?.dates?.[0]?.games || [];
+    if (bjYest.length || bjToday.length) {
+      html += `<div class="sports-section"><div class="sports-league-title">⚾ Toronto Blue Jays</div><div class="games-row">`;
+      [...bjYest, ...bjToday].forEach(g => { html += buildMLBChip(g); });
       html += `</div></div>`;
+    } else {
+      html += `<div class="sports-section"><div class="sports-league-title">⚾ Toronto Blue Jays</div><div style="color:rgba(255,255,255,0.4);font-size:0.8rem">No games scheduled</div></div>`;
     }
 
-    if (!html) html = '<div style="color:rgba(255,255,255,0.4);font-size:0.85rem">No games found for today or yesterday.</div>';
-    el.innerHTML = html;
+    el.innerHTML = html || '<div style="color:rgba(255,255,255,0.4);font-size:0.85rem">No games found.</div>';
   } catch(e) {
     el.innerHTML = `<div class="error-msg">Sports unavailable: ${e.message}</div>`;
   }
 }
 
+function buildNHLSection(label, games) {
+  let html = `<div class="sports-section"><div class="sports-league-title">${label}</div><div class="games-row">`;
+  games.forEach(g => {
+    const home = g.homeTeam, away = g.awayTeam;
+    const state = g.gameState;
+    const isLive = state==='LIVE'||state==='CRIT';
+    const isFinal = state==='OFF'||state==='FINAL'||state==='OVER';
+    const isUp = !isLive && !isFinal;
+    const chipClass = isLive?'live':isFinal?'final':'upcoming';
+    const homeWin = isFinal && (home.score||0) > (away.score||0);
+    const awayWin = isFinal && (away.score||0) > (home.score||0);
+    let status = isLive ? `Live — P${g.period||''}` : isFinal ? 'Final' : formatGameTime(g.startTimeUTC);
+    html += `<div class="game-chip ${chipClass}">
+      <div class="game-teams">
+        <div class="game-team">
+          <div class="game-team-name">${away.abbrev||'–'}</div>
+          <div class="game-team-score ${awayWin?'game-winner':''}">${isUp?'–':(away.score??0)}</div>
+        </div>
+        <div class="game-vs">vs</div>
+        <div class="game-team">
+          <div class="game-team-name">${home.abbrev||'–'}</div>
+          <div class="game-team-score ${homeWin?'game-winner':''}">${isUp?'–':(home.score??0)}</div>
+        </div>
+      </div>
+      <div class="game-status ${isLive?'live-status':''}">${status}</div>
+    </div>`;
+  });
+  html += `</div></div>`;
+  return html;
+}
+
+function buildMLBChip(g) {
+  const home = g.teams.home, away = g.teams.away;
+  const status = g.status?.detailedState||'';
+  const isFinal = status.includes('Final');
+  const isLive  = status.includes('Progress');
+  const isUp    = !isFinal && !isLive;
+  const chipClass = isLive?'live':isFinal?'final':'upcoming';
+  const homeWin = isFinal && (home.score||0) > (away.score||0);
+  const awayWin = isFinal && (away.score||0) > (home.score||0);
+  const gameTime = formatGameTime(g.gameDate);
+  return `<div class="game-chip ${chipClass}">
+    <div class="game-teams">
+      <div class="game-team">
+        <div class="game-team-name">${away.team?.abbreviation||'–'}</div>
+        <div class="game-team-score ${awayWin?'game-winner':''}">${isUp?'–':(away.score??'–')}</div>
+      </div>
+      <div class="game-vs">vs</div>
+      <div class="game-team">
+        <div class="game-team-name">${home.team?.abbreviation||'–'}</div>
+        <div class="game-team-score ${homeWin?'game-winner':''}">${isUp?'–':(home.score??'–')}</div>
+      </div>
+    </div>
+    <div class="game-status ${isLive?'live-status':''}">${isFinal?'Final':isLive?'Live':gameTime}</div>
+  </div>`;
+}
+
+function formatGameTime(utcStr) {
+  if (!utcStr) return '–';
+  try {
+    return new Date(utcStr).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZone:'America/Denver',timeZoneName:'short'});
+  } catch { return '–'; }
+}
+
 loadSports();
-setInterval(loadSports, 60000); // refresh every minute
-const bgColors = [
+setInterval(loadSports, 60000);
+
+// ── PHOTOS ────────────────────────────────────────────────────────
+const photoInput = document.getElementById('photo-input');
+const photoStrip = document.getElementById('photo-strip');
+let photoURLs = [];
+try { photoURLs = JSON.parse(localStorage.getItem('dashPhotos')||'[]'); } catch(e){}
+
+function renderPhotos() {
+  if (!photoURLs.length) return;
+  photoStrip.innerHTML='';
+  photoURLs.forEach((src,i)=>{
+    const img=document.createElement('img');
+    img.className='photo-thumb'; img.src=src; img.title='Click to remove';
+    img.onclick=()=>{photoURLs.splice(i,1);savePhotos();};
+    photoStrip.appendChild(img);
+  });
+}
+function savePhotos() {
+  try{localStorage.setItem('dashPhotos',JSON.stringify(photoURLs));}catch(e){}
+  renderPhotos();
+}
+photoInput.addEventListener('change', e=>{
+  Array.from(e.target.files).forEach(f=>{
+    const r=new FileReader();
+    r.onload=ev=>{photoURLs.push(ev.target.result);savePhotos();};
+    r.readAsDataURL(f);
+  });
+  e.target.value='';
+});
+renderPhotos();
+
+// ── BACKGROUND SLIDESHOW ──────────────────────────────────────────
+const bgColors=[
   'linear-gradient(135deg,#0d1b2a 0%,#1b2838 40%,#2c3e50 100%)',
   'linear-gradient(135deg,#1a0533 0%,#3d1054 40%,#6a2c70 100%)',
   'linear-gradient(135deg,#0f2027 0%,#203a43 50%,#2c5364 100%)',
   'linear-gradient(135deg,#200122 0%,#6f0000 100%)',
   'linear-gradient(135deg,#093028 0%,#237a57 100%)'
 ];
-const ss = document.getElementById('bg-slideshow');
-bgColors.forEach((bg, i) => {
-  const s = document.createElement('div');
-  s.className = 'bg-slide' + (i===0?' active':'');
-  s.style.background = bg;
+const ss=document.getElementById('bg-slideshow');
+bgColors.forEach((bg,i)=>{
+  const s=document.createElement('div');
+  s.className='bg-slide'+(i===0?' active':'');
+  s.style.background=bg;
   ss.appendChild(s);
 });
-let curSlide = 0;
-setInterval(() => {
-  const slides = document.querySelectorAll('.bg-slide');
+let curSlide=0;
+setInterval(()=>{
+  const slides=document.querySelectorAll('.bg-slide');
   slides[curSlide].classList.remove('active');
-  curSlide = (curSlide+1) % slides.length;
+  curSlide=(curSlide+1)%slides.length;
   slides[curSlide].classList.add('active');
-}, 8000);
+},8000);
 </script>
 
 </body>
 </html>
+
 
