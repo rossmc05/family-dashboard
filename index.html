@@ -273,11 +273,64 @@ border-radius: 50%;
 margin: 2px auto 0;
 }
 
-/* Photo strip */
-.photos-card {
-grid-column: 1 / 3;
-grid-row: 3;
+.sports-card {
+grid-column: 1 / 4;
+grid-row: 4;
 }
+.sports-section { margin-bottom: 14px; }
+.sports-league-title {
+font-size: 0.7rem;
+text-transform: uppercase;
+letter-spacing: 2px;
+color: rgba(255,255,255,0.4);
+margin-bottom: 8px;
+}
+.games-row {
+display: flex;
+gap: 10px;
+flex-wrap: wrap;
+}
+.game-chip {
+background: rgba(255,255,255,0.07);
+border: 1px solid rgba(255,255,255,0.1);
+border-radius: 12px;
+padding: 8px 14px;
+display: flex;
+flex-direction: column;
+align-items: center;
+min-width: 160px;
+flex: 1;
+}
+.game-chip.final { border-color: rgba(255,255,255,0.15); }
+.game-chip.live { border-color: rgba(100,255,100,0.4); background: rgba(100,255,100,0.06); }
+.game-chip.upcoming { border-color: rgba(100,180,255,0.3); }
+.game-teams {
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: 0.9rem;
+font-weight: 500;
+width: 100%;
+justify-content: center;
+}
+.game-team { text-align: center; flex: 1; }
+.game-team-name { font-size: 0.8rem; }
+.game-team-score { font-size: 1.3rem; font-weight: 700; line-height: 1.1; }
+.game-vs { font-size: 0.7rem; color: rgba(255,255,255,0.4); }
+.game-status {
+font-size: 0.65rem;
+color: rgba(255,255,255,0.45);
+margin-top: 5px;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+.game-status.live-status { color: rgba(100,255,100,0.9); }
+.game-winner { font-weight: 700; color: #fff; }
+
+/* adjust photo/weekly rows */
+.photos-card { grid-row: 5; }
+.weekly-card { grid-row: 2; }
+.monthly-card { grid-row: 2 / 5; }
 .photo-strip {
 display: flex;
 gap: 8px;
@@ -374,6 +427,12 @@ grid-template-columns: 1fr 1fr;
     <button class="month-nav" id="next-month">›</button>
   </div>
   <div id="monthly-content"><div class="loading">Loading…</div></div>
+</div>
+
+<!-- Sports -->
+<div class="card sports-card">
+  <div class="card-title">Scores & Schedule</div>
+  <div id="sports-content"><div class="loading">Loading scores…</div></div>
 </div>
 
 <!-- Photos -->
@@ -708,7 +767,134 @@ photoInput.addEventListener('change', (e) => {
 
 renderPhotos();
 
-// ── BACKGROUND SLIDESHOW (placeholder sunsets) ────────────────────
+// ── SPORTS ────────────────────────────────────────────────────────
+async function loadSports() {
+  const el = document.getElementById('sports-content');
+  try {
+    const today = new Date();
+    const fmt = d => `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+    const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
+    const todayStr = fmt(today), yestStr = fmt(yesterday);
+
+    const [nhlYest, nhlToday, mlbToday] = await Promise.all([
+      fetch(`https://api-web.nhle.com/v1/score/${yesterday.toISOString().slice(0,10)}`).then(r=>r.json()).catch(()=>null),
+      fetch(`https://api-web.nhle.com/v1/score/now`).then(r=>r.json()).catch(()=>null),
+      fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date=${today.toISOString().slice(0,10)}&hydrate=linescore`).then(r=>r.json()).catch(()=>null),
+    ]);
+
+    let html = '';
+
+    // ── NHL Yesterday ──
+    const nhlYestGames = (nhlYest?.games || []).filter(g => g.gameState === 'OFF' || g.gameState === 'FINAL');
+    if (nhlYestGames.length) {
+      html += `<div class="sports-section">
+        <div class="sports-league-title">🏒 NHL — Yesterday's Results</div>
+        <div class="games-row">`;
+      nhlYestGames.forEach(g => {
+        const home = g.homeTeam, away = g.awayTeam;
+        const homeWin = home.score > away.score;
+        html += `<div class="game-chip final">
+          <div class="game-teams">
+            <div class="game-team">
+              <div class="game-team-name">${away.abbrev}</div>
+              <div class="game-team-score ${!homeWin?'game-winner':''}">${away.score}</div>
+            </div>
+            <div class="game-vs">vs</div>
+            <div class="game-team">
+              <div class="game-team-name">${home.abbrev}</div>
+              <div class="game-team-score ${homeWin?'game-winner':''}">${home.score}</div>
+            </div>
+          </div>
+          <div class="game-status">Final</div>
+        </div>`;
+      });
+      html += `</div></div>`;
+    }
+
+    // ── NHL Today ──
+    const nhlTodayGames = nhlToday?.games || [];
+    if (nhlTodayGames.length) {
+      html += `<div class="sports-section">
+        <div class="sports-league-title">🏒 NHL — Today</div>
+        <div class="games-row">`;
+      nhlTodayGames.forEach(g => {
+        const home = g.homeTeam, away = g.awayTeam;
+        const isLive = g.gameState === 'LIVE' || g.gameState === 'CRIT';
+        const isFinal = g.gameState === 'OFF' || g.gameState === 'FINAL';
+        const isUpcoming = g.gameState === 'FUT' || g.gameState === 'PRE';
+        const chipClass = isLive ? 'live' : isFinal ? 'final' : 'upcoming';
+        const homeWin = isFinal && home.score > away.score;
+        const awayWin = isFinal && away.score > home.score;
+        let statusText = isLive ? `Live — P${g.period || ''}` : isFinal ? 'Final' : new Date(g.startTimeUTC).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+        html += `<div class="game-chip ${chipClass}">
+          <div class="game-teams">
+            <div class="game-team">
+              <div class="game-team-name">${away.abbrev}</div>
+              <div class="game-team-score ${awayWin?'game-winner':''}">${isUpcoming?'–':away.score}</div>
+            </div>
+            <div class="game-vs">vs</div>
+            <div class="game-team">
+              <div class="game-team-name">${home.abbrev}</div>
+              <div class="game-team-score ${homeWin?'game-winner':''}">${isUpcoming?'–':home.score}</div>
+            </div>
+          </div>
+          <div class="game-status ${isLive?'live-status':''}">${statusText}</div>
+        </div>`;
+      });
+      html += `</div></div>`;
+    }
+
+    // ── Blue Jays ──
+    const bjGames = mlbToday?.dates?.[0]?.games || [];
+    // Also fetch yesterday's Jays
+    const mlbYest = await fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date=${yesterday.toISOString().slice(0,10)}&hydrate=linescore`).then(r=>r.json()).catch(()=>null);
+    const bjYest = mlbYest?.dates?.[0]?.games || [];
+
+    const renderBJGame = (g, label) => {
+      const home = g.teams.home, away = g.teams.away;
+      const status = g.status.detailedState;
+      const isFinal = status.includes('Final');
+      const isLive = status.includes('In Progress') || status.includes('Live');
+      const isUpcoming = !isFinal && !isLive;
+      const chipClass = isLive?'live':isFinal?'final':'upcoming';
+      const homeWin = isFinal && home.score > away.score;
+      const awayWin = isFinal && away.score > home.score;
+      const gameTime = new Date(g.gameDate).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZoneName:'short'});
+      return `<div class="game-chip ${chipClass}">
+        <div class="game-teams">
+          <div class="game-team">
+            <div class="game-team-name">${away.team.abbreviation}</div>
+            <div class="game-team-score ${awayWin?'game-winner':''}">${isUpcoming?'–':away.score??'–'}</div>
+          </div>
+          <div class="game-vs">vs</div>
+          <div class="game-team">
+            <div class="game-team-name">${home.team.abbreviation}</div>
+            <div class="game-team-score ${homeWin?'game-winner':''}">${isUpcoming?'–':home.score??'–'}</div>
+          </div>
+        </div>
+        <div class="game-status ${isLive?'live-status':''}">${isFinal?'Final':isLive?'Live':gameTime}</div>
+      </div>`;
+    };
+
+    if (bjYest.length || bjGames.length) {
+      html += `<div class="sports-section">
+        <div class="sports-league-title">⚾ Toronto Blue Jays</div>
+        <div class="games-row">`;
+      bjYest.forEach(g => html += renderBJGame(g, 'Yesterday'));
+      bjGames.forEach(g => html += renderBJGame(g, 'Today'));
+      if (!bjYest.length && !bjGames.length) html += `<div style="color:rgba(255,255,255,0.4);font-size:0.8rem">No games scheduled</div>`;
+      html += `</div></div>`;
+    }
+
+    if (!html) html = '<div style="color:rgba(255,255,255,0.4);font-size:0.85rem">No games found for today or yesterday.</div>';
+    el.innerHTML = html;
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Sports unavailable: ${e.message}</div>`;
+  }
+}
+
+loadSports();
+setInterval(loadSports, 60000); // refresh every minute
 const bgColors = [
   'linear-gradient(135deg,#0d1b2a 0%,#1b2838 40%,#2c3e50 100%)',
   'linear-gradient(135deg,#1a0533 0%,#3d1054 40%,#6a2c70 100%)',
@@ -734,3 +920,4 @@ setInterval(() => {
 
 </body>
 </html>
+
