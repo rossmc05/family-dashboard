@@ -122,7 +122,8 @@ margin-bottom: 12px;
 .game-vs    { font-size:0.7rem; color:rgba(255,255,255,0.4); }
 .game-status { font-size:0.65rem; color:rgba(255,255,255,0.45); margin-top:5px; text-transform:uppercase; letter-spacing:1px; }
 .game-status.live-status { color:rgba(100,255,100,0.9); }
-.game-winner { font-weight:700; color:#fff; }
+.team-logo { display:flex; align-items:center; justify-content:center; height:40px; margin-bottom:4px; }
+.no-games { color:rgba(255,255,255,0.4); font-size:0.8rem; }
 
 /* Photos */
 .photo-strip { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px; }
@@ -398,35 +399,27 @@ async function loadSports() {
     const todayISO = today.toISOString().slice(0,10);
     const yestISO  = yesterday.toISOString().slice(0,10);
 
-    // NHL uses their own API
-    const [nhlYest, nhlToday] = await Promise.all([
+    const [nhlYest, nhlToday, bjYestData, bjTodayData] = await Promise.all([
       fetch(`https://api-web.nhle.com/v1/score/${yestISO}`).then(r=>r.json()).catch(()=>({games:[]})),
       fetch(`https://api-web.nhle.com/v1/score/${todayISO}`).then(r=>r.json()).catch(()=>({games:[]})),
-    ]);
-
-    // Blue Jays via MLB Stats API (teamId 141)
-    const [bjYestData, bjTodayData] = await Promise.all([
       fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date=${yestISO}&hydrate=linescore`).then(r=>r.json()).catch(()=>null),
       fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date=${todayISO}&hydrate=linescore`).then(r=>r.json()).catch(()=>null),
     ]);
 
     let html = '';
 
-    // ── NHL Yesterday ──
-    const nhlYestFinal = (nhlYest.games||[]).filter(g=>['OFF','FINAL','OVER'].includes(g.gameState));
-    if (nhlYestFinal.length) {
-      html += buildNHLSection('🏒 NHL — Yesterday', nhlYestFinal);
-    }
+    // NHL Yesterday — only finished games
+    const nhlYestGames = (nhlYest.games||[]).filter(g=>['OFF','FINAL','OVER'].includes(g.gameState));
+    if (nhlYestGames.length) html += buildNHLSection('🏒 NHL — Yesterday Results', nhlYestGames);
 
-    // ── NHL Today ──
+    // NHL Today — all games
     const nhlTodayGames = nhlToday.games||[];
-    if (nhlTodayGames.length) {
-      html += buildNHLSection('🏒 NHL — Today', nhlTodayGames);
-    } else if (!nhlYestFinal.length) {
-      html += `<div class="sports-section"><div class="sports-league-title">🏒 NHL</div><div style="color:rgba(255,255,255,0.4);font-size:0.8rem">No games scheduled</div></div>`;
-    }
+    if (nhlTodayGames.length) html += buildNHLSection('🏒 NHL — Today', nhlTodayGames);
 
-    // ── Blue Jays ──
+    if (!nhlYestGames.length && !nhlTodayGames.length)
+      html += `<div class="sports-section"><div class="sports-league-title">🏒 NHL</div><div class="no-games">No games scheduled</div></div>`;
+
+    // Blue Jays
     const bjYest  = bjYestData?.dates?.[0]?.games  || [];
     const bjToday = bjTodayData?.dates?.[0]?.games || [];
     if (bjYest.length || bjToday.length) {
@@ -434,13 +427,27 @@ async function loadSports() {
       [...bjYest, ...bjToday].forEach(g => { html += buildMLBChip(g); });
       html += `</div></div>`;
     } else {
-      html += `<div class="sports-section"><div class="sports-league-title">⚾ Toronto Blue Jays</div><div style="color:rgba(255,255,255,0.4);font-size:0.8rem">No games scheduled</div></div>`;
+      html += `<div class="sports-section"><div class="sports-league-title">⚾ Toronto Blue Jays</div><div class="no-games">No games scheduled</div></div>`;
     }
 
-    el.innerHTML = html || '<div style="color:rgba(255,255,255,0.4);font-size:0.85rem">No games found.</div>';
+    el.innerHTML = html;
   } catch(e) {
     el.innerHTML = `<div class="error-msg">Sports unavailable: ${e.message}</div>`;
   }
+}
+
+function nhlLogo(abbrev) {
+  return `<img src="https://assets.nhle.com/logos/nhl/svg/${abbrev}_light.svg" 
+    onerror="this.style.display='none';this.nextSibling.style.display='block'"
+    style="width:36px;height:36px;object-fit:contain;display:block">
+    <span style="display:none;font-size:0.75rem;font-weight:600">${abbrev}</span>`;
+}
+
+function mlbLogo(teamId, abbrev) {
+  return `<img src="https://www.mlbstatic.com/team-logos/${teamId}.svg"
+    onerror="this.style.display='none';this.nextSibling.style.display='block'"
+    style="width:36px;height:36px;object-fit:contain;display:block">
+    <span style="display:none;font-size:0.75rem;font-weight:600">${abbrev}</span>`;
 }
 
 function buildNHLSection(label, games) {
@@ -448,23 +455,27 @@ function buildNHLSection(label, games) {
   games.forEach(g => {
     const home = g.homeTeam, away = g.awayTeam;
     const state = g.gameState;
-    const isLive = state==='LIVE'||state==='CRIT';
-    const isFinal = state==='OFF'||state==='FINAL'||state==='OVER';
-    const isUp = !isLive && !isFinal;
+    const isLive   = state==='LIVE'||state==='CRIT';
+    const isFinal  = ['OFF','FINAL','OVER'].includes(state);
+    const isUp     = !isLive && !isFinal;
     const chipClass = isLive?'live':isFinal?'final':'upcoming';
-    const homeWin = isFinal && (home.score||0) > (away.score||0);
-    const awayWin = isFinal && (away.score||0) > (home.score||0);
-    let status = isLive ? `Live — P${g.period||''}` : isFinal ? 'Final' : formatGameTime(g.startTimeUTC);
+    const homeScore = home.score ?? (isUp?null:0);
+    const awayScore = away.score ?? (isUp?null:0);
+    const homeWin = isFinal && homeScore > awayScore;
+    const awayWin = isFinal && awayScore > homeScore;
+    const status = isLive ? `🔴 Live — P${g.period||''}` : isFinal ? 'Final' : formatGameTime(g.startTimeUTC);
     html += `<div class="game-chip ${chipClass}">
       <div class="game-teams">
         <div class="game-team">
+          <div class="team-logo">${nhlLogo(away.abbrev||'NHL')}</div>
           <div class="game-team-name">${away.abbrev||'–'}</div>
-          <div class="game-team-score ${awayWin?'game-winner':''}">${isUp?'–':(away.score??0)}</div>
+          <div class="game-team-score ${awayWin?'game-winner':''}">${isUp?'–':awayScore}</div>
         </div>
-        <div class="game-vs">vs</div>
+        <div class="game-vs">@</div>
         <div class="game-team">
+          <div class="team-logo">${nhlLogo(home.abbrev||'NHL')}</div>
           <div class="game-team-name">${home.abbrev||'–'}</div>
-          <div class="game-team-score ${homeWin?'game-winner':''}">${isUp?'–':(home.score??0)}</div>
+          <div class="game-team-score ${homeWin?'game-winner':''}">${isUp?'–':homeScore}</div>
         </div>
       </div>
       <div class="game-status ${isLive?'live-status':''}">${status}</div>
@@ -481,30 +492,32 @@ function buildMLBChip(g) {
   const isLive  = status.includes('Progress');
   const isUp    = !isFinal && !isLive;
   const chipClass = isLive?'live':isFinal?'final':'upcoming';
-  const homeWin = isFinal && (home.score||0) > (away.score||0);
-  const awayWin = isFinal && (away.score||0) > (home.score||0);
+  const homeScore = home.score, awayScore = away.score;
+  const homeWin = isFinal && homeScore > awayScore;
+  const awayWin = isFinal && awayScore > homeScore;
   const gameTime = formatGameTime(g.gameDate);
   return `<div class="game-chip ${chipClass}">
     <div class="game-teams">
       <div class="game-team">
+        <div class="team-logo">${mlbLogo(away.team?.id, away.team?.abbreviation||'–')}</div>
         <div class="game-team-name">${away.team?.abbreviation||'–'}</div>
-        <div class="game-team-score ${awayWin?'game-winner':''}">${isUp?'–':(away.score??'–')}</div>
+        <div class="game-team-score ${awayWin?'game-winner':''}">${isUp?'–':(awayScore??'–')}</div>
       </div>
-      <div class="game-vs">vs</div>
+      <div class="game-vs">@</div>
       <div class="game-team">
+        <div class="team-logo">${mlbLogo(home.team?.id, home.team?.abbreviation||'–')}</div>
         <div class="game-team-name">${home.team?.abbreviation||'–'}</div>
-        <div class="game-team-score ${homeWin?'game-winner':''}">${isUp?'–':(home.score??'–')}</div>
+        <div class="game-team-score ${homeWin?'game-winner':''}">${isUp?'–':(homeScore??'–')}</div>
       </div>
     </div>
-    <div class="game-status ${isLive?'live-status':''}">${isFinal?'Final':isLive?'Live':gameTime}</div>
+    <div class="game-status ${isLive?'live-status':''}">${isFinal?'Final':isLive?'🔴 Live':gameTime}</div>
   </div>`;
 }
 
 function formatGameTime(utcStr) {
   if (!utcStr) return '–';
-  try {
-    return new Date(utcStr).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZone:'America/Denver',timeZoneName:'short'});
-  } catch { return '–'; }
+  try { return new Date(utcStr).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZone:'America/Denver',timeZoneName:'short'}); }
+  catch { return '–'; }
 }
 
 loadSports();
@@ -566,5 +579,3 @@ setInterval(()=>{
 
 </body>
 </html>
-
-
