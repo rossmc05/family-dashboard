@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-   
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -481,8 +481,7 @@ setInterval(() => loadWeather(51.0447, -114.0719), 600000);
 loadWeather(51.0447, -114.0719);
 
 // ── CALENDAR ───────────────────────────────────────────────────────
-const CAL_URL = 'webcal://p58-caldav.icloud.com/published/2/MTAwMzMzOTgxMTAwMzMzOeRx7owgHoBn3si23dlCBoVPkDfkX3KzWwXgtKqyboafExi6t2dl4GIQtBaVq-ZyfDaJ6Bfa4ugJ5I8GjgjoqLs';
-const PROXY_URL = CAL_URL.replace('webcal://', 'https://');
+const PROXY_URL = 'https://p58-caldav.icloud.com/published/2/MTAwMzMzOTgxMTAwMzMzOeRx7owgHoBn3si23dlCBoVPkDfkX3KzWwXgtKqyboafExi6t2dl4GIQtBaVq-ZyfDaJ6Bfa4ugJ5I8GjgjoqLs';
 let allEvents = [];
 let viewYear = new Date().getFullYear();
 let viewMonth = new Date().getMonth();
@@ -516,30 +515,60 @@ function parseICS(text) {
 }
 
 async function loadCalendar() {
-  // Try multiple CORS proxies
-  const proxies = [
-    `https://corsproxy.io/?${encodeURIComponent(PROXY_URL)}`,
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(PROXY_URL)}`,
-    `https://cors-anywhere.herokuapp.com/${PROXY_URL}`
+  const statusEl = document.getElementById('upcoming-content');
+  statusEl.innerHTML = '<div class="loading">Fetching calendar…</div>';
+
+  // Try direct fetch first (works when running as local file on Mac)
+  // Then fall back to CORS proxies
+  const attempts = [
+    `https://corsproxy.io/?url=${encodeURIComponent(PROXY_URL)}`,
+    `https://proxy.cors.sh/${PROXY_URL}`,
+    `https://yacdn.org/proxy/${PROXY_URL}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(PROXY_URL)}`,
+    `https://cors.eu.org/${PROXY_URL}`
   ];
+
   let text = null;
-  for (const proxy of proxies) {
+  let lastErr = '';
+  for (const url of attempts) {
     try {
-      const r = await fetch(proxy, { signal: AbortSignal.timeout(6000) });
-      if (r.ok) { text = await r.text(); break; }
-    } catch {}
+      const r = await fetch(url, {
+        signal: AbortSignal.timeout(8000),
+        headers: { 'Accept': 'text/calendar, */*' }
+      });
+      const t = await r.text();
+      if (t.includes('BEGIN:VCALENDAR')) {
+        text = t;
+        console.log('✅ Calendar fetched from:', url);
+        break;
+      } else {
+        lastErr = `Bad response from ${url.slice(0,40)}`;
+        console.warn(lastErr, t.slice(0,100));
+      }
+    } catch(e) {
+      lastErr = e.message;
+      console.warn('Calendar fetch failed:', url.slice(0,40), e.message);
+    }
   }
+
   if (!text) {
-    // Show demo events as fallback
     allEvents = getDemoEvents();
     renderAll();
     document.getElementById('upcoming-content').insertAdjacentHTML('beforeend',
-      '<div class="error-msg" style="margin-top:8px">⚠️ Calendar loaded in demo mode — live iCal blocked by browser CORS policy. Open this HTML locally or host it to enable live sync.</div>');
+      `<div class="error-msg" style="margin-top:8px">
+        ⚠️ Could not load live calendar.<br>
+        Try: <strong>Safari → Develop menu → Disable Local File Restrictions</strong><br>
+        Or in Chrome, launch with: <code style="font-size:0.7rem">open -a "Google Chrome" --args --disable-web-security --user-data-dir=/tmp/chrome-dev dashboard.html</code>
+      </div>`);
     return;
   }
+
   allEvents = parseICS(text);
+  console.log(`✅ Parsed ${allEvents.length} events`);
   renderAll();
 }
+
+setInterval(loadCalendar, 900000);
 
 function getDemoEvents() {
   const y = new Date().getFullYear(), m = new Date().getMonth();
