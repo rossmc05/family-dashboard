@@ -6,124 +6,145 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The McNaughtons' Little Life</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: #1a1a2e;
-    color: #fff;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-  #bg-slideshow { position: fixed; inset: 0; z-index: 0; }
-  .bg-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 2s ease-in-out; }
-  .bg-slide.active { opacity: 1; }
-  .bg-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#fff; min-height:100vh; overflow-x:hidden; }
 
-.dashboard { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; padding: 20px; }
-header { text-align: center; margin-bottom: 20px; }
-header h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+#bg-slideshow { position:fixed; inset:0; z-index:0; }
+.bg-slide { position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity 2s ease-in-out; }
+.bg-slide.active { opacity:1; }
+.bg-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:1; }
 
-.grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.dashboard { position:relative; z-index:2; max-width:1080px; margin:0 auto; padding:16px; }
+header { text-align:center; margin-bottom:14px; }
+header h1 { font-size:2.6rem; font-weight:300; letter-spacing:3px; text-shadow:0 2px 10px rgba(0,0,0,0.5); }
 
-.card { background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 18px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-.card-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+/* ── 2-COLUMN VERTICAL GRID ── */
+.grid {
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:14px;
+}
 
-.weather-card  { grid-column: 1; grid-row: 1; }
-.clock-card    { grid-column: 2; grid-row: 1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
-.upcoming-card { grid-column: 3; grid-row: 1; }
-.weekly-card   { grid-column: 1 / 3; grid-row: 2; }
-.monthly-card  { grid-column: 3; grid-row: 2 / 5; }
-.sports-card   { grid-column: 1 / 3; grid-row: 3; }
-.photos-card   { grid-column: 1 / 3; grid-row: 4; }
+/* Row 1: Weather (big) | Clock (small) */
+.weather-card  { grid-column:1; grid-row:1; }
+.clock-card    { grid-column:2; grid-row:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
 
-.weather-main { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
-.weather-temp { font-size:3rem; font-weight:200; line-height:1; }
-.weather-icon { font-size:2.5rem; }
-.weather-desc { font-size:0.9rem; color:rgba(255,255,255,0.7); }
-.weather-feels { font-size:0.8rem; color:rgba(255,255,255,0.5); }
-.weather-forecast { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:10px; }
-.forecast-day { text-align:center; background:rgba(255,255,255,0.06); border-radius:10px; padding:8px 4px; }
-.forecast-day .day-name { font-size:0.7rem; color:rgba(255,255,255,0.6); }
-.forecast-day .day-icon { font-size:1.2rem; margin:4px 0; }
-.forecast-day .day-hi   { font-size:0.85rem; }
-.forecast-day .day-lo   { font-size:0.75rem; color:rgba(255,255,255,0.5); }
+/* Row 2: Monthly full width */
+.monthly-card  { grid-column:1/3; grid-row:2; }
 
-#clock-time { font-size:clamp(2.5rem,5vw,4rem); font-weight:100; letter-spacing:4px; line-height:1; }
-#clock-date { font-size:1rem; color:rgba(255,255,255,0.6); margin-top:8px; }
+/* Row 3: Weekly full width */
+.weekly-card   { grid-column:1/3; grid-row:3; }
 
-.event-item { display:flex; gap:10px; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.08); align-items:flex-start; }
+/* Row 4: Upcoming full width */
+.upcoming-card { grid-column:1/3; grid-row:4; }
+
+/* Row 5: Spotify | Photos */
+.spotify-card  { grid-column:1; grid-row:5; }
+.photos-card   { grid-column:2; grid-row:5; }
+
+/* Row 6: Sports full width */
+.sports-card   { grid-column:1/3; grid-row:6; }
+
+.card { background:rgba(255,255,255,0.08); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:18px; box-shadow:0 8px 32px rgba(0,0,0,0.3); }
+.card-title { font-size:0.7rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.5); margin-bottom:12px; }
+
+/* ── WEATHER ── */
+.weather-main { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.weather-icon { font-size:3rem; }
+.weather-temp { font-size:3.8rem; font-weight:200; line-height:1; }
+.weather-desc { font-size:1rem; color:rgba(255,255,255,0.7); }
+.weather-feels { font-size:0.85rem; color:rgba(255,255,255,0.5); margin-top:2px; }
+
+.weather-forecast { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:14px; }
+.forecast-day { text-align:center; background:rgba(255,255,255,0.06); border-radius:10px; padding:10px 4px; }
+.forecast-day .day-name { font-size:0.75rem; color:rgba(255,255,255,0.6); }
+.forecast-day .day-icon { font-size:1.4rem; margin:4px 0; }
+.forecast-day .day-hi   { font-size:0.95rem; }
+.forecast-day .day-lo   { font-size:0.8rem; color:rgba(255,255,255,0.5); }
+
+.hourly-label { font-size:0.65rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:8px; }
+.hourly-row { display:grid; grid-template-columns:repeat(8,1fr); gap:5px; }
+.hourly-item { text-align:center; background:rgba(255,255,255,0.05); border-radius:8px; padding:7px 3px; }
+.hourly-time { font-size:0.6rem; color:rgba(255,255,255,0.5); margin-bottom:3px; }
+.hourly-icon { font-size:1.1rem; margin-bottom:2px; }
+.hourly-temp { font-size:0.8rem; font-weight:500; }
+.hourly-precip { font-size:0.6rem; color:#7ecfff; margin-top:2px; }
+
+/* ── CLOCK (smaller) ── */
+#clock-time { font-size:2.8rem; font-weight:100; letter-spacing:4px; line-height:1; }
+#clock-date { font-size:0.85rem; color:rgba(255,255,255,0.6); margin-top:8px; line-height:1.4; }
+
+/* ── UPCOMING ── */
+.event-item { display:flex; gap:12px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); align-items:flex-start; }
 .event-item:last-child { border-bottom:none; margin-bottom:0; }
-.event-date-badge { min-width:38px; text-align:center; background:rgba(100,180,255,0.2); border-radius:8px; padding:4px; }
-.event-date-badge .badge-day { font-size:1.1rem; font-weight:600; line-height:1; }
-.event-date-badge .badge-month { font-size:0.6rem; color:rgba(255,255,255,0.6); text-transform:uppercase; }
+.event-date-badge { min-width:44px; text-align:center; background:rgba(100,180,255,0.2); border-radius:8px; padding:5px; }
+.event-date-badge .badge-day { font-size:1.3rem; font-weight:600; line-height:1; }
+.event-date-badge .badge-month { font-size:0.65rem; color:rgba(255,255,255,0.6); text-transform:uppercase; }
 .event-info { flex:1; }
-.event-title { font-size:0.85rem; font-weight:500; }
-.event-time  { font-size:0.72rem; color:rgba(255,255,255,0.5); margin-top:2px; }
+.event-title { font-size:0.95rem; font-weight:500; }
+.event-time  { font-size:0.78rem; color:rgba(255,255,255,0.5); margin-top:2px; }
 
-.week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+/* ── WEEKLY ── */
+.week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
 .week-day-col { text-align:center; }
-.week-day-name { font-size:0.65rem; color:rgba(255,255,255,0.5); text-transform:uppercase; margin-bottom:6px; }
-.week-day-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:0.9rem; }
+.week-day-name { font-size:0.7rem; color:rgba(255,255,255,0.5); text-transform:uppercase; margin-bottom:6px; }
+.week-day-num { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:1rem; }
 .week-day-num.today { background:rgba(100,180,255,0.6); font-weight:700; }
-.week-event { font-size:0.62rem; background:rgba(100,200,120,0.25); border-left:2px solid rgba(100,200,120,0.8); border-radius:3px; padding:2px 4px; margin-bottom:3px; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.week-event { font-size:0.65rem; background:rgba(100,200,120,0.25); border-left:2px solid rgba(100,200,120,0.8); border-radius:3px; padding:3px 5px; margin-bottom:3px; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-.month-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-.month-nav { background:rgba(255,255,255,0.1); border:none; color:#fff; width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; }
-.month-title { font-size:1rem; font-weight:500; }
-.month-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
-.month-weekday { text-align:center; font-size:0.6rem; color:rgba(255,255,255,0.4); padding:4px 0; text-transform:uppercase; }
-.month-day { text-align:center; padding:4px 2px; border-radius:6px; font-size:0.75rem; min-height:32px; }
+/* ── MONTHLY ── */
+.month-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.month-nav { background:rgba(255,255,255,0.1); border:none; color:#fff; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:1.1rem; display:flex; align-items:center; justify-content:center; }
+.month-title { font-size:1.2rem; font-weight:500; }
+.month-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.month-weekday { text-align:center; font-size:0.7rem; color:rgba(255,255,255,0.4); padding:6px 0; text-transform:uppercase; }
+.month-day { text-align:center; padding:6px 2px; border-radius:8px; font-size:0.9rem; min-height:40px; }
 .month-day.other-month { color:rgba(255,255,255,0.2); }
 .month-day.today-month { background:rgba(100,180,255,0.4); font-weight:700; }
-.month-day.has-event::after { content:’’; display:block; width:4px; height:4px; background:#7ecfff; border-radius:50%; margin:2px auto 0; }
+.month-day.has-event::after { content:’’; display:block; width:5px; height:5px; background:#7ecfff; border-radius:50%; margin:3px auto 0; }
 
-.sports-section { margin-bottom:14px; }
+/* ── SPORTS ── */
+.sports-section { margin-bottom:16px; }
 .sports-section:last-child { margin-bottom:0; }
-.sports-league-title { font-size:0.7rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:8px; }
+.sports-league-title { font-size:0.72rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:10px; }
 .games-row { display:flex; gap:10px; flex-wrap:wrap; }
-.game-chip { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:8px 14px; display:flex; flex-direction:column; align-items:center; min-width:150px; flex:1; max-width:220px; }
+.game-chip { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:10px 14px; display:flex; flex-direction:column; align-items:center; min-width:140px; flex:1; max-width:200px; }
 .game-chip.final    { border-color:rgba(255,255,255,0.15); }
 .game-chip.live     { border-color:rgba(100,255,100,0.4); background:rgba(100,255,100,0.06); }
 .game-chip.upcoming { border-color:rgba(100,180,255,0.3); }
 .game-teams  { display:flex; align-items:center; gap:10px; width:100%; justify-content:center; }
 .game-team   { text-align:center; flex:1; }
 .game-team-name  { font-size:0.8rem; }
-.game-team-score { font-size:1.3rem; font-weight:700; line-height:1.1; }
+.game-team-score { font-size:1.4rem; font-weight:700; line-height:1.1; }
 .game-vs     { font-size:0.7rem; color:rgba(255,255,255,0.4); }
 .game-status { font-size:0.65rem; color:rgba(255,255,255,0.45); margin-top:5px; text-transform:uppercase; letter-spacing:1px; }
 .game-status.live-status { color:rgba(100,255,100,0.9); }
 .game-winner { font-weight:700; color:#fff; }
-.team-logo   { display:flex; align-items:center; justify-content:center; height:40px; margin-bottom:4px; }
+.team-logo   { display:flex; align-items:center; justify-content:center; height:42px; margin-bottom:4px; }
 .no-games    { color:rgba(255,255,255,0.4); font-size:0.8rem; }
 
-.spotify-card  { grid-column: 3; grid-row: 5; }
+/* ── SPOTIFY ── */
 .spotify-inner { display:flex; gap:14px; align-items:center; }
-.spotify-art   { width:80px; height:80px; border-radius:10px; object-fit:cover; flex-shrink:0; background:rgba(255,255,255,0.1); }
+.spotify-art   { width:80px; height:80px; border-radius:10px; object-fit:cover; flex-shrink:0; }
 .spotify-art-placeholder { width:80px; height:80px; border-radius:10px; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size:2rem; flex-shrink:0; }
 .spotify-info  { flex:1; overflow:hidden; }
 .spotify-track { font-size:0.95rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .spotify-artist{ font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .spotify-album { font-size:0.72rem; color:rgba(255,255,255,0.4); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .spotify-status{ font-size:0.7rem; margin-top:6px; display:flex; align-items:center; gap:5px; }
-.spotify-dot   { width:8px; height:8px; border-radius:50%; background:#1DB954; display:inline-block; animation: pulse 1.5s infinite; }
+.spotify-dot   { width:8px; height:8px; border-radius:50%; background:#1DB954; display:inline-block; animation:pulse 1.5s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-.spotify-login { background:#1DB954; border:none; color:#000; padding:8px 16px; border-radius:20px; cursor:pointer; font-weight:600; font-size:0.85rem; width:100%; margin-top:4px; }
+.spotify-login { background:#1DB954; border:none; color:#000; padding:8px 16px; border-radius:20px; cursor:pointer; font-weight:600; font-size:0.85rem; width:100%; margin-top:8px; }
 .spotify-login:hover { background:#1ed760; }
+
+/* ── PHOTOS ── */
+.photo-strip { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px; }
 .photo-strip::-webkit-scrollbar { display:none; }
-.photo-thumb { min-width:120px; height:90px; border-radius:10px; object-fit:cover; flex-shrink:0; cursor:pointer; }
-.photo-placeholder { min-width:120px; height:90px; border-radius:10px; background:rgba(255,255,255,0.08); display:flex; flex-direction:column; align-items:center; justify-content:center; color:rgba(255,255,255,0.4); font-size:0.7rem; text-align:center; padding:8px; flex-shrink:0; }
+.photo-thumb { min-width:100px; height:100px; border-radius:10px; object-fit:cover; flex-shrink:0; cursor:pointer; }
+.photo-placeholder { min-width:100px; height:100px; border-radius:10px; background:rgba(255,255,255,0.08); display:flex; flex-direction:column; align-items:center; justify-content:center; color:rgba(255,255,255,0.4); font-size:0.7rem; text-align:center; padding:8px; flex-shrink:0; }
 
 .loading   { color:rgba(255,255,255,0.4); font-size:0.85rem; text-align:center; padding:20px; }
 .error-msg { color:rgba(255,150,150,0.8); font-size:0.75rem; padding:6px; }
-
-@media(max-width:900px){
-.grid { grid-template-columns:1fr 1fr; }
-.weekly-card   { grid-column:1/3; grid-row:3; }
-.monthly-card  { grid-column:1/3; grid-row:2; }
-.sports-card   { grid-column:1/3; grid-row:4; }
-.photos-card   { grid-column:1/3; grid-row:5; }
-.upcoming-card { grid-column:1/3; grid-row:6; }
-}
 </style>
 
 </head>
@@ -136,8 +157,9 @@ header h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; letter-spacin
   <div class="grid">
 
 ```
+<!-- Row 1 -->
 <div class="card weather-card">
-  <div class="card-title">Weather</div>
+  <div class="card-title">Weather — Calgary</div>
   <div id="weather-content"><div class="loading">Loading weather…</div></div>
 </div>
 
@@ -146,16 +168,7 @@ header h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; letter-spacin
   <div id="clock-date">Loading…</div>
 </div>
 
-<div class="card upcoming-card">
-  <div class="card-title">Upcoming Events</div>
-  <div id="upcoming-content"><div class="loading">Loading calendar…</div></div>
-</div>
-
-<div class="card weekly-card">
-  <div class="card-title">This Week</div>
-  <div id="weekly-content"><div class="loading">Loading…</div></div>
-</div>
-
+<!-- Row 2 -->
 <div class="card monthly-card">
   <div class="month-header">
     <button class="month-nav" id="prev-month">‹</button>
@@ -165,30 +178,47 @@ header h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; letter-spacin
   <div id="monthly-content"><div class="loading">Loading…</div></div>
 </div>
 
-<div class="card sports-card">
-  <div class="card-title">Scores &amp; Schedule</div>
-  <div id="sports-content"><div class="loading">Loading scores…</div></div>
+<!-- Row 3 -->
+<div class="card weekly-card">
+  <div class="card-title">This Week</div>
+  <div id="weekly-content"><div class="loading">Loading…</div></div>
+</div>
+
+<!-- Row 4 -->
+<div class="card upcoming-card">
+  <div class="card-title">Upcoming Events</div>
+  <div id="upcoming-content"><div class="loading">Loading calendar…</div></div>
+</div>
+
+<!-- Row 5 -->
+<div class="card spotify-card">
+  <div class="card-title">🎵 Now Playing</div>
+  <div id="spotify-content">
+    <div class="spotify-art-placeholder">🎵</div>
+    <button class="spotify-login" onclick="spotifyLogin()">Connect Spotify</button>
+  </div>
 </div>
 
 <div class="card photos-card">
   <div class="card-title">Family Photos</div>
   <div id="photos-content">
     <div class="photo-strip" id="photo-strip">
-      <div class="photo-placeholder">📷<br/>Click + Add to load photos</div>
+      <div class="photo-placeholder">📷<br/>Click + Add</div>
     </div>
     <input type="file" id="photo-input" accept="image/*" multiple style="display:none">
     <button onclick="document.getElementById('photo-input').click()" style="margin-top:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.75rem;">+ Add Photos</button>
   </div>
 </div>
 
-<div class="card spotify-card">
-  <div class="card-title">🎵 Now Playing</div>
-  <div id="spotify-content">
-    <div class="spotify-art-placeholder">🎵</div>
-    <button class="spotify-login" id="spotify-login-btn" onclick="spotifyLogin()">Connect Spotify</button>
-  </div>
+<!-- Row 6 -->
+<div class="card sports-card">
+  <div class="card-title">Scores &amp; Schedule</div>
+  <div id="sports-content"><div class="loading">Loading scores…</div></div>
 </div>
 ```
+
+  </div>
+</div>
 
 <script>
 // ── CLOCK ──────────────────────────────────────────────────────────
@@ -207,10 +237,13 @@ const WX_DESC = {0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'F
 async function loadWeather() {
   const el = document.getElementById('weather-content');
   try {
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.0447&longitude=-114.0719&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=5');
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.0447&longitude=-114.0719&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation_probability&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=2');
     const d = await r.json();
-    const cur = d.current, daily = d.daily, code = cur.weather_code;
+    const cur = d.current, daily = d.daily;
+    const code = cur.weather_code;
     const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+    // 4-day forecast
     let fc = '';
     for (let i=1;i<=4;i++) {
       const dt = new Date(daily.time[i]+'T12:00:00');
@@ -221,15 +254,41 @@ async function loadWeather() {
         <div class="day-lo">${Math.round(daily.temperature_2m_min[i])}°</div>
       </div>`;
     }
-    el.innerHTML = `<div class="weather-main">
-      <div class="weather-icon">${WX_ICONS[code]||'🌡️'}</div>
-      <div>
-        <div class="weather-temp">${Math.round(cur.temperature_2m)}°C</div>
-        <div class="weather-desc">${WX_DESC[code]||'–'}</div>
-        <div class="weather-feels">Feels like ${Math.round(cur.apparent_temperature)}°</div>
+
+    // Hourly — next 8 hours from now
+    const nowHour = new Date().getHours();
+    const todayStr = new Date().toISOString().slice(0,10);
+    const hourlyTimes = d.hourly.time;
+    let hourly = '';
+    let count = 0;
+    for (let i=0; i<hourlyTimes.length && count<8; i++) {
+      const t = new Date(hourlyTimes[i]);
+      if (t <= new Date()) continue;
+      const hCode = d.hourly.weather_code[i];
+      const hTemp = Math.round(d.hourly.temperature_2m[i]);
+      const hPrecip = d.hourly.precipitation_probability[i] ?? 0;
+      const hLabel = t.getHours()===0?'12am':t.getHours()<12?`${t.getHours()}am`:t.getHours()===12?'12pm':`${t.getHours()-12}pm`;
+      hourly += `<div class="hourly-item">
+        <div class="hourly-time">${hLabel}</div>
+        <div class="hourly-icon">${WX_ICONS[hCode]||'🌡️'}</div>
+        <div class="hourly-temp">${hTemp}°</div>
+        <div class="hourly-precip">${hPrecip}%</div>
+      </div>`;
+      count++;
+    }
+
+    el.innerHTML = `
+      <div class="weather-main">
+        <div class="weather-icon">${WX_ICONS[code]||'🌡️'}</div>
+        <div>
+          <div class="weather-temp">${Math.round(cur.temperature_2m)}°C</div>
+          <div class="weather-desc">${WX_DESC[code]||'–'}</div>
+          <div class="weather-feels">Feels like ${Math.round(cur.apparent_temperature)}°</div>
+        </div>
       </div>
-    </div>
-    <div class="weather-forecast">${fc}</div>`;
+      <div class="weather-forecast">${fc}</div>
+      <div class="hourly-label">Next 8 Hours</div>
+      <div class="hourly-row">${hourly}</div>`;
   } catch(e) { el.innerHTML = '<div class="error-msg">Weather unavailable</div>'; }
 }
 loadWeather();
@@ -383,22 +442,13 @@ async function loadSports() {
       ];
       for (const url of proxies) {
         try {
-          const r = await fetch(url, {signal: AbortSignal.timeout(7000)});
+          const r = await fetch(url,{signal:AbortSignal.timeout(7000)});
           if (r.ok) {
             const d = await r.json();
-            if (d.games && d.games.length > 0) {
-              console.log(`NHL ${date} via proxy: ${d.games.length} games, state: ${d.games[0].gameState}`);
-              return d.games;
-            }
-            // Empty games array is valid (no games that day)
-            if (d.games) {
-              console.log(`NHL ${date}: 0 games scheduled`);
-              return [];
-            }
+            if (d.games) return d.games;
           }
-        } catch(e) { console.warn(`NHL proxy failed (${url.slice(0,40)}):`, e.message); }
+        } catch(e){}
       }
-      console.warn(`NHL ${date}: all proxies failed`);
       return [];
     }
 
@@ -410,8 +460,7 @@ async function loadSports() {
     ]);
 
     let html = '';
-
-    const nhlYestFinal = nhlYestGames.filter(g => ['OFF','FINAL','OVER','F'].includes((g.gameState||'').toUpperCase()));
+    const nhlYestFinal = nhlYestGames.filter(g=>['OFF','FINAL','OVER','F'].includes((g.gameState||'').toUpperCase()));
     if (nhlYestFinal.length) html += buildNHLSection('🏒 NHL — Yesterday Results', nhlYestFinal);
     if (nhlTodayGames.length) html += buildNHLSection('🏒 NHL — Today', nhlTodayGames);
     if (!nhlYestFinal.length && !nhlTodayGames.length)
@@ -419,19 +468,15 @@ async function loadSports() {
 
     const bjYest  = bjYestData?.dates?.[0]?.games  || [];
     const bjToday = bjTodayData?.dates?.[0]?.games || [];
-    if (bjYest.length || bjToday.length) {
+    if (bjYest.length||bjToday.length) {
       html += `<div class="sports-section"><div class="sports-league-title">⚾ Toronto Blue Jays</div><div class="games-row">`;
-      [...bjYest, ...bjToday].forEach(g => { html += buildMLBChip(g); });
+      [...bjYest,...bjToday].forEach(g=>{html+=buildMLBChip(g);});
       html += `</div></div>`;
     } else {
       html += `<div class="sports-section"><div class="sports-league-title">⚾ Toronto Blue Jays</div><div class="no-games">No games scheduled</div></div>`;
     }
-
     el.innerHTML = html;
-  } catch(e) {
-    el.innerHTML = `<div class="error-msg">Sports unavailable: ${e.message}</div>`;
-    console.error('Sports error:', e);
-  }
+  } catch(e) { el.innerHTML=`<div class="error-msg">Sports unavailable: ${e.message}</div>`; }
 }
 
 function nhlLogo(abbrev) {
@@ -440,7 +485,6 @@ function nhlLogo(abbrev) {
     style="width:36px;height:36px;object-fit:contain">
     <span style="display:none;font-size:0.75rem;font-weight:600">${abbrev}</span>`;
 }
-
 function mlbLogo(teamId, abbrev) {
   return `<img src="https://www.mlbstatic.com/team-logos/${teamId}.svg"
     onerror="this.style.display='none';this.nextSibling.style.display='block'"
@@ -449,33 +493,25 @@ function mlbLogo(teamId, abbrev) {
 }
 
 function buildNHLSection(label, games) {
-  let html = `<div class="sports-section"><div class="sports-league-title">${label}</div><div class="games-row">`;
-  games.forEach(g => {
-    const home = g.homeTeam||{}, away = g.awayTeam||{};
-    const state = (g.gameState||'').toUpperCase();
-    const isLive  = state==='LIVE'||state==='CRIT';
-    const isFinal = ['OFF','FINAL','OVER','F'].includes(state);
-    const isUp    = !isLive&&!isFinal;
-    const chipClass = isLive?'live':isFinal?'final':'upcoming';
-    const hScore = home.score??null, aScore = away.score??null;
-    const homeWin = isFinal&&hScore!==null&&hScore>aScore;
-    const awayWin = isFinal&&aScore!==null&&aScore>hScore;
-    const homeAbbrev = home.abbrev||home.triCode||'–';
-    const awayAbbrev = away.abbrev||away.triCode||'–';
-    const status = isLive?`🔴 Live — P${g.period||''}`:isFinal?'Final':formatGameTime(g.startTimeUTC||g.gameDate);
-    html += `<div class="game-chip ${chipClass}">
+  let html=`<div class="sports-section"><div class="sports-league-title">${label}</div><div class="games-row">`;
+  games.forEach(g=>{
+    const home=g.homeTeam||{}, away=g.awayTeam||{};
+    const state=(g.gameState||'').toUpperCase();
+    const isLive=state==='LIVE'||state==='CRIT';
+    const isFinal=['OFF','FINAL','OVER','F'].includes(state);
+    const isUp=!isLive&&!isFinal;
+    const chipClass=isLive?'live':isFinal?'final':'upcoming';
+    const hScore=home.score??null, aScore=away.score??null;
+    const homeWin=isFinal&&hScore!==null&&hScore>aScore;
+    const awayWin=isFinal&&aScore!==null&&aScore>hScore;
+    const homeAbbrev=home.abbrev||home.triCode||'–';
+    const awayAbbrev=away.abbrev||away.triCode||'–';
+    const status=isLive?`🔴 Live — P${g.period||''}`:isFinal?'Final':formatGameTime(g.startTimeUTC||g.gameDate);
+    html+=`<div class="game-chip ${chipClass}">
       <div class="game-teams">
-        <div class="game-team">
-          <div class="team-logo">${nhlLogo(awayAbbrev)}</div>
-          <div class="game-team-name">${awayAbbrev}</div>
-          <div class="game-team-score ${awayWin?'game-winner':''}">${isUp?'–':(aScore??0)}</div>
-        </div>
+        <div class="game-team"><div class="team-logo">${nhlLogo(awayAbbrev)}</div><div class="game-team-name">${awayAbbrev}</div><div class="game-team-score ${awayWin?'game-winner':''}">${isUp?'–':(aScore??0)}</div></div>
         <div class="game-vs">@</div>
-        <div class="game-team">
-          <div class="team-logo">${nhlLogo(homeAbbrev)}</div>
-          <div class="game-team-name">${homeAbbrev}</div>
-          <div class="game-team-score ${homeWin?'game-winner':''}">${isUp?'–':(hScore??0)}</div>
-        </div>
+        <div class="game-team"><div class="team-logo">${nhlLogo(homeAbbrev)}</div><div class="game-team-name">${homeAbbrev}</div><div class="game-team-score ${homeWin?'game-winner':''}">${isUp?'–':(hScore??0)}</div></div>
       </div>
       <div class="game-status ${isLive?'live-status':''}">${status}</div>
     </div>`;
@@ -494,17 +530,9 @@ function buildMLBChip(g) {
   const homeWin=isFinal&&hScore>aScore, awayWin=isFinal&&aScore>hScore;
   return `<div class="game-chip ${chipClass}">
     <div class="game-teams">
-      <div class="game-team">
-        <div class="team-logo">${mlbLogo(away.team?.id,away.team?.abbreviation||'–')}</div>
-        <div class="game-team-name">${away.team?.abbreviation||'–'}</div>
-        <div class="game-team-score ${awayWin?'game-winner':''}">${isUp?'–':(aScore??'–')}</div>
-      </div>
+      <div class="game-team"><div class="team-logo">${mlbLogo(away.team?.id,away.team?.abbreviation||'–')}</div><div class="game-team-name">${away.team?.abbreviation||'–'}</div><div class="game-team-score ${awayWin?'game-winner':''}">${isUp?'–':(aScore??'–')}</div></div>
       <div class="game-vs">@</div>
-      <div class="game-team">
-        <div class="team-logo">${mlbLogo(home.team?.id,home.team?.abbreviation||'–')}</div>
-        <div class="game-team-name">${home.team?.abbreviation||'–'}</div>
-        <div class="game-team-score ${homeWin?'game-winner':''}">${isUp?'–':(hScore??'–')}</div>
-      </div>
+      <div class="game-team"><div class="team-logo">${mlbLogo(home.team?.id,home.team?.abbreviation||'–')}</div><div class="game-team-name">${home.team?.abbreviation||'–'}</div><div class="game-team-score ${homeWin?'game-winner':''}">${isUp?'–':(hScore??'–')}</div></div>
     </div>
     <div class="game-status ${isLive?'live-status':''}">${isFinal?'Final':isLive?'🔴 Live':formatGameTime(g.gameDate)}</div>
   </div>`;
@@ -525,157 +553,88 @@ const SPOTIFY_REDIRECT  = 'https://rossmc05.github.io/family-dashboard/';
 const SPOTIFY_SCOPES    = 'user-read-currently-playing user-read-playback-state';
 
 function base64url(buf) {
-  return btoa(String.fromCharCode(...new Uint8Array(buf)))
-    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  return btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 }
-
 async function spotifyLogin() {
   const verifier = base64url(crypto.getRandomValues(new Uint8Array(32)));
-  const challenge = base64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
+  const challenge = base64url(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier)));
   const state = base64url(crypto.getRandomValues(new Uint8Array(8)));
-  localStorage.setItem('spotify_verifier', verifier);
-  localStorage.setItem('spotify_state', state);
-  const params = new URLSearchParams({
-    response_type: 'code',
-    client_id: SPOTIFY_CLIENT_ID,
-    scope: SPOTIFY_SCOPES,
-    redirect_uri: SPOTIFY_REDIRECT,
-    state,
-    code_challenge_method: 'S256',
-    code_challenge: challenge
-  });
-  window.location = 'https://accounts.spotify.com/authorize?' + params;
+  localStorage.setItem('spotify_verifier',verifier);
+  localStorage.setItem('spotify_state',state);
+  const params = new URLSearchParams({response_type:'code',client_id:SPOTIFY_CLIENT_ID,scope:SPOTIFY_SCOPES,redirect_uri:SPOTIFY_REDIRECT,state,code_challenge_method:'S256',code_challenge:challenge});
+  window.location='https://accounts.spotify.com/authorize?'+params;
 }
-
 async function exchangeSpotifyCode(code) {
   const verifier = localStorage.getItem('spotify_verifier');
-  const r = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    body: new URLSearchParams({
-      grant_type: 'authorization_code',
-      code,
-      redirect_uri: SPOTIFY_REDIRECT,
-      client_id: SPOTIFY_CLIENT_ID,
-      code_verifier: verifier
-    })
-  });
+  const r = await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',code,redirect_uri:SPOTIFY_REDIRECT,client_id:SPOTIFY_CLIENT_ID,code_verifier:verifier})});
   const d = await r.json();
   if (d.access_token) {
-    localStorage.setItem('spotify_token', d.access_token);
-    localStorage.setItem('spotify_expiry', Date.now() + d.expires_in * 1000);
-    if (d.refresh_token) localStorage.setItem('spotify_refresh', d.refresh_token);
-    window.history.replaceState({}, document.title, window.location.pathname);
+    localStorage.setItem('spotify_token',d.access_token);
+    localStorage.setItem('spotify_expiry',Date.now()+d.expires_in*1000);
+    if (d.refresh_token) localStorage.setItem('spotify_refresh',d.refresh_token);
+    window.history.replaceState({},document.title,window.location.pathname);
     return d.access_token;
   }
   return null;
 }
-
 async function refreshSpotifyToken() {
   const refresh = localStorage.getItem('spotify_refresh');
   if (!refresh) return null;
-  const r = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST',
-    headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: refresh,
-      client_id: SPOTIFY_CLIENT_ID
-    })
-  });
+  const r = await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'refresh_token',refresh_token:refresh,client_id:SPOTIFY_CLIENT_ID})});
   const d = await r.json();
   if (d.access_token) {
-    localStorage.setItem('spotify_token', d.access_token);
-    localStorage.setItem('spotify_expiry', Date.now() + d.expires_in * 1000);
-    if (d.refresh_token) localStorage.setItem('spotify_refresh', d.refresh_token);
+    localStorage.setItem('spotify_token',d.access_token);
+    localStorage.setItem('spotify_expiry',Date.now()+d.expires_in*1000);
+    if (d.refresh_token) localStorage.setItem('spotify_refresh',d.refresh_token);
     return d.access_token;
   }
   return null;
 }
-
 async function getSpotifyToken() {
-  // Handle redirect with code
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get('code');
-  if (code) {
-    const token = await exchangeSpotifyCode(code);
-    if (token) return token;
-  }
-  // Check stored token expiry
-  const token  = localStorage.getItem('spotify_token');
-  const expiry = localStorage.getItem('spotify_expiry');
-  if (token && expiry) {
-    if (Date.now() < +expiry - 60000) return token; // valid with 1min buffer
-    // Try refresh
-    const refreshed = await refreshSpotifyToken();
+  if (code) { const t=await exchangeSpotifyCode(code); if(t) return t; }
+  const token=localStorage.getItem('spotify_token');
+  const expiry=localStorage.getItem('spotify_expiry');
+  if (token&&expiry) {
+    if (Date.now()<+expiry-60000) return token;
+    const refreshed=await refreshSpotifyToken();
     if (refreshed) return refreshed;
   }
   return null;
 }
-
 async function loadSpotify() {
   const el = document.getElementById('spotify-content');
   const token = await getSpotifyToken();
   if (!token) {
-    el.innerHTML = `
-      <div class="spotify-art-placeholder">🎵</div>
-      <button class="spotify-login" onclick="spotifyLogin()">Connect Spotify</button>`;
+    el.innerHTML=`<div class="spotify-art-placeholder">🎵</div><button class="spotify-login" onclick="spotifyLogin()">Connect Spotify</button>`;
     return;
   }
   try {
-    const r = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-      headers: {'Authorization': `Bearer ${token}`}
-    });
-    if (r.status === 204) {
-      el.innerHTML = `<div class="spotify-inner">
-        <div class="spotify-art-placeholder">🎵</div>
-        <div class="spotify-info">
-          <div class="spotify-track">Nothing playing</div>
-          <div class="spotify-artist">Open Spotify to start music</div>
-        </div>
-      </div>`;
-      return;
-    }
-    if (r.status === 401) {
-      const refreshed = await refreshSpotifyToken();
-      if (!refreshed) {
-        localStorage.removeItem('spotify_token');
-        el.innerHTML = `<div class="spotify-art-placeholder">🎵</div>
-          <button class="spotify-login" onclick="spotifyLogin()">Reconnect Spotify</button>`;
-      }
-      return;
-    }
+    const r = await fetch('https://api.spotify.com/v1/me/player/currently-playing',{headers:{'Authorization':`Bearer ${token}`}});
+    if (r.status===204) { el.innerHTML=`<div class="spotify-inner"><div class="spotify-art-placeholder">🎵</div><div class="spotify-info"><div class="spotify-track">Nothing playing</div><div class="spotify-artist">Open Spotify to start music</div></div></div>`; return; }
+    if (r.status===401) { const ref=await refreshSpotifyToken(); if(!ref){localStorage.removeItem('spotify_token');el.innerHTML=`<div class="spotify-art-placeholder">🎵</div><button class="spotify-login" onclick="spotifyLogin()">Reconnect Spotify</button>`;} return; }
     const d = await r.json();
-    const track  = d.item;
-    const art    = track?.album?.images?.[0]?.url;
-    const name   = track?.name || 'Unknown';
-    const artist = track?.artists?.map(a=>a.name).join(', ') || '–';
-    const album  = track?.album?.name || '–';
-    el.innerHTML = `<div class="spotify-inner">
-      ${art ? `<img class="spotify-art" src="${art}" alt="Album art">` : '<div class="spotify-art-placeholder">🎵</div>'}
+    const track=d.item, art=track?.album?.images?.[0]?.url;
+    el.innerHTML=`<div class="spotify-inner">
+      ${art?`<img class="spotify-art" src="${art}" alt="Album art">`:'<div class="spotify-art-placeholder">🎵</div>'}
       <div class="spotify-info">
-        <div class="spotify-track">${name}</div>
-        <div class="spotify-artist">${artist}</div>
-        <div class="spotify-album">${album}</div>
-        <div class="spotify-status">
-          ${d.is_playing ? '<span class="spotify-dot"></span> Now Playing' : '⏸ Paused'}
-        </div>
+        <div class="spotify-track">${track?.name||'Unknown'}</div>
+        <div class="spotify-artist">${track?.artists?.map(a=>a.name).join(', ')||'–'}</div>
+        <div class="spotify-album">${track?.album?.name||'–'}</div>
+        <div class="spotify-status">${d.is_playing?'<span class="spotify-dot"></span> Now Playing':'⏸ Paused'}</div>
       </div>
     </div>`;
-  } catch(e) {
-    el.innerHTML = `<div class="error-msg">Spotify unavailable</div>`;
-  }
+  } catch(e) { el.innerHTML=`<div class="error-msg">Spotify unavailable</div>`; }
 }
-
 loadSpotify();
 setInterval(loadSpotify, 10000);
 
-
+// ── PHOTOS ────────────────────────────────────────────────────────
 const photoInput = document.getElementById('photo-input');
 const photoStrip = document.getElementById('photo-strip');
 let photoURLs = [];
-try { photoURLs = JSON.parse(localStorage.getItem('dashPhotos')||'[]'); } catch(e){}
-
+try { photoURLs=JSON.parse(localStorage.getItem('dashPhotos')||'[]'); } catch(e){}
 function renderPhotos() {
   if (!photoURLs.length) return;
   photoStrip.innerHTML='';
@@ -690,7 +649,7 @@ function savePhotos() {
   try{localStorage.setItem('dashPhotos',JSON.stringify(photoURLs));}catch(e){}
   renderPhotos();
 }
-photoInput.addEventListener('change', e=>{
+photoInput.addEventListener('change',e=>{
   Array.from(e.target.files).forEach(f=>{
     const r=new FileReader();
     r.onload=ev=>{photoURLs.push(ev.target.result);savePhotos();};
