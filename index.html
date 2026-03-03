@@ -288,7 +288,7 @@ function renderAll() { renderUpcoming(); renderWeekly(); renderMonthly(); }
 
 function renderUpcoming() {
   const now=new Date(); now.setHours(0,0,0,0);
-  const up=allEvents.filter(e=>e.start>=now).slice(0,6);
+  const up=allEvents.filter(e=>e.start>=now).slice(0,10);
   if (!up.length){document.getElementById('upcoming-content').innerHTML='<div class="loading">No upcoming events</div>';return;}
   document.getElementById('upcoming-content').innerHTML=up.map(e=>`
     <div class="event-item">
