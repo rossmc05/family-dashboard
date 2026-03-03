@@ -96,7 +96,19 @@ header h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; letter-spacin
 .team-logo   { display:flex; align-items:center; justify-content:center; height:40px; margin-bottom:4px; }
 .no-games    { color:rgba(255,255,255,0.4); font-size:0.8rem; }
 
-.photo-strip { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding-bottom:4px; }
+.spotify-card  { grid-column: 3; grid-row: 5; }
+.spotify-inner { display:flex; gap:14px; align-items:center; }
+.spotify-art   { width:80px; height:80px; border-radius:10px; object-fit:cover; flex-shrink:0; background:rgba(255,255,255,0.1); }
+.spotify-art-placeholder { width:80px; height:80px; border-radius:10px; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size:2rem; flex-shrink:0; }
+.spotify-info  { flex:1; overflow:hidden; }
+.spotify-track { font-size:0.95rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.spotify-artist{ font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.spotify-album { font-size:0.72rem; color:rgba(255,255,255,0.4); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.spotify-status{ font-size:0.7rem; margin-top:6px; display:flex; align-items:center; gap:5px; }
+.spotify-dot   { width:8px; height:8px; border-radius:50%; background:#1DB954; display:inline-block; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.spotify-login { background:#1DB954; border:none; color:#000; padding:8px 16px; border-radius:20px; cursor:pointer; font-weight:600; font-size:0.85rem; width:100%; margin-top:4px; }
+.spotify-login:hover { background:#1ed760; }
 .photo-strip::-webkit-scrollbar { display:none; }
 .photo-thumb { min-width:120px; height:90px; border-radius:10px; object-fit:cover; flex-shrink:0; cursor:pointer; }
 .photo-placeholder { min-width:120px; height:90px; border-radius:10px; background:rgba(255,255,255,0.08); display:flex; flex-direction:column; align-items:center; justify-content:center; color:rgba(255,255,255,0.4); font-size:0.7rem; text-align:center; padding:8px; flex-shrink:0; }
@@ -168,10 +180,15 @@ header h1 { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 300; letter-spacin
     <button onclick="document.getElementById('photo-input').click()" style="margin-top:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:0.75rem;">+ Add Photos</button>
   </div>
 </div>
-```
 
+<div class="card spotify-card">
+  <div class="card-title">🎵 Now Playing</div>
+  <div id="spotify-content">
+    <div class="spotify-art-placeholder">🎵</div>
+    <button class="spotify-login" id="spotify-login-btn" onclick="spotifyLogin()">Connect Spotify</button>
   </div>
 </div>
+```
 
 <script>
 // ── CLOCK ──────────────────────────────────────────────────────────
@@ -502,7 +519,103 @@ function formatGameTime(utcStr) {
 loadSports();
 setInterval(loadSports, 60000);
 
-// ── PHOTOS ────────────────────────────────────────────────────────
+// ── SPOTIFY ───────────────────────────────────────────────────────
+const SPOTIFY_CLIENT_ID = '2b39844dfc594778a56e1c069be9cdc0';
+const SPOTIFY_REDIRECT   = 'https://rossmc05.github.io/family-dashboard/';
+const SPOTIFY_SCOPES     = 'user-read-currently-playing user-read-playback-state';
+
+function spotifyLogin() {
+  const state = Math.random().toString(36).slice(2);
+  localStorage.setItem('spotify_state', state);
+  const params = new URLSearchParams({
+    response_type: 'token',
+    client_id: SPOTIFY_CLIENT_ID,
+    scope: SPOTIFY_SCOPES,
+    redirect_uri: SPOTIFY_REDIRECT,
+    state
+  });
+  window.location = 'https://accounts.spotify.com/authorize?' + params;
+}
+
+function getSpotifyToken() {
+  // Check URL hash for token (after OAuth redirect)
+  if (window.location.hash) {
+    const params = new URLSearchParams(window.location.hash.slice(1));
+    const token = params.get('access_token');
+    const expires = params.get('expires_in');
+    if (token) {
+      const expiry = Date.now() + (expires * 1000);
+      localStorage.setItem('spotify_token', token);
+      localStorage.setItem('spotify_expiry', expiry);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return token;
+    }
+  }
+  // Check stored token
+  const token  = localStorage.getItem('spotify_token');
+  const expiry = localStorage.getItem('spotify_expiry');
+  if (token && expiry && Date.now() < +expiry) return token;
+  return null;
+}
+
+async function loadSpotify() {
+  const el = document.getElementById('spotify-content');
+  const token = getSpotifyToken();
+  if (!token) {
+    el.innerHTML = `
+      <div class="spotify-art-placeholder">🎵</div>
+      <button class="spotify-login" onclick="spotifyLogin()">Connect Spotify</button>`;
+    return;
+  }
+  try {
+    const r = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (r.status === 204 || r.status === 404) {
+      el.innerHTML = `<div class="spotify-inner">
+        <div class="spotify-art-placeholder">🎵</div>
+        <div class="spotify-info">
+          <div class="spotify-track">Nothing playing</div>
+          <div class="spotify-artist">Open Spotify to start music</div>
+        </div>
+      </div>`;
+      return;
+    }
+    if (r.status === 401) {
+      localStorage.removeItem('spotify_token');
+      localStorage.removeItem('spotify_expiry');
+      el.innerHTML = `<div class="spotify-art-placeholder">🎵</div>
+        <button class="spotify-login" onclick="spotifyLogin()">Reconnect Spotify</button>`;
+      return;
+    }
+    const d = await r.json();
+    const track   = d.item;
+    const playing = d.is_playing;
+    const art     = track?.album?.images?.[0]?.url;
+    const name    = track?.name || 'Unknown';
+    const artist  = track?.artists?.map(a=>a.name).join(', ') || '–';
+    const album   = track?.album?.name || '–';
+    el.innerHTML = `<div class="spotify-inner">
+      ${art ? `<img class="spotify-art" src="${art}" alt="Album art">` : '<div class="spotify-art-placeholder">🎵</div>'}
+      <div class="spotify-info">
+        <div class="spotify-track">${name}</div>
+        <div class="spotify-artist">${artist}</div>
+        <div class="spotify-album">${album}</div>
+        <div class="spotify-status">
+          ${playing ? '<span class="spotify-dot"></span> Now Playing' : '⏸ Paused'}
+        </div>
+      </div>
+    </div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="error-msg">Spotify unavailable</div>`;
+  }
+}
+
+// Init Spotify
+loadSpotify();
+setInterval(loadSpotify, 10000);
+
+
 const photoInput = document.getElementById('photo-input');
 const photoStrip = document.getElementById('photo-strip');
 let photoURLs = [];
@@ -558,6 +671,7 @@ setInterval(()=>{
 
 </body>
 </html>
+
 
 
 
