@@ -521,46 +521,101 @@ setInterval(loadSports, 60000);
 
 // ── SPOTIFY ───────────────────────────────────────────────────────
 const SPOTIFY_CLIENT_ID = '2b39844dfc594778a56e1c069be9cdc0';
-const SPOTIFY_REDIRECT   = 'https://rossmc05.github.io/family-dashboard/';
-const SPOTIFY_SCOPES     = 'user-read-currently-playing user-read-playback-state';
+const SPOTIFY_REDIRECT  = 'https://rossmc05.github.io/family-dashboard/';
+const SPOTIFY_SCOPES    = 'user-read-currently-playing user-read-playback-state';
 
-function spotifyLogin() {
-  const state = Math.random().toString(36).slice(2);
+function base64url(buf) {
+  return btoa(String.fromCharCode(...new Uint8Array(buf)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+
+async function spotifyLogin() {
+  const verifier = base64url(crypto.getRandomValues(new Uint8Array(32)));
+  const challenge = base64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
+  const state = base64url(crypto.getRandomValues(new Uint8Array(8)));
+  localStorage.setItem('spotify_verifier', verifier);
   localStorage.setItem('spotify_state', state);
   const params = new URLSearchParams({
-    response_type: 'token',
+    response_type: 'code',
     client_id: SPOTIFY_CLIENT_ID,
     scope: SPOTIFY_SCOPES,
     redirect_uri: SPOTIFY_REDIRECT,
-    state
+    state,
+    code_challenge_method: 'S256',
+    code_challenge: challenge
   });
   window.location = 'https://accounts.spotify.com/authorize?' + params;
 }
 
-function getSpotifyToken() {
-  // Check URL hash for token (after OAuth redirect)
-  if (window.location.hash) {
-    const params = new URLSearchParams(window.location.hash.slice(1));
-    const token = params.get('access_token');
-    const expires = params.get('expires_in');
-    if (token) {
-      const expiry = Date.now() + (expires * 1000);
-      localStorage.setItem('spotify_token', token);
-      localStorage.setItem('spotify_expiry', expiry);
-      window.history.replaceState({}, document.title, window.location.pathname);
-      return token;
-    }
+async function exchangeSpotifyCode(code) {
+  const verifier = localStorage.getItem('spotify_verifier');
+  const r = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body: new URLSearchParams({
+      grant_type: 'authorization_code',
+      code,
+      redirect_uri: SPOTIFY_REDIRECT,
+      client_id: SPOTIFY_CLIENT_ID,
+      code_verifier: verifier
+    })
+  });
+  const d = await r.json();
+  if (d.access_token) {
+    localStorage.setItem('spotify_token', d.access_token);
+    localStorage.setItem('spotify_expiry', Date.now() + d.expires_in * 1000);
+    if (d.refresh_token) localStorage.setItem('spotify_refresh', d.refresh_token);
+    window.history.replaceState({}, document.title, window.location.pathname);
+    return d.access_token;
   }
-  // Check stored token
+  return null;
+}
+
+async function refreshSpotifyToken() {
+  const refresh = localStorage.getItem('spotify_refresh');
+  if (!refresh) return null;
+  const r = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refresh,
+      client_id: SPOTIFY_CLIENT_ID
+    })
+  });
+  const d = await r.json();
+  if (d.access_token) {
+    localStorage.setItem('spotify_token', d.access_token);
+    localStorage.setItem('spotify_expiry', Date.now() + d.expires_in * 1000);
+    if (d.refresh_token) localStorage.setItem('spotify_refresh', d.refresh_token);
+    return d.access_token;
+  }
+  return null;
+}
+
+async function getSpotifyToken() {
+  // Handle redirect with code
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
+  if (code) {
+    const token = await exchangeSpotifyCode(code);
+    if (token) return token;
+  }
+  // Check stored token expiry
   const token  = localStorage.getItem('spotify_token');
   const expiry = localStorage.getItem('spotify_expiry');
-  if (token && expiry && Date.now() < +expiry) return token;
+  if (token && expiry) {
+    if (Date.now() < +expiry - 60000) return token; // valid with 1min buffer
+    // Try refresh
+    const refreshed = await refreshSpotifyToken();
+    if (refreshed) return refreshed;
+  }
   return null;
 }
 
 async function loadSpotify() {
   const el = document.getElementById('spotify-content');
-  const token = getSpotifyToken();
+  const token = await getSpotifyToken();
   if (!token) {
     el.innerHTML = `
       <div class="spotify-art-placeholder">🎵</div>
@@ -569,9 +624,9 @@ async function loadSpotify() {
   }
   try {
     const r = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-      headers: { 'Authorization': `Bearer ${token}` }
+      headers: {'Authorization': `Bearer ${token}`}
     });
-    if (r.status === 204 || r.status === 404) {
+    if (r.status === 204) {
       el.innerHTML = `<div class="spotify-inner">
         <div class="spotify-art-placeholder">🎵</div>
         <div class="spotify-info">
@@ -582,19 +637,20 @@ async function loadSpotify() {
       return;
     }
     if (r.status === 401) {
-      localStorage.removeItem('spotify_token');
-      localStorage.removeItem('spotify_expiry');
-      el.innerHTML = `<div class="spotify-art-placeholder">🎵</div>
-        <button class="spotify-login" onclick="spotifyLogin()">Reconnect Spotify</button>`;
+      const refreshed = await refreshSpotifyToken();
+      if (!refreshed) {
+        localStorage.removeItem('spotify_token');
+        el.innerHTML = `<div class="spotify-art-placeholder">🎵</div>
+          <button class="spotify-login" onclick="spotifyLogin()">Reconnect Spotify</button>`;
+      }
       return;
     }
     const d = await r.json();
-    const track   = d.item;
-    const playing = d.is_playing;
-    const art     = track?.album?.images?.[0]?.url;
-    const name    = track?.name || 'Unknown';
-    const artist  = track?.artists?.map(a=>a.name).join(', ') || '–';
-    const album   = track?.album?.name || '–';
+    const track  = d.item;
+    const art    = track?.album?.images?.[0]?.url;
+    const name   = track?.name || 'Unknown';
+    const artist = track?.artists?.map(a=>a.name).join(', ') || '–';
+    const album  = track?.album?.name || '–';
     el.innerHTML = `<div class="spotify-inner">
       ${art ? `<img class="spotify-art" src="${art}" alt="Album art">` : '<div class="spotify-art-placeholder">🎵</div>'}
       <div class="spotify-info">
@@ -602,7 +658,7 @@ async function loadSpotify() {
         <div class="spotify-artist">${artist}</div>
         <div class="spotify-album">${album}</div>
         <div class="spotify-status">
-          ${playing ? '<span class="spotify-dot"></span> Now Playing' : '⏸ Paused'}
+          ${d.is_playing ? '<span class="spotify-dot"></span> Now Playing' : '⏸ Paused'}
         </div>
       </div>
     </div>`;
@@ -611,7 +667,6 @@ async function loadSpotify() {
   }
 }
 
-// Init Spotify
 loadSpotify();
 setInterval(loadSpotify, 10000);
 
