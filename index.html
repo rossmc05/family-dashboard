@@ -357,31 +357,31 @@ async function loadSports() {
     const yestISO  = yesterday.toISOString().slice(0,10);
 
     async function fetchNHL(date) {
-      try {
-        // Primary: /v1/score/{date} — works for past & live games
-        const r1 = await fetch(`https://api-web.nhle.com/v1/score/${date}`, {signal: AbortSignal.timeout(6000)});
-        if (r1.ok) {
-          const d = await r1.json();
-          if (d.games && d.games.length > 0) {
-            console.log(`NHL score/${date}: ${d.games.length} games, first state: ${d.games[0].gameState}`);
-            return d.games;
+      const direct = `https://api-web.nhle.com/v1/score/${date}`;
+      const proxies = [
+        `https://corsproxy.io/?url=${encodeURIComponent(direct)}`,
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(direct)}`,
+        `https://cors.eu.org/${direct}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`
+      ];
+      for (const url of proxies) {
+        try {
+          const r = await fetch(url, {signal: AbortSignal.timeout(7000)});
+          if (r.ok) {
+            const d = await r.json();
+            if (d.games && d.games.length > 0) {
+              console.log(`NHL ${date} via proxy: ${d.games.length} games, state: ${d.games[0].gameState}`);
+              return d.games;
+            }
+            // Empty games array is valid (no games that day)
+            if (d.games) {
+              console.log(`NHL ${date}: 0 games scheduled`);
+              return [];
+            }
           }
-        }
-        // Fallback: /v1/schedule/{date} — works for future games
-        const r2 = await fetch(`https://api-web.nhle.com/v1/schedule/${date}`, {signal: AbortSignal.timeout(6000)});
-        if (r2.ok) {
-          const d = await r2.json();
-          const week = d.gameWeek || [];
-          // find exact date match
-          const day = week.find(w => w.date === date);
-          if (day && day.games && day.games.length > 0) {
-            console.log(`NHL schedule/${date}: ${day.games.length} games`);
-            return day.games;
-          }
-          // log all available dates for debugging
-          week.forEach(w => console.log(`NHL schedule has date ${w.date} with ${w.games?.length||0} games`));
-        }
-      } catch(e) { console.warn('NHL fetch error:', date, e.message); }
+        } catch(e) { console.warn(`NHL proxy failed (${url.slice(0,40)}):`, e.message); }
+      }
+      console.warn(`NHL ${date}: all proxies failed`);
       return [];
     }
 
@@ -558,5 +558,6 @@ setInterval(()=>{
 
 </body>
 </html>
+
 
 
