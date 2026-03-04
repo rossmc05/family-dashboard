@@ -85,7 +85,7 @@ display:flex; align-items:center; justify-content:center;
 .month-day { text-align:center; padding:3px 1px; border-radius:5px; font-size:0.72rem; min-height:28px; line-height:1.2; overflow:visible; }
 .month-day.other-month { color:rgba(255,255,255,0.2); }
 .month-day.today-month { background:rgba(100,180,255,0.4); font-weight:700; }
-.month-day.has-event::after { content:’\2022’; display:block; font-size:0.55rem; color:#7ecfff; line-height:1; margin-top:1px; text-shadow:0 0 4px rgba(126,207,255,0.8); }
+.evt-dot { display:block; width:5px; height:5px; background:#7ecfff; border-radius:50%; margin:2px auto 0; box-shadow:0 0 5px rgba(126,207,255,0.9); }
 
 /* ── WEEKLY (2 weeks) ── */
 .two-week-wrapper { display:flex; flex-direction:column; gap:8px; }
@@ -370,7 +370,7 @@ function renderMonthly(){
     const dt=new Date(viewYear,viewMonth,d);
     const isToday=dt.toDateString()===today.toDateString();
     const hasEvt=allEvents.some(e=>e.start.toDateString()===dt.toDateString());
-    html+=`<div class="month-day${isToday?' today-month':''}${hasEvt?' has-event':''}">${d}</div>`;
+    html+=`<div class="month-day${isToday?' today-month':''}">${d}${hasEvt?'<span class="evt-dot"></span>':''}</div>`;
   }
   const rem=42-(first.getDay()+last.getDate());
   for(let d=1;d<=rem;d++) html+=`<div class="month-day other-month">${d}</div>`;
@@ -507,4 +507,3 @@ let cs=0;setInterval(()=>{const sl=document.querySelectorAll('.bg-slide');sl[cs]
 
 </body>
 </html>
-
