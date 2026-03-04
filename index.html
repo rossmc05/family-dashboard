@@ -22,7 +22,7 @@ margin:0 auto;
 padding:14px;
 display:grid;
 grid-template-columns: 1.4fr 1.6fr;
-grid-template-rows: 52px 320px 200px 1fr 180px;
+grid-template-rows: 52px 420px 240px 1fr 180px;
 gap:10px;
 }
 
@@ -86,13 +86,15 @@ display:flex; align-items:center; justify-content:center;
 .month-day.today-month { background:rgba(100,180,255,0.4); font-weight:700; }
 .month-day.has-event::after { content:’’; display:block; width:4px; height:4px; background:#7ecfff; border-radius:50%; margin:1px auto 0; }
 
-/* ── WEEKLY ── */
-.week-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+/* ── WEEKLY (2 weeks) ── */
+.two-week-grid { display:grid; grid-template-columns:repeat(14,1fr); gap:4px; }
 .week-day-col { text-align:center; }
-.week-day-name { font-size:0.6rem; color:rgba(255,255,255,0.5); text-transform:uppercase; margin-bottom:4px; }
-.week-day-num { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 4px; font-size:0.85rem; }
+.week-day-name { font-size:0.55rem; color:rgba(255,255,255,0.5); text-transform:uppercase; margin-bottom:3px; }
+.week-day-num { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 3px; font-size:0.75rem; }
 .week-day-num.today { background:rgba(100,180,255,0.6); font-weight:700; }
-.week-event { font-size:0.58rem; background:rgba(100,200,120,0.25); border-left:2px solid rgba(100,200,120,0.8); border-radius:3px; padding:2px 4px; margin-bottom:2px; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.week-event { font-size:0.52rem; background:rgba(100,200,120,0.25); border-left:2px solid rgba(100,200,120,0.8); border-radius:3px; padding:2px 3px; margin-bottom:2px; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.week-separator { grid-column:auto; display:flex; align-items:stretch; justify-content:center; }
+.week-separator-line { width:1px; background:rgba(255,255,255,0.15); margin:0 auto; }
 
 /* ── UPCOMING ── */
 .event-item { display:flex; gap:8px; margin-bottom:7px; padding-bottom:7px; border-bottom:1px solid rgba(255,255,255,0.07); align-items:flex-start; }
@@ -314,17 +316,28 @@ function renderUpcoming(){
   </div>`).join('');
 }
 
+// ── FIXED: 2-week grid (14 days starting from today) ──
 function renderWeekly(){
-  const now=new Date(),dow=now.getDay();
-  const ws=new Date(now);ws.setDate(now.getDate()-dow);ws.setHours(0,0,0,0);
-  let html='<div class="week-grid">';
-  for(let d=0;d<7;d++){
-    const day=new Date(ws);day.setDate(ws.getDate()+d);
-    const isToday=day.toDateString()===now.toDateString();
+  const now=new Date();
+  now.setHours(0,0,0,0);
+
+  let html='<div class="two-week-grid">';
+  for(let d=0;d<14;d++){
+    const day=new Date(now);
+    day.setDate(now.getDate()+d);
+    const isToday=d===0;
+    const dayName=WDAYS[day.getDay()];
     const evts=allEvents.filter(e=>e.start.toDateString()===day.toDateString());
-    html+=`<div class="week-day-col"><div class="week-day-name">${WDAYS[d]}</div><div class="week-day-num${isToday?' today':''}">${day.getDate()}</div>${evts.slice(0,3).map(e=>`<div class="week-event" title="${e.title}">${e.title}</div>`).join('')}</div>`;
+
+    // Add a subtle visual separator between week 1 and week 2
+    html+=`<div class="week-day-col" style="${d===7?'border-left:1px solid rgba(255,255,255,0.12);padding-left:4px;':''}">
+      <div class="week-day-name">${dayName}</div>
+      <div class="week-day-num${isToday?' today':''}">${day.getDate()}</div>
+      ${evts.slice(0,3).map(e=>`<div class="week-event" title="${e.title}">${e.title}</div>`).join('')}
+    </div>`;
   }
-  document.getElementById('weekly-content').innerHTML=html+'</div>';
+  html+='</div>';
+  document.getElementById('weekly-content').innerHTML=html;
 }
 
 function renderMonthly(){
