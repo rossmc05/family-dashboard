@@ -63,6 +63,7 @@ display:flex; align-items:center; justify-content:center;
 .forecast-day .day-icon { font-size:1.3rem; margin:3px 0; }
 .forecast-day .day-hi   { font-size:0.9rem; }
 .forecast-day .day-lo   { font-size:0.78rem; color:rgba(255,255,255,0.5); }
+.forecast-day .day-precip { font-size:0.7rem; color:#7ecfff; margin-top:2px; }
 .hourly-label { font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:6px; }
 .hourly-row { display:grid; grid-template-columns:repeat(8,1fr); gap:4px; }
 .hourly-item { text-align:center; background:rgba(255,255,255,0.05); border-radius:6px; padding:5px 2px; }
@@ -230,13 +231,13 @@ function updateClock() {
 updateClock(); setInterval(updateClock,1000);
 
 // ── WEATHER ────────────────────────────────────────────────────────
-const WX_ICONS={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌧️',82:'⛈️',95:'⛈️',96:'⛈️',99:'⛈️'};
-const WX_DESC={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Light showers',81:'Showers',82:'Heavy showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'};
+const WX_ICONS={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',56:'🌧️',57:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',66:'🌧️',67:'🌧️',71:'🌨️',73:'🌨️',75:'❄️',77:'🌨️',80:'🌦️',81:'🌧️',82:'⛈️',85:'🌨️',86:'❄️',95:'⛈️',96:'⛈️',99:'⛈️'};
+const WX_DESC={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',56:'Freezing drizzle',57:'Heavy freezing drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Heavy freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Light showers',81:'Showers',82:'Heavy showers',85:'Snow showers',86:'Heavy snow showers',95:'Thunderstorm',96:'Thunderstorm w/ hail',99:'Thunderstorm w/ heavy hail'};
 
 async function loadWeather() {
   const el = document.getElementById('weather-content');
   try {
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.0447&longitude=-114.0719&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation_probability&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=6');
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.0447&longitude=-114.0719&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&hourly=temperature_2m,weather_code,precipitation_probability&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=6');
     const d = await r.json();
     const cur=d.current, daily=d.daily, code=cur.weather_code;
     const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -244,11 +245,13 @@ async function loadWeather() {
     for(let i=1;i<=4;i++){
       const dt=new Date(daily.time[i]+'T12:00:00');
       const hi=daily.temperature_2m_max?.[i], lo=daily.temperature_2m_min?.[i], dc=daily.weather_code?.[i]??0;
+      const precip=daily.precipitation_probability_max?.[i]??0;
       fc+=`<div class="forecast-day">
         <div class="day-name">${days[dt.getDay()]}</div>
-        <div class="day-icon">${WX_ICONS[dc]||'🌡️'}</div>
+        <div class="day-icon">${WX_ICONS[dc]||'⛅'}</div>
         <div class="day-hi">${typeof hi==='number'?Math.round(hi)+'°':'–'}</div>
         <div class="day-lo">${typeof lo==='number'?Math.round(lo)+'°':'–'}</div>
+        <div class="day-precip">${precip}%</div>
       </div>`;
     }
     const now8=new Date(); let startIdx=0;
@@ -263,13 +266,13 @@ async function loadWeather() {
       const hCode=d.hourly.weather_code[i];
       hourly+=`<div class="hourly-item">
         <div class="hourly-time">${hLabel}</div>
-        <div class="hourly-icon">${WX_ICONS[hCode]||'🌡️'}</div>
+        <div class="hourly-icon">${WX_ICONS[hCode]||'⛅'}</div>
         <div class="hourly-temp">${typeof hTemp==='number'?Math.round(hTemp)+'°':'–'}</div>
         <div class="hourly-precip">${hPrecip}%</div>
       </div>`;
     }
     el.innerHTML=`<div class="weather-main">
-      <div class="weather-icon">${WX_ICONS[code]||'🌡️'}</div>
+      <div class="weather-icon">${WX_ICONS[code]||'⛅'}</div>
       <div><div class="weather-temp">${Math.round(cur.temperature_2m)}°C</div>
       <div class="weather-desc">${WX_DESC[code]||'–'}</div>
       <div class="weather-feels">Feels like ${Math.round(cur.apparent_temperature)}°</div></div>
