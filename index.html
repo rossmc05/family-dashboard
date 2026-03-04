@@ -233,7 +233,7 @@ const WX_DESC = {0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'F
 async function loadWeather() {
   const el = document.getElementById('weather-content');
   try {
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.0447&longitude=-114.0719&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation_probability&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=2');
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.0447&longitude=-114.0719&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code,precipitation_probability&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=6');
     const d = await r.json();
     const cur = d.current, daily = d.daily;
     const code = cur.weather_code;
