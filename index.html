@@ -82,11 +82,10 @@ display:flex; align-items:center; justify-content:center;
 .month-title { font-size:0.9rem; font-weight:500; }
 .month-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
 .month-weekday { text-align:center; font-size:0.55rem; color:rgba(255,255,255,0.4); padding:3px 0; text-transform:uppercase; }
-.month-day { text-align:center; padding:3px 1px; border-radius:5px; font-size:0.72rem; min-height:24px; line-height:1.2; }
+.month-day { text-align:center; padding:3px 1px; border-radius:5px; font-size:0.72rem; min-height:28px; line-height:1.2; overflow:visible; }
 .month-day.other-month { color:rgba(255,255,255,0.2); }
 .month-day.today-month { background:rgba(100,180,255,0.4); font-weight:700; }
-.month-day.has-event { position:relative; }
-.month-day.has-event::after { content:’’; display:block; width:5px; height:5px; background:#7ecfff; border-radius:50%; margin:2px auto 0; box-shadow:0 0 4px rgba(126,207,255,0.7); }
+.month-day.has-event::after { content:’\2022’; display:block; font-size:0.55rem; color:#7ecfff; line-height:1; margin-top:1px; text-shadow:0 0 4px rgba(126,207,255,0.8); }
 
 /* ── WEEKLY (2 weeks) ── */
 .two-week-wrapper { display:flex; flex-direction:column; gap:8px; }
@@ -508,3 +507,4 @@ let cs=0;setInterval(()=>{const sl=document.querySelectorAll('.bg-slide');sl[cs]
 
 </body>
 </html>
+
