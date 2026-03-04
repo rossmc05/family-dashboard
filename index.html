@@ -239,15 +239,17 @@ async function loadWeather() {
     const code = cur.weather_code;
     const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-    // 4-day forecast
     let fc = '';
     for (let i=1;i<=4;i++) {
       const dt = new Date(daily.time[i]+'T12:00:00');
+      const hi = daily.temperature_2m_max?.[i];
+      const lo = daily.temperature_2m_min?.[i];
+      const dc = daily.weather_code?.[i] ?? 0;
       fc += `<div class="forecast-day">
         <div class="day-name">${days[dt.getDay()]}</div>
-        <div class="day-icon">${WX_ICONS[daily.weather_code[i]]||'🌡️'}</div>
-        <div class="day-hi">${Math.round(daily.temperature_2m_max[i])}°</div>
-        <div class="day-lo">${Math.round(daily.temperature_2m_min[i])}°</div>
+        <div class="day-icon">${WX_ICONS[dc]||'🌡️'}</div>
+        <div class="day-hi">${typeof hi==='number'?Math.round(hi)+'°':'–'}</div>
+        <div class="day-lo">${typeof lo==='number'?Math.round(lo)+'°':'–'}</div>
       </div>`;
     }
 
