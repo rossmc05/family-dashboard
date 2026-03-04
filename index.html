@@ -85,7 +85,8 @@ display:flex; align-items:center; justify-content:center;
 .month-day { text-align:center; padding:3px 1px; border-radius:5px; font-size:0.72rem; min-height:24px; line-height:1.2; }
 .month-day.other-month { color:rgba(255,255,255,0.2); }
 .month-day.today-month { background:rgba(100,180,255,0.4); font-weight:700; }
-.month-day.has-event::after { content:’’; display:block; width:4px; height:4px; background:#7ecfff; border-radius:50%; margin:1px auto 0; }
+.month-day.has-event { position:relative; }
+.month-day.has-event::after { content:’’; display:block; width:5px; height:5px; background:#7ecfff; border-radius:50%; margin:2px auto 0; box-shadow:0 0 4px rgba(126,207,255,0.7); }
 
 /* ── WEEKLY (2 weeks) ── */
 .two-week-wrapper { display:flex; flex-direction:column; gap:8px; }
@@ -95,7 +96,9 @@ display:flex; align-items:center; justify-content:center;
 .week-day-name { font-size:0.6rem; color:rgba(255,255,255,0.5); text-transform:uppercase; margin-bottom:3px; }
 .week-day-num { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 4px; font-size:0.8rem; }
 .week-day-num.today { background:rgba(100,180,255,0.6); font-weight:700; }
-.week-event { font-size:0.55rem; background:rgba(100,200,120,0.25); border-left:2px solid rgba(100,200,120,0.8); border-radius:3px; padding:2px 4px; margin-bottom:2px; text-align:left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.week-event { font-size:0.55rem; background:rgba(100,200,120,0.25); border-left:2px solid rgba(100,200,120,0.8); border-radius:3px; padding:2px 4px; margin-bottom:2px; text-align:left; overflow:hidden; display:flex; flex-direction:column; gap:1px; }
+.week-event-title { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:500; }
+.week-event-time { color:rgba(255,255,255,0.55); font-size:0.5rem; white-space:nowrap; }
 
 /* ── UPCOMING ── */
 .event-item { display:flex; gap:8px; margin-bottom:7px; padding-bottom:7px; border-bottom:1px solid rgba(255,255,255,0.07); align-items:flex-start; }
@@ -294,16 +297,29 @@ function parseICS(text){
   for(let i=1;i<blocks.length;i++){
     const b=blocks[i];
     const get=k=>{const m=b.match(new RegExp(k+'[^:]*:([^\r\n]+)'));return m?m[1].trim():'';};
-    const dtraw=get('DTSTART'), title=get('SUMMARY').replace(/\\,/g,',').replace(/\\n/g,' ');
+    const dtraw=get('DTSTART'), dtendraw=get('DTEND'), title=get('SUMMARY').replace(/\\,/g,',').replace(/\\n/g,' ');
     if(!dtraw||!title) continue;
     const pd=s=>{s=s.replace(/[^0-9T]/g,'');if(s.length===8)return new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8));if(s.length>=15)return new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8),+s.slice(9,11),+s.slice(11,13));return null;};
     const start=pd(dtraw);
-    if(start&&!isNaN(start)) events.push({title,start});
+    const end=dtendraw?pd(dtendraw):null;
+    if(start&&!isNaN(start)) events.push({title,start,end});
   }
   return events.sort((a,b)=>a.start-b.start);
 }
-function getDemoEvents(){const y=new Date().getFullYear(),m=new Date().getMonth();return[{title:'Luca appt w Braxtyn',start:new Date(y,m,3,11,0)},{title:'Ross field',start:new Date(y,m,5,7,0)},{title:'U9 Northwest Warriors 3',start:new Date(y,m,7,8,30)},{title:'Willa hockey',start:new Date(y,m,7,13,30)},{title:'Luca Swim',start:new Date(y,m,7,15,45)},{title:'Jake b day',start:new Date(y,m,8,14,30)},{title:'Mum & Willa nails',start:new Date(y,m,14,0,0)}];}
-function fmtTime(d){if(d.getHours()===0&&d.getMinutes()===0)return'All day';const h=d.getHours()%12||12,mn=String(d.getMinutes()).padStart(2,'0');return`${h}:${mn} ${d.getHours()<12?'AM':'PM'}`;}
+function getDemoEvents(){const y=new Date().getFullYear(),m=new Date().getMonth();return[{title:'Luca appt w Braxtyn',start:new Date(y,m,3,11,0),end:new Date(y,m,3,12,0)},{title:'Ross field',start:new Date(y,m,5,7,0),end:new Date(y,m,5,9,0)},{title:'U9 Northwest Warriors 3',start:new Date(y,m,7,8,30),end:new Date(y,m,7,10,0)},{title:'Willa hockey',start:new Date(y,m,7,13,30),end:new Date(y,m,7,15,0)},{title:'Luca Swim',start:new Date(y,m,7,15,45),end:new Date(y,m,7,16,30)},{title:'Jake b day',start:new Date(y,m,8,14,30),end:null},{title:'Mum & Willa nails',start:new Date(y,m,14,0,0),end:null}];}
+function fmtTime(d){if(!d||d.getHours()===0&&d.getMinutes()===0)return'All day';const h=d.getHours()%12||12,mn=String(d.getMinutes()).padStart(2,'0');return`${h}:${mn} ${d.getHours()<12?'AM':'PM'}`;}
+function fmtTimeRange(start,end){
+  const isAllDay=start.getHours()===0&&start.getMinutes()===0;
+  if(isAllDay)return'All day';
+  const s=fmtTime(start);
+  if(!end)return s;
+  // strip AM/PM from start if same period as end
+  const endStr=fmtTime(end);
+  const sPeriod=start.getHours()<12?'AM':'PM';
+  const ePeriod=end.getHours()<12?'AM':'PM';
+  const sBase=sPeriod===ePeriod?s.replace(/ (AM|PM)$/,''):s;
+  return`${sBase}–${endStr}`;
+}
 
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const WDAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -334,7 +350,7 @@ function renderWeekly(){
       row+=`<div class="week-day-col">
         <div class="week-day-name">${WDAYS[day.getDay()]}</div>
         <div class="week-day-num${isToday?' today':''}">${day.getDate()}</div>
-        ${evts.slice(0,3).map(e=>`<div class="week-event" title="${e.title}">${e.title}</div>`).join('')}
+        ${evts.slice(0,3).map(e=>`<div class="week-event" title="${e.title}"><span class="week-event-title">${e.title}</span><span class="week-event-time">${fmtTimeRange(e.start,e.end)}</span></div>`).join('')}
       </div>`;
     }
     return row+'</div>';
