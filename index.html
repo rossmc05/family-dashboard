@@ -21,7 +21,7 @@ margin:0 auto;
 padding:14px;
 display:grid;
 grid-template-columns: 1.4fr 1.6fr;
-grid-template-rows: 52px 440px 420px 320px 1fr 180px;
+grid-template-rows: 52px 300px 420px 420px 1fr 180px;
 gap:10px;
 }
 
@@ -113,20 +113,20 @@ display:flex; align-items:center; justify-content:center;
 .sports-section { margin-bottom:10px; }
 .sports-section:last-child { margin-bottom:0; }
 .sports-league-title { font-size:0.58rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:6px; }
-.games-row { display:flex; gap:5px; flex-wrap:wrap; }
-.game-chip { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:4px 5px; display:flex; flex-direction:column; align-items:center; width:calc(16.666% - 5px); min-width:0; }
+.games-row { display:flex; gap:4px; flex-wrap:wrap; }
+.game-chip { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:3px 4px; display:flex; flex-direction:column; align-items:center; width:calc(12.5% - 4px); min-width:0; }
 .game-chip.final    { border-color:rgba(255,255,255,0.15); }
 .game-chip.live     { border-color:rgba(100,255,100,0.4); background:rgba(100,255,100,0.06); }
 .game-chip.upcoming { border-color:rgba(100,180,255,0.3); }
-.game-teams  { display:flex; align-items:center; gap:4px; width:100%; justify-content:center; }
+.game-teams  { display:flex; align-items:center; gap:3px; width:100%; justify-content:center; }
 .game-team   { text-align:center; flex:1; }
-.game-team-name  { font-size:0.58rem; }
-.game-team-score { font-size:0.95rem; font-weight:700; line-height:1.1; }
+.game-team-name  { font-size:0.5rem; }
+.game-team-score { font-size:0.8rem; font-weight:700; line-height:1.1; }
 .game-vs     { font-size:0.55rem; color:rgba(255,255,255,0.4); }
-.game-status { font-size:0.5rem; color:rgba(255,255,255,0.45); margin-top:3px; text-transform:uppercase; letter-spacing:0.5px; }
+.game-status { font-size:0.45rem; color:rgba(255,255,255,0.45); margin-top:2px; text-transform:uppercase; letter-spacing:0.5px; }
 .game-status.live-status { color:rgba(100,255,100,0.9); }
 .game-winner { font-weight:700; color:#fff; }
-.team-logo   { display:flex; align-items:center; justify-content:center; height:22px; margin-bottom:1px; }
+.team-logo   { display:flex; align-items:center; justify-content:center; height:18px; margin-bottom:1px; }
 .team-logo img { width:26px; height:26px; object-fit:contain; }
 .no-games    { color:rgba(255,255,255,0.4); font-size:0.75rem; }
 
@@ -414,8 +414,8 @@ async function loadSports(){
     el.innerHTML=html;
   }catch(e){el.innerHTML=`<div class="error-msg">Sports unavailable</div>`;}
 }
-function nhlLogo(a){return`<img src="https://assets.nhle.com/logos/nhl/svg/${a}_light.svg" onerror="this.style.display='none';this.nextSibling.style.display='block'" style="width:20px;height:20px;object-fit:contain"><span style="display:none;font-size:0.55rem;font-weight:600">${a}</span>`;}
-function mlbLogo(id,a){return`<img src="https://www.mlbstatic.com/team-logos/${id}.svg" onerror="this.style.display='none';this.nextSibling.style.display='block'" style="width:20px;height:20px;object-fit:contain"><span style="display:none;font-size:0.55rem;font-weight:600">${a}</span>`;}
+function nhlLogo(a){return`<img src="https://assets.nhle.com/logos/nhl/svg/${a}_light.svg" onerror="this.style.display='none';this.nextSibling.style.display='block'" style="width:16px;height:16px;object-fit:contain"><span style="display:none;font-size:0.45rem;font-weight:600">${a}</span>`;}
+function mlbLogo(id,a){return`<img src="https://www.mlbstatic.com/team-logos/${id}.svg" onerror="this.style.display='none';this.nextSibling.style.display='block'" style="width:16px;height:16px;object-fit:contain"><span style="display:none;font-size:0.45rem;font-weight:600">${a}</span>`;}
 function buildNHLSection(label,games){
   let html=`<div class="sports-section"><div class="sports-league-title">${label}</div><div class="games-row">`;
   games.forEach(g=>{
