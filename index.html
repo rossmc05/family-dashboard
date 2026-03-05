@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -22,7 +21,7 @@ margin:0 auto;
 padding:14px;
 display:grid;
 grid-template-columns: 1.4fr 1.6fr;
-grid-template-rows: 52px 420px 290px 1fr 180px;
+grid-template-rows: 52px 280px 420px 290px 1fr 180px;
 gap:10px;
 }
 
@@ -34,19 +33,21 @@ display:flex; align-items:center; justify-content:center;
 .title-bar h1 { font-size:2rem; font-weight:300; letter-spacing:3px; text-shadow:0 2px 10px rgba(0,0,0,0.5); }
 
 /* Row 1: Weather | Clock+Calendar merged */
-.weather-card   { grid-column:1; grid-row:2; }
-.clockcal-card  { grid-column:2; grid-row:2; display:flex; flex-direction:column; gap:10px; }
+.sports-card    { grid-column:1/3; grid-row:2; overflow:hidden; }
 
-/* Row 2: This 2 Weeks full width */
-.weekly-card    { grid-column:1/3; grid-row:3; }
+/* Row 2: Weather | Clock+Cal */
+.weather-card   { grid-column:1; grid-row:3; }
+.clockcal-card  { grid-column:2; grid-row:3; display:flex; flex-direction:column; gap:10px; }
 
-/* Row 3: Upcoming (wider) | Sports */
-.upcoming-card  { grid-column:1; grid-row:4; overflow:hidden; }
-.sports-card    { grid-column:2; grid-row:4; overflow:hidden; }
+/* Row 3: Next 2 Weeks full width */
+.weekly-card    { grid-column:1/3; grid-row:4; }
 
-/* Row 4: Spotify | Photos */
-.spotify-card   { grid-column:1; grid-row:5; }
-.photos-card    { grid-column:2; grid-row:5; }
+/* Row 4: Upcoming | Spotify */
+.upcoming-card  { grid-column:1; grid-row:5; overflow:hidden; }
+.spotify-card   { grid-column:2; grid-row:5; }
+
+/* Row 5: Photos full width */
+.photos-card    { grid-column:1/3; grid-row:6; }
 
 .card { background:rgba(255,255,255,0.08); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:12px; box-shadow:0 6px 24px rgba(0,0,0,0.3); overflow:hidden; }
 .card-title { font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.45); margin-bottom:8px; }
@@ -54,22 +55,22 @@ display:flex; align-items:center; justify-content:center;
 /* ── WEATHER (bigger) ── */
 .weather-main { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
 .weather-icon { font-size:3rem; }
-.weather-temp { font-size:3.8rem; font-weight:200; line-height:1; }
-.weather-desc { font-size:1rem; color:rgba(255,255,255,0.7); }
-.weather-feels { font-size:0.85rem; color:rgba(255,255,255,0.5); }
+.weather-temp { font-size:4.4rem; font-weight:200; line-height:1; }
+.weather-desc { font-size:1.15rem; color:rgba(255,255,255,0.7); }
+.weather-feels { font-size:1rem; color:rgba(255,255,255,0.5); }
 .weather-forecast { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:10px; }
 .forecast-day { text-align:center; background:rgba(255,255,255,0.06); border-radius:8px; padding:8px 4px; }
-.forecast-day .day-name { font-size:0.75rem; color:rgba(255,255,255,0.6); }
-.forecast-day .day-icon { font-size:1.3rem; margin:3px 0; }
-.forecast-day .day-hi   { font-size:0.9rem; }
-.forecast-day .day-lo   { font-size:0.78rem; color:rgba(255,255,255,0.5); }
-.forecast-day .day-precip { font-size:0.7rem; color:#7ecfff; margin-top:2px; }
+.forecast-day .day-name { font-size:0.85rem; color:rgba(255,255,255,0.6); }
+.forecast-day .day-icon { font-size:1.5rem; margin:3px 0; }
+.forecast-day .day-hi   { font-size:1.05rem; }
+.forecast-day .day-lo   { font-size:0.88rem; color:rgba(255,255,255,0.5); }
+.forecast-day .day-precip { font-size:0.8rem; color:#7ecfff; margin-top:2px; }
 .hourly-label { font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:6px; }
 .hourly-row { display:grid; grid-template-columns:repeat(8,1fr); gap:4px; }
 .hourly-item { text-align:center; background:rgba(255,255,255,0.05); border-radius:6px; padding:5px 2px; }
-.hourly-time   { font-size:0.6rem; color:rgba(255,255,255,0.5); margin-bottom:2px; }
+.hourly-time   { font-size:0.68rem; color:rgba(255,255,255,0.5); margin-bottom:2px; }
 .hourly-icon   { font-size:1rem; }
-.hourly-temp   { font-size:0.75rem; font-weight:500; }
+.hourly-temp   { font-size:0.85rem; font-weight:500; }
 .hourly-precip { font-size:0.6rem; color:#7ecfff; margin-top:2px; }
 
 /* ── CLOCK+CALENDAR merged ── */
@@ -92,12 +93,12 @@ display:flex; align-items:center; justify-content:center;
 .week-row { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
 .week-row + .week-row { border-top:1px solid rgba(255,255,255,0.1); padding-top:8px; }
 .week-day-col { text-align:center; }
-.week-day-name { font-size:0.6rem; color:rgba(255,255,255,0.5); text-transform:uppercase; margin-bottom:3px; }
-.week-day-num { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 4px; font-size:0.8rem; }
+.week-day-name { font-size:0.72rem; color:rgba(255,255,255,0.5); text-transform:uppercase; margin-bottom:3px; }
+.week-day-num { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 4px; font-size:0.95rem; }
 .week-day-num.today { background:rgba(100,180,255,0.6); font-weight:700; }
-.week-event { font-size:0.55rem; background:rgba(100,200,120,0.25); border-left:2px solid rgba(100,200,120,0.8); border-radius:3px; padding:2px 4px; margin-bottom:2px; text-align:left; overflow:hidden; display:flex; flex-direction:column; gap:1px; }
+.week-event { font-size:0.65rem; background:rgba(100,200,120,0.25); border-left:2px solid rgba(100,200,120,0.8); border-radius:3px; padding:3px 5px; margin-bottom:3px; text-align:left; overflow:hidden; display:flex; flex-direction:column; gap:1px; }
 .week-event-title { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:500; }
-.week-event-time { color:rgba(255,255,255,0.55); font-size:0.5rem; white-space:nowrap; }
+.week-event-time { color:rgba(255,255,255,0.55); font-size:0.6rem; white-space:nowrap; }
 
 /* ── UPCOMING ── */
 .event-item { display:flex; gap:8px; margin-bottom:7px; padding-bottom:7px; border-bottom:1px solid rgba(255,255,255,0.07); align-items:flex-start; }
@@ -152,7 +153,6 @@ display:flex; align-items:center; justify-content:center;
 .loading   { color:rgba(255,255,255,0.4); font-size:0.75rem; text-align:center; padding:10px; }
 .error-msg { color:rgba(255,150,150,0.8); font-size:0.7rem; padding:4px; }
 </style>
-
 </head>
 <body>
 <div id="bg-slideshow"></div>
@@ -163,7 +163,6 @@ display:flex; align-items:center; justify-content:center;
   <div class="title-bar"><h1>The McNaughtons' Little Life</h1></div>
 
   <!-- Row 1 -->
-
   <div class="card weather-card">
     <div class="card-title">Weather — Calgary</div>
     <div id="weather-content"><div class="loading">Loading…</div></div>
@@ -184,14 +183,12 @@ display:flex; align-items:center; justify-content:center;
   </div>
 
   <!-- Row 2 -->
-
   <div class="card weekly-card">
     <div class="card-title">Next 2 Weeks</div>
     <div id="weekly-content"><div class="loading">Loading…</div></div>
   </div>
 
   <!-- Row 3 -->
-
   <div class="card upcoming-card">
     <div class="card-title">Upcoming Events</div>
     <div id="upcoming-content"><div class="loading">Loading…</div></div>
@@ -203,7 +200,6 @@ display:flex; align-items:center; justify-content:center;
   </div>
 
   <!-- Row 4 -->
-
   <div class="card spotify-card">
     <div class="card-title">🎵 Now Playing</div>
     <div id="spotify-content">
@@ -392,8 +388,14 @@ loadCalendar(); setInterval(loadCalendar,900000);
 async function loadSports(){
   const el=document.getElementById('sports-content');
   try{
-    const today=new Date(), yesterday=new Date(today);yesterday.setDate(today.getDate()-1);
-    const todayISO=today.toISOString().slice(0,10), yestISO=yesterday.toISOString().slice(0,10);
+    // Use Mountain Time date to avoid UTC rollover making today show as tomorrow
+    const now=new Date();
+    const mtOffset=-7*60; // MDT; adjust to -6 for MST if needed
+    const mtNow=new Date(now.getTime()+now.getTimezoneOffset()*60000+mtOffset*60000);
+    const pad=n=>String(n).padStart(2,'0');
+    const toISO=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const today=mtNow, yesterday=new Date(mtNow);yesterday.setDate(mtNow.getDate()-1);
+    const todayISO=toISO(today), yestISO=toISO(yesterday);
     async function fetchNHL(date){
       const direct=`https://api-web.nhle.com/v1/score/${date}`;
       const proxies=[`https://corsproxy.io/?url=${encodeURIComponent(direct)}`,`https://api.allorigins.win/raw?url=${encodeURIComponent(direct)}`,`https://cors.eu.org/${direct}`,`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`];
@@ -504,6 +506,5 @@ const ss=document.getElementById('bg-slideshow');
 bgColors.forEach((bg,i)=>{const s=document.createElement('div');s.className='bg-slide'+(i===0?' active':'');s.style.background=bg;ss.appendChild(s);});
 let cs=0;setInterval(()=>{const sl=document.querySelectorAll('.bg-slide');sl[cs].classList.remove('active');cs=(cs+1)%sl.length;sl[cs].classList.add('active');},8000);
 </script>
-
 </body>
 </html>
