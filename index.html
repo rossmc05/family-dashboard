@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The McNaughtons' Little Life</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html, body { height:100%; overflow:auto; }
-  body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#fff; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:auto; }
+body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#fff; }
 
 #bg-slideshow { position:fixed; inset:0; z-index:0; }
 .bg-slide { position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity 2s ease-in-out; }
@@ -15,69 +15,60 @@
 .bg-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.58); z-index:1; }
 
 .dashboard {
-position:relative; z-index:2;
-width:1080px; height:1920px;
-margin:0 auto;
-padding:14px;
-display:grid;
-grid-template-columns: 1.4fr 1.6fr;
-grid-template-rows: 52px 380px 420px 420px 1fr 220px;
-gap:10px;
+  position:relative; z-index:2;
+  width:1080px; height:1920px;
+  margin:0 auto;
+  padding:14px;
+  display:grid;
+  grid-template-columns: 1.4fr 1.6fr;
+  grid-template-rows: 52px 380px 420px 420px 1fr 220px;
+  gap:10px;
 }
 
-/* ── ROW 0: Title ── */
-.title-bar {
-grid-column:1/4; grid-row:1;
-display:flex; align-items:center; justify-content:center;
-}
+.title-bar { grid-column:1/3; grid-row:1; display:flex; align-items:center; justify-content:center; }
 .title-bar h1 { font-size:2rem; font-weight:300; letter-spacing:3px; text-shadow:0 2px 10px rgba(0,0,0,0.5); }
 
-/* Row 1: Weather | Clock+Calendar merged */
-.sports-card    { grid-column:1/3; grid-row:2; overflow:hidden; }
-
-/* Row 2: Weather | Clock+Cal */
-.weather-card   { grid-column:1; grid-row:3; }
-.clockcal-card  { grid-column:2; grid-row:3; display:flex; flex-direction:column; gap:10px; }
-
-/* Row 3: Next 2 Weeks full width */
-.weekly-card    { grid-column:1/3; grid-row:4; }
-
-/* Row 4: Upcoming | Spotify */
-.upcoming-card  { grid-column:1; grid-row:5; overflow:hidden; }
-.photos-card    { grid-column:2; grid-row:5; }
-
-/* Row 5: Spotify full width */
-.spotify-card   { grid-column:1; grid-row:6; }
-.joke-card      { grid-column:2; grid-row:6; }
+.sports-card   { grid-column:1/3; grid-row:2; overflow:hidden; }
+.weather-card  { grid-column:1;   grid-row:3; }
+.clockcal-card { grid-column:2;   grid-row:3; display:flex; flex-direction:column; gap:10px; }
+.weekly-card   { grid-column:1/3; grid-row:4; }
+.upcoming-card { grid-column:1;   grid-row:5; overflow:hidden; }
+.photos-card   { grid-column:2;   grid-row:5; }
+.spotify-card  { grid-column:1;   grid-row:6; }
+.joke-card     { grid-column:2;   grid-row:6; }
 
 .card { background:rgba(255,255,255,0.08); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:12px; box-shadow:0 6px 24px rgba(0,0,0,0.3); overflow:hidden; }
 .card-title { font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.45); margin-bottom:8px; }
 
-/* ── WEATHER (bigger) ── */
+/* WEATHER */
 .weather-main { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
 .weather-icon { font-size:3rem; }
+.weather-temps-block { flex:1; }
 .weather-temp { font-size:4.4rem; font-weight:200; line-height:1; }
 .weather-desc { font-size:1.15rem; color:rgba(255,255,255,0.7); }
 .weather-feels { font-size:1rem; color:rgba(255,255,255,0.5); }
-.weather-sun { display:flex; gap:14px; margin-top:6px; }
-.sun-item { display:flex; align-items:center; gap:5px; font-size:0.88rem; color:rgba(255,255,255,0.6); }
-.sun-icon { font-size:1rem; }
+.weather-sun-block { display:flex; flex-direction:column; justify-content:center; gap:10px; padding-left:16px; border-left:1px solid rgba(255,255,255,0.15); }
+.sun-item { display:flex; align-items:center; gap:7px; font-size:0.9rem; color:rgba(255,255,255,0.75); white-space:nowrap; }
+.sun-set { color:rgba(255,160,80,0.85); }
+.sun-svg { width:20px; height:20px; flex-shrink:0; }
+.sun-rise-svg { stroke:rgba(255,220,100,0.9); fill:none; }
+.sun-set-svg  { stroke:rgba(255,140,60,0.9); fill:none; }
 .weather-forecast { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:10px; }
 .forecast-day { text-align:center; background:rgba(255,255,255,0.06); border-radius:8px; padding:8px 4px; }
-.forecast-day .day-name { font-size:1rem; color:rgba(255,255,255,0.6); }
-.forecast-day .day-icon { font-size:1.9rem; margin:4px 0; }
-.forecast-day .day-hi   { font-size:1.25rem; }
-.forecast-day .day-lo   { font-size:1rem; color:rgba(255,255,255,0.5); }
+.forecast-day .day-name   { font-size:1rem;   color:rgba(255,255,255,0.6); }
+.forecast-day .day-icon   { font-size:1.9rem; margin:4px 0; }
+.forecast-day .day-hi     { font-size:1.25rem; }
+.forecast-day .day-lo     { font-size:1rem;   color:rgba(255,255,255,0.5); }
 .forecast-day .day-precip { font-size:0.92rem; color:#7ecfff; margin-top:3px; }
 .hourly-label { font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:6px; }
-.hourly-row { display:grid; grid-template-columns:repeat(8,1fr); gap:4px; }
-.hourly-item { text-align:center; background:rgba(255,255,255,0.05); border-radius:6px; padding:5px 2px; }
-.hourly-time   { font-size:0.8rem; color:rgba(255,255,255,0.5); margin-bottom:2px; }
+.hourly-row   { display:grid; grid-template-columns:repeat(8,1fr); gap:4px; }
+.hourly-item  { text-align:center; background:rgba(255,255,255,0.05); border-radius:6px; padding:5px 2px; }
+.hourly-time   { font-size:0.8rem;  color:rgba(255,255,255,0.5); margin-bottom:2px; }
 .hourly-icon   { font-size:1.3rem; }
-.hourly-temp   { font-size:1rem; font-weight:500; }
+.hourly-temp   { font-size:1rem;   font-weight:500; }
 .hourly-precip { font-size:0.75rem; color:#7ecfff; margin-top:2px; }
 
-/* ── CLOCK+CALENDAR merged ── */
+/* CLOCK + CALENDAR */
 .clock-section { text-align:center; padding:10px 0 8px; }
 #clock-time { font-size:3rem; font-weight:100; letter-spacing:4px; line-height:1; }
 #clock-date { font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:6px; }
@@ -92,7 +83,7 @@ display:flex; align-items:center; justify-content:center;
 .month-day.today-month { background:rgba(100,180,255,0.4); font-weight:700; }
 .evt-dot { display:block; width:5px; height:5px; background:#7ecfff; border-radius:50%; margin:2px auto 0; box-shadow:0 0 5px rgba(126,207,255,0.9); }
 
-/* ── WEEKLY (2 weeks) ── */
+/* NEXT 2 WEEKS */
 .two-week-wrapper { display:flex; flex-direction:column; gap:8px; }
 .week-row { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
 .week-row + .week-row { border-top:1px solid rgba(255,255,255,0.1); padding-top:8px; }
@@ -104,16 +95,16 @@ display:flex; align-items:center; justify-content:center;
 .week-event-title { font-weight:500; white-space:normal; overflow:hidden; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
 .week-event-time { color:rgba(255,255,255,0.55); font-size:0.62rem; white-space:nowrap; flex-shrink:0; }
 
-/* ── UPCOMING ── */
+/* UPCOMING */
 .event-item { display:flex; gap:8px; margin-bottom:7px; padding-bottom:7px; border-bottom:1px solid rgba(255,255,255,0.07); align-items:flex-start; }
 .event-item:last-child { border-bottom:none; margin-bottom:0; }
 .event-date-badge { min-width:34px; text-align:center; background:rgba(100,180,255,0.2); border-radius:6px; padding:3px; flex-shrink:0; }
-.badge-day { font-size:1.15rem; font-weight:600; line-height:1; }
+.badge-day   { font-size:1.15rem; font-weight:600; line-height:1; }
 .badge-month { font-size:0.65rem; color:rgba(255,255,255,0.6); text-transform:uppercase; }
 .event-title { font-size:0.95rem; font-weight:500; }
 .event-time  { font-size:0.78rem; color:rgba(255,255,255,0.5); margin-top:2px; }
 
-/* ── SPORTS ── */
+/* SPORTS */
 .sports-section { margin-bottom:10px; }
 .sports-section:last-child { margin-bottom:0; }
 .sports-league-title { font-size:0.58rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:6px; }
@@ -122,39 +113,39 @@ display:flex; align-items:center; justify-content:center;
 .game-chip.final    { border-color:rgba(255,255,255,0.15); }
 .game-chip.live     { border-color:rgba(100,255,100,0.4); background:rgba(100,255,100,0.06); }
 .game-chip.upcoming { border-color:rgba(100,180,255,0.3); }
-.game-teams  { display:flex; align-items:center; gap:3px; width:100%; justify-content:center; }
-.game-team   { text-align:center; flex:1; }
+.game-teams { display:flex; align-items:center; gap:3px; width:100%; justify-content:center; }
+.game-team  { text-align:center; flex:1; }
 .game-team-name  { font-size:0.5rem; }
 .game-team-score { font-size:0.8rem; font-weight:700; line-height:1.1; }
-.game-vs     { font-size:0.55rem; color:rgba(255,255,255,0.4); }
+.game-vs    { font-size:0.55rem; color:rgba(255,255,255,0.4); }
 .game-status { font-size:0.45rem; color:rgba(255,255,255,0.45); margin-top:2px; text-transform:uppercase; letter-spacing:0.5px; }
 .game-status.live-status { color:rgba(100,255,100,0.9); }
 .game-winner { font-weight:700; color:#fff; }
 .team-logo   { display:flex; align-items:center; justify-content:center; height:18px; margin-bottom:1px; }
-.team-logo img { width:26px; height:26px; object-fit:contain; }
+.team-logo img { width:16px; height:16px; object-fit:contain; }
 .no-games    { color:rgba(255,255,255,0.4); font-size:0.75rem; }
 
-/* ── SPOTIFY ── */
+/* SPOTIFY */
 .spotify-inner { display:flex; gap:10px; align-items:center; }
 .spotify-art   { width:60px; height:60px; border-radius:8px; object-fit:cover; flex-shrink:0; }
 .spotify-art-placeholder { width:60px; height:60px; border-radius:8px; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0; }
-.spotify-info  { flex:1; overflow:hidden; }
-.spotify-track { font-size:0.8rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.spotify-artist{ font-size:0.68rem; color:rgba(255,255,255,0.6); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.spotify-album { font-size:0.6rem; color:rgba(255,255,255,0.4); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.spotify-status{ font-size:0.62rem; margin-top:4px; display:flex; align-items:center; gap:4px; }
-.spotify-dot   { width:6px; height:6px; border-radius:50%; background:#1DB954; display:inline-block; animation:pulse 1.5s infinite; }
+.spotify-info   { flex:1; overflow:hidden; }
+.spotify-track  { font-size:0.8rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.spotify-artist { font-size:0.68rem; color:rgba(255,255,255,0.6); margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.spotify-album  { font-size:0.6rem; color:rgba(255,255,255,0.4); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.spotify-status { font-size:0.62rem; margin-top:4px; display:flex; align-items:center; gap:4px; }
+.spotify-dot    { width:6px; height:6px; border-radius:50%; background:#1DB954; display:inline-block; animation:pulse 1.5s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-.spotify-login { background:#1DB954; border:none; color:#000; padding:6px 12px; border-radius:20px; cursor:pointer; font-weight:600; font-size:0.75rem; width:100%; margin-top:6px; }
+.spotify-login  { background:#1DB954; border:none; color:#000; padding:6px 12px; border-radius:20px; cursor:pointer; font-weight:600; font-size:0.75rem; width:100%; margin-top:6px; }
 
-/* ── JOKE ── */
-.joke-inner { display:flex; flex-direction:column; justify-content:center; height:100%; gap:8px; }
-.joke-setup  { font-size:0.88rem; font-weight:500; line-height:1.4; color:rgba(255,255,255,0.9); }
-.joke-punchline { font-size:0.88rem; color:#ffd97d; line-height:1.4; font-style:italic; }
-.joke-loading { color:rgba(255,255,255,0.4); font-size:0.8rem; text-align:center; padding:10px; }
-.joke-refresh { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.62rem; margin-top:4px; align-self:flex-start; }
+/* JOKE */
+.joke-inner { display:flex; flex-direction:column; justify-content:center; height:100%; gap:10px; }
+.joke-setup     { font-size:0.92rem; font-weight:500; line-height:1.45; color:rgba(255,255,255,0.9); }
+.joke-punchline { font-size:0.92rem; color:#ffd97d; line-height:1.45; font-style:italic; }
+.joke-loading   { color:rgba(255,255,255,0.4); font-size:0.8rem; text-align:center; padding:10px; }
+.joke-refresh   { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:5px 12px; border-radius:6px; cursor:pointer; font-size:0.65rem; align-self:flex-start; }
 
-/* ── PHOTOS ── */
+/* PHOTOS */
 .photo-strip { display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; height:110px; }
 .photo-strip::-webkit-scrollbar { display:none; }
 .photo-thumb { min-width:140px; height:110px; border-radius:8px; object-fit:cover; flex-shrink:0; cursor:pointer; }
@@ -170,139 +161,149 @@ display:flex; align-items:center; justify-content:center;
 <div class="bg-overlay"></div>
 
 <div class="dashboard">
-
   <div class="title-bar"><h1>The McNaughtons' Little Life</h1></div>
 
-  <!-- Row 1 -->
+  <div class="card sports-card">
+    <div class="card-title">Scores &amp; Schedule</div>
+    <div id="sports-content"><div class="loading">Loading...</div></div>
+  </div>
+
   <div class="card weather-card">
-    <div class="card-title">Weather — Calgary</div>
-    <div id="weather-content"><div class="loading">Loading…</div></div>
+    <div class="card-title">Weather - Calgary</div>
+    <div id="weather-content"><div class="loading">Loading...</div></div>
   </div>
 
   <div class="card clockcal-card">
     <div class="clock-section">
       <div id="clock-time">--:--</div>
-      <div id="clock-date">Loading…</div>
+      <div id="clock-date">Loading...</div>
     </div>
     <div class="divider"></div>
     <div class="month-header">
-      <button class="month-nav" id="prev-month">‹</button>
+      <button class="month-nav" id="prev-month">&#8249;</button>
       <span class="month-title" id="month-title">Month</span>
-      <button class="month-nav" id="next-month">›</button>
+      <button class="month-nav" id="next-month">&#8250;</button>
     </div>
-    <div id="monthly-content"><div class="loading">Loading…</div></div>
+    <div id="monthly-content"><div class="loading">Loading...</div></div>
   </div>
 
-  <!-- Row 2 -->
   <div class="card weekly-card">
     <div class="card-title">Next 2 Weeks</div>
-    <div id="weekly-content"><div class="loading">Loading…</div></div>
+    <div id="weekly-content"><div class="loading">Loading...</div></div>
   </div>
 
-  <!-- Row 3 -->
   <div class="card upcoming-card">
     <div class="card-title">Upcoming Events</div>
-    <div id="upcoming-content"><div class="loading">Loading…</div></div>
-  </div>
-
-  <div class="card sports-card">
-    <div class="card-title">Scores &amp; Schedule</div>
-    <div id="sports-content"><div class="loading">Loading…</div></div>
-  </div>
-
-  <!-- Row 4 -->
-  <div class="card spotify-card">
-    <div class="card-title">🎵 Now Playing</div>
-    <div id="spotify-content">
-      <div class="spotify-art-placeholder">🎵</div>
-      <button class="spotify-login" onclick="spotifyLogin()">Connect Spotify</button>
-    </div>
-  </div>
-
-  <div class="card joke-card">
-    <div class="card-title">😄 Kids' Joke of the Day</div>
-    <div id="joke-content"><div class="joke-loading">Loading joke…</div></div>
+    <div id="upcoming-content"><div class="loading">Loading...</div></div>
   </div>
 
   <div class="card photos-card">
     <div class="card-title">Family Photos</div>
     <div class="photo-strip" id="photo-strip">
-      <div class="photo-placeholder">📷<br/>Click Add</div>
+      <div class="photo-placeholder">&#128247;<br/>Click Add</div>
     </div>
     <input type="file" id="photo-input" accept="image/*" multiple style="display:none">
     <button class="add-photo-btn" onclick="document.getElementById('photo-input').click()">+ Add Photos</button>
   </div>
 
+  <div class="card spotify-card">
+    <div class="card-title">&#127925; Now Playing</div>
+    <div id="spotify-content">
+      <div class="spotify-art-placeholder">&#127925;</div>
+      <button class="spotify-login" onclick="spotifyLogin()">Connect Spotify</button>
+    </div>
+  </div>
+
+  <div class="card joke-card">
+    <div class="card-title">&#128514; Kids' Joke of the Day</div>
+    <div id="joke-content"><div class="joke-loading">Loading joke...</div></div>
+  </div>
 </div>
 
 <script>
-// ── CLOCK ──────────────────────────────────────────────────────────
-function updateClock() {
-  const now = new Date();
-  document.getElementById('clock-time').textContent = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-  document.getElementById('clock-date').textContent = now.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+// CLOCK
+function updateClock(){
+  const now=new Date();
+  document.getElementById('clock-time').textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('clock-date').textContent=now.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 }
 updateClock(); setInterval(updateClock,1000);
 
-// ── WEATHER ────────────────────────────────────────────────────────
-const WX_ICONS={0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌦️',53:'🌦️',55:'🌧️',56:'🌧️',57:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',66:'🌧️',67:'🌧️',71:'🌨️',73:'🌨️',75:'❄️',77:'🌨️',80:'🌦️',81:'🌧️',82:'⛈️',85:'🌨️',86:'❄️',95:'⛈️',96:'⛈️',99:'⛈️'};
+// WEATHER
+const WX_ICONS={0:'&#x2600;&#xFE0F;',1:'&#x1F324;&#xFE0F;',2:'&#x26C5;',3:'&#x2601;&#xFE0F;',45:'&#x1F32B;&#xFE0F;',48:'&#x1F32B;&#xFE0F;',51:'&#x1F326;&#xFE0F;',53:'&#x1F326;&#xFE0F;',55:'&#x1F327;&#xFE0F;',56:'&#x1F327;&#xFE0F;',57:'&#x1F327;&#xFE0F;',61:'&#x1F327;&#xFE0F;',63:'&#x1F327;&#xFE0F;',65:'&#x1F327;&#xFE0F;',66:'&#x1F327;&#xFE0F;',67:'&#x1F327;&#xFE0F;',71:'&#x1F328;&#xFE0F;',73:'&#x1F328;&#xFE0F;',75:'&#x2744;&#xFE0F;',77:'&#x1F328;&#xFE0F;',80:'&#x1F326;&#xFE0F;',81:'&#x1F327;&#xFE0F;',82:'&#x26C8;&#xFE0F;',85:'&#x1F328;&#xFE0F;',86:'&#x2744;&#xFE0F;',95:'&#x26C8;&#xFE0F;',96:'&#x26C8;&#xFE0F;',99:'&#x26C8;&#xFE0F;'};
 const WX_DESC={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',56:'Freezing drizzle',57:'Heavy freezing drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Heavy freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Light showers',81:'Showers',82:'Heavy showers',85:'Snow showers',86:'Heavy snow showers',95:'Thunderstorm',96:'Thunderstorm w/ hail',99:'Thunderstorm w/ heavy hail'};
 
-async function loadWeather() {
-  const el = document.getElementById('weather-content');
-  try {
-    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.0447&longitude=-114.0719&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&hourly=temperature_2m,weather_code,precipitation_probability&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=6');
-    const d = await r.json();
+async function loadWeather(){
+  const el=document.getElementById('weather-content');
+  try{
+    const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.0447&longitude=-114.0719&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&hourly=temperature_2m,weather_code,precipitation_probability&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=6');
+    const d=await r.json();
     const cur=d.current, daily=d.daily, code=cur.weather_code;
     const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+    const fmtSun=t=>{
+      if(!t) return '--';
+      const dt=new Date(t);
+      const h=dt.getHours()%12||12, mn=String(dt.getMinutes()).padStart(2,'0');
+      return h+':'+mn+' '+(dt.getHours()<12?'AM':'PM');
+    };
+
     let fc='';
     for(let i=1;i<=4;i++){
       const dt=new Date(daily.time[i]+'T12:00:00');
       const hi=daily.temperature_2m_max?.[i], lo=daily.temperature_2m_min?.[i], dc=daily.weather_code?.[i]??0;
       const precip=daily.precipitation_probability_max?.[i]??0;
-      fc+=`<div class="forecast-day">
-        <div class="day-name">${days[dt.getDay()]}</div>
-        <div class="day-icon">${WX_ICONS[dc]||'⛅'}</div>
-        <div class="day-hi">${typeof hi==='number'?Math.round(hi)+'°':'–'}</div>
-        <div class="day-lo">${typeof lo==='number'?Math.round(lo)+'°':'–'}</div>
-        <div class="day-precip">${precip}%</div>
-      </div>`;
+      fc+='<div class="forecast-day">'
+        +'<div class="day-name">'+days[dt.getDay()]+'</div>'
+        +'<div class="day-icon">'+(WX_ICONS[dc]||'&#x26C5;')+'</div>'
+        +'<div class="day-hi">'+(typeof hi==='number'?Math.round(hi)+'&deg;':'&ndash;')+'</div>'
+        +'<div class="day-lo">'+(typeof lo==='number'?Math.round(lo)+'&deg;':'&ndash;')+'</div>'
+        +'<div class="day-precip">'+precip+'%</div>'
+        +'</div>';
     }
-    const now8=new Date(); let startIdx=0;
-    for(let i=0;i<d.hourly.time.length;i++){if(new Date(d.hourly.time[i])>now8){startIdx=i;break;}}
+
+    const now8=new Date(); let si=0;
+    for(let i=0;i<d.hourly.time.length;i++){if(new Date(d.hourly.time[i])>now8){si=i;break;}}
     let hourly='';
-    for(let i=startIdx;i<startIdx+8&&i<d.hourly.time.length;i++){
+    for(let i=si;i<si+8&&i<d.hourly.time.length;i++){
       const t=new Date(d.hourly.time[i]);
       const hr=t.getHours();
-      const hLabel=hr===0?'12am':hr<12?`${hr}am`:hr===12?'12pm':`${hr-12}pm`;
-      const hTemp=d.hourly.temperature_2m[i];
-      const hPrecip=d.hourly.precipitation_probability[i]??0;
-      const hCode=d.hourly.weather_code[i];
-      hourly+=`<div class="hourly-item">
-        <div class="hourly-time">${hLabel}</div>
-        <div class="hourly-icon">${WX_ICONS[hCode]||'⛅'}</div>
-        <div class="hourly-temp">${typeof hTemp==='number'?Math.round(hTemp)+'°':'–'}</div>
-        <div class="hourly-precip">${hPrecip}%</div>
-      </div>`;
+      const lbl=hr===0?'12am':hr<12?hr+'am':hr===12?'12pm':(hr-12)+'pm';
+      const hT=d.hourly.temperature_2m[i];
+      const hP=d.hourly.precipitation_probability[i]??0;
+      const hC=d.hourly.weather_code[i];
+      hourly+='<div class="hourly-item">'
+        +'<div class="hourly-time">'+lbl+'</div>'
+        +'<div class="hourly-icon">'+(WX_ICONS[hC]||'&#x26C5;')+'</div>'
+        +'<div class="hourly-temp">'+(typeof hT==='number'?Math.round(hT)+'&deg;':'&ndash;')+'</div>'
+        +'<div class="hourly-precip">'+hP+'%</div>'
+        +'</div>';
     }
-    const fmtSun=t=>{if(!t)return'–';const dt=new Date(t);const h=dt.getHours()%12||12,mn=String(dt.getMinutes()).padStart(2,'0');return`${h}:${mn} ${dt.getHours()<12?'AM':'PM'}`;};
+
     const sunrise=daily.sunrise?.[0], sunset=daily.sunset?.[0];
-    el.innerHTML=`<div class="weather-main">
-      <div class="weather-icon">${WX_ICONS[code]||'⛅'}</div>
-      <div><div class="weather-temp">${Math.round(cur.temperature_2m)}°C</div>
-      <div class="weather-desc">${WX_DESC[code]||'–'}</div>
-      <div class="weather-feels">Feels like ${Math.round(cur.apparent_temperature)}°</div>
-      <div class="weather-sun"><span class="sun-item"><span class="sun-icon">🌅</span>${fmtSun(sunrise)}</span><span class="sun-item"><span class="sun-icon">🌇</span>${fmtSun(sunset)}</span></div>
-      </div>
-    </div>
-    <div class="weather-forecast">${fc}</div>
-    <div class="hourly-label">Next 8 Hours</div>
-    <div class="hourly-row">${hourly}</div>`;
-  } catch(e){el.innerHTML='<div class="error-msg">Weather unavailable</div>';}
+    const sunriseSVG='<svg class="sun-svg sun-rise-svg" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/><path d="M5 19h14" stroke-dasharray="3 2"/></svg>';
+    const sunsetSVG='<svg class="sun-svg sun-set-svg" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="9" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="4.22" y1="3.22" x2="5.64" y2="4.64"/><line x1="18.36" y1="4.64" x2="19.78" y2="3.22"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="20" y1="9" x2="22" y2="9"/><path d="M3 17h18"/><path d="M7 21h10"/></svg>';
+
+    el.innerHTML='<div class="weather-main">'
+      +'<div class="weather-icon">'+(WX_ICONS[code]||'&#x26C5;')+'</div>'
+      +'<div class="weather-temps-block">'
+        +'<div class="weather-temp">'+Math.round(cur.temperature_2m)+'&deg;C</div>'
+        +'<div class="weather-desc">'+(WX_DESC[code]||'&ndash;')+'</div>'
+        +'<div class="weather-feels">Feels like '+Math.round(cur.apparent_temperature)+'&deg;</div>'
+      +'</div>'
+      +'<div class="weather-sun-block">'
+        +'<div class="sun-item">'+sunriseSVG+fmtSun(sunrise)+'</div>'
+        +'<div class="sun-item sun-set">'+sunsetSVG+fmtSun(sunset)+'</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="weather-forecast">'+fc+'</div>'
+    +'<div class="hourly-label">Next 8 Hours</div>'
+    +'<div class="hourly-row">'+hourly+'</div>';
+  }catch(e){el.innerHTML='<div class="error-msg">Weather unavailable</div>';}
 }
 loadWeather(); setInterval(loadWeather,600000);
 
-// ── CALENDAR ───────────────────────────────────────────────────────
+// CALENDAR
 const PROXY_URL='https://p58-caldav.icloud.com/published/2/MTAwMzMzOTgxMTAwMzMzOeRx7owgHoBn3si23dlCBoVPkDfkX3KzWwXgtKqyboafExi6t2dl4GIQtBaVq-ZyfDaJ6Bfa4ugJ5I8GjgjoqLs';
 let allEvents=[]; let viewYear=new Date().getFullYear(), viewMonth=new Date().getMonth();
 
@@ -315,25 +316,37 @@ function parseICS(text){
     const dtraw=get('DTSTART'), dtendraw=get('DTEND'), title=get('SUMMARY').replace(/\\,/g,',').replace(/\\n/g,' ');
     if(!dtraw||!title) continue;
     const pd=s=>{s=s.replace(/[^0-9T]/g,'');if(s.length===8)return new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8));if(s.length>=15)return new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8),+s.slice(9,11),+s.slice(11,13));return null;};
-    const start=pd(dtraw);
-    const end=dtendraw?pd(dtendraw):null;
+    const start=pd(dtraw), end=dtendraw?pd(dtendraw):null;
     if(start&&!isNaN(start)) events.push({title,start,end});
   }
   return events.sort((a,b)=>a.start-b.start);
 }
-function getDemoEvents(){const y=new Date().getFullYear(),m=new Date().getMonth();return[{title:'Luca appt w Braxtyn',start:new Date(y,m,3,11,0),end:new Date(y,m,3,12,0)},{title:'Ross field',start:new Date(y,m,5,7,0),end:new Date(y,m,5,9,0)},{title:'U9 Northwest Warriors 3',start:new Date(y,m,7,8,30),end:new Date(y,m,7,10,0)},{title:'Willa hockey',start:new Date(y,m,7,13,30),end:new Date(y,m,7,15,0)},{title:'Luca Swim',start:new Date(y,m,7,15,45),end:new Date(y,m,7,16,30)},{title:'Jake b day',start:new Date(y,m,8,14,30),end:null},{title:'Mum & Willa nails',start:new Date(y,m,14,0,0),end:null}];}
-function fmtTime(d){if(!d||d.getHours()===0&&d.getMinutes()===0)return'All day';const h=d.getHours()%12||12,mn=String(d.getMinutes()).padStart(2,'0');return`${h}:${mn} ${d.getHours()<12?'AM':'PM'}`;}
+
+function getDemoEvents(){
+  const y=new Date().getFullYear(), m=new Date().getMonth();
+  return[
+    {title:'Luca appt w Braxtyn',start:new Date(y,m,3,11,0),end:new Date(y,m,3,12,0)},
+    {title:'Ross field',start:new Date(y,m,5,7,0),end:new Date(y,m,5,9,0)},
+    {title:'U9 Northwest Warriors',start:new Date(y,m,7,8,30),end:new Date(y,m,7,10,0)},
+    {title:'Willa hockey',start:new Date(y,m,7,13,30),end:new Date(y,m,7,15,0)},
+    {title:'Luca Swim',start:new Date(y,m,7,15,45),end:new Date(y,m,7,16,30)},
+    {title:'Jake b day',start:new Date(y,m,8,14,30),end:null},
+    {title:'Mum & Willa nails',start:new Date(y,m,14,0,0),end:null}
+  ];
+}
+
+function fmtTime(d){
+  if(!d||d.getHours()===0&&d.getMinutes()===0) return 'All day';
+  const h=d.getHours()%12||12, mn=String(d.getMinutes()).padStart(2,'0');
+  return h+':'+mn+' '+(d.getHours()<12?'AM':'PM');
+}
 function fmtTimeRange(start,end){
-  const isAllDay=start.getHours()===0&&start.getMinutes()===0;
-  if(isAllDay)return'All day';
+  if(start.getHours()===0&&start.getMinutes()===0) return 'All day';
   const s=fmtTime(start);
-  if(!end)return s;
-  // strip AM/PM from start if same period as end
-  const endStr=fmtTime(end);
-  const sPeriod=start.getHours()<12?'AM':'PM';
-  const ePeriod=end.getHours()<12?'AM':'PM';
-  const sBase=sPeriod===ePeriod?s.replace(/ (AM|PM)$/,''):s;
-  return`${sBase}–${endStr}`;
+  if(!end) return s;
+  const es=fmtTime(end);
+  const sp=start.getHours()<12?'AM':'PM', ep=end.getHours()<12?'AM':'PM';
+  return (sp===ep?s.replace(/ (AM|PM)$/,''):s)+'\u2013'+es;
 }
 
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -341,126 +354,142 @@ const WDAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function renderAll(){renderUpcoming();renderWeekly();renderMonthly();}
 
 function renderUpcoming(){
-  const now=new Date();now.setHours(0,0,0,0);
+  const now=new Date(); now.setHours(0,0,0,0);
   const up=allEvents.filter(e=>e.start>=now).slice(0,8);
   if(!up.length){document.getElementById('upcoming-content').innerHTML='<div class="loading">No upcoming events</div>';return;}
-  document.getElementById('upcoming-content').innerHTML=up.map(e=>`<div class="event-item">
-    <div class="event-date-badge"><div class="badge-day">${e.start.getDate()}</div><div class="badge-month">${MONTHS[e.start.getMonth()].slice(0,3)}</div></div>
-    <div><div class="event-title">${e.title}</div><div class="event-time">${fmtTime(e.start)}</div></div>
-  </div>`).join('');
+  document.getElementById('upcoming-content').innerHTML=up.map(e=>
+    '<div class="event-item">'
+    +'<div class="event-date-badge"><div class="badge-day">'+e.start.getDate()+'</div><div class="badge-month">'+MONTHS[e.start.getMonth()].slice(0,3)+'</div></div>'
+    +'<div><div class="event-title">'+e.title+'</div><div class="event-time">'+fmtTime(e.start)+'</div></div>'
+    +'</div>'
+  ).join('');
 }
 
-// ── FIXED: 2-week grid — week 1 on top, week 2 below ──
 function renderWeekly(){
-  const now=new Date();
-  now.setHours(0,0,0,0);
-
-  function buildWeekRow(startOffset){
+  const now=new Date(); now.setHours(0,0,0,0);
+  function buildRow(offset){
     let row='<div class="week-row">';
-    for(let d=startOffset;d<startOffset+7;d++){
-      const day=new Date(now);
-      day.setDate(now.getDate()+d);
-      const isToday=d===0;
+    for(let d=offset;d<offset+7;d++){
+      const day=new Date(now); day.setDate(now.getDate()+d);
       const evts=allEvents.filter(e=>e.start.toDateString()===day.toDateString());
-      row+=`<div class="week-day-col">
-        <div class="week-day-name">${WDAYS[day.getDay()]}</div>
-        <div class="week-day-num${isToday?' today':''}">${day.getDate()}</div>
-        ${evts.slice(0,3).map(e=>`<div class="week-event" title="${e.title}"><span class="week-event-title">${e.title}</span><span class="week-event-time">${fmtTimeRange(e.start,e.end)}</span></div>`).join('')}
-      </div>`;
+      row+='<div class="week-day-col">'
+        +'<div class="week-day-name">'+WDAYS[day.getDay()]+'</div>'
+        +'<div class="week-day-num'+(d===0?' today':'')+'">'+day.getDate()+'</div>'
+        +evts.slice(0,3).map(e=>'<div class="week-event"><span class="week-event-title">'+e.title+'</span><span class="week-event-time">'+fmtTimeRange(e.start,e.end)+'</span></div>').join('')
+        +'</div>';
     }
     return row+'</div>';
   }
-
-  document.getElementById('weekly-content').innerHTML=
-    `<div class="two-week-wrapper">${buildWeekRow(0)}${buildWeekRow(7)}</div>`;
+  document.getElementById('weekly-content').innerHTML='<div class="two-week-wrapper">'+buildRow(0)+buildRow(7)+'</div>';
 }
 
 function renderMonthly(){
-  document.getElementById('month-title').textContent=`${MONTHS[viewMonth]} ${viewYear}`;
-  const first=new Date(viewYear,viewMonth,1),last=new Date(viewYear,viewMonth+1,0);
-  const today=new Date();today.setHours(0,0,0,0);
+  document.getElementById('month-title').textContent=MONTHS[viewMonth]+' '+viewYear;
+  const first=new Date(viewYear,viewMonth,1), last=new Date(viewYear,viewMonth+1,0);
+  const today=new Date(); today.setHours(0,0,0,0);
   let html='<div class="month-grid">';
-  WDAYS.forEach(d=>html+=`<div class="month-weekday">${d.slice(0,1)}</div>`);
-  for(let i=0;i<first.getDay();i++){const p=new Date(viewYear,viewMonth,-first.getDay()+i+1);html+=`<div class="month-day other-month">${p.getDate()}</div>`;}
+  WDAYS.forEach(d=>html+='<div class="month-weekday">'+d[0]+'</div>');
+  for(let i=0;i<first.getDay();i++){const p=new Date(viewYear,viewMonth,-first.getDay()+i+1);html+='<div class="month-day other-month">'+p.getDate()+'</div>';}
   for(let d=1;d<=last.getDate();d++){
     const dt=new Date(viewYear,viewMonth,d);
     const isToday=dt.toDateString()===today.toDateString();
     const hasEvt=allEvents.some(e=>e.start.toDateString()===dt.toDateString());
-    html+=`<div class="month-day${isToday?' today-month':''}">${d}${hasEvt?'<span class="evt-dot"></span>':''}</div>`;
+    html+='<div class="month-day'+(isToday?' today-month':'')+'">'+d+(hasEvt?'<span class="evt-dot"></span>':'')+'</div>';
   }
   const rem=42-(first.getDay()+last.getDate());
-  for(let d=1;d<=rem;d++) html+=`<div class="month-day other-month">${d}</div>`;
+  for(let d=1;d<=rem;d++) html+='<div class="month-day other-month">'+d+'</div>';
   document.getElementById('monthly-content').innerHTML=html+'</div>';
 }
 document.getElementById('prev-month').onclick=()=>{viewMonth--;if(viewMonth<0){viewMonth=11;viewYear--;}renderMonthly();};
 document.getElementById('next-month').onclick=()=>{viewMonth++;if(viewMonth>11){viewMonth=0;viewYear++;}renderMonthly();};
 
 async function loadCalendar(){
-  const attempts=[`https://corsproxy.io/?url=${encodeURIComponent(PROXY_URL)}`,`https://proxy.cors.sh/${PROXY_URL}`,`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(PROXY_URL)}`,`https://cors.eu.org/${PROXY_URL}`];
+  const proxies=[
+    'https://corsproxy.io/?url='+encodeURIComponent(PROXY_URL),
+    'https://proxy.cors.sh/'+PROXY_URL,
+    'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(PROXY_URL),
+    'https://cors.eu.org/'+PROXY_URL
+  ];
   let text=null;
-  for(const url of attempts){try{const r=await fetch(url,{signal:AbortSignal.timeout(8000),headers:{'Accept':'text/calendar, */*'}});const t=await r.text();if(t.includes('BEGIN:VCALENDAR')){text=t;break;}}catch(e){}}
-  if(!text){allEvents=getDemoEvents();renderAll();return;}
-  allEvents=parseICS(text);renderAll();
+  for(const url of proxies){
+    try{const r=await fetch(url,{signal:AbortSignal.timeout(8000),headers:{'Accept':'text/calendar, */*'}});const t=await r.text();if(t.includes('BEGIN:VCALENDAR')){text=t;break;}}catch(e){}
+  }
+  allEvents=text?parseICS(text):getDemoEvents();
+  renderAll();
 }
 loadCalendar(); setInterval(loadCalendar,900000);
 
-// ── SPORTS ────────────────────────────────────────────────────────
+// SPORTS
 async function loadSports(){
   const el=document.getElementById('sports-content');
   try{
-    // Use Mountain Time date to avoid UTC rollover making today show as tomorrow
     const now=new Date();
-    const mtOffset=-7*60; // MDT; adjust to -6 for MST if needed
-    const mtNow=new Date(now.getTime()+now.getTimezoneOffset()*60000+mtOffset*60000);
+    const mtNow=new Date(now.getTime()+now.getTimezoneOffset()*60000+(-7*60)*60000);
     const pad=n=>String(n).padStart(2,'0');
-    const toISO=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-    const today=mtNow, yesterday=new Date(mtNow);yesterday.setDate(mtNow.getDate()-1);
-    const todayISO=toISO(today), yestISO=toISO(yesterday);
+    const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    const yest=new Date(mtNow); yest.setDate(mtNow.getDate()-1);
+    const todayISO=iso(mtNow), yestISO=iso(yest);
+
     async function fetchNHL(date){
-      const direct=`https://api-web.nhle.com/v1/score/${date}`;
-      const proxies=[`https://corsproxy.io/?url=${encodeURIComponent(direct)}`,`https://api.allorigins.win/raw?url=${encodeURIComponent(direct)}`,`https://cors.eu.org/${direct}`,`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(direct)}`];
-      for(const url of proxies){try{const r=await fetch(url,{signal:AbortSignal.timeout(7000)});if(r.ok){const d=await r.json();if(d.games)return d.games;}}catch(e){}}
+      const direct='https://api-web.nhle.com/v1/score/'+date;
+      const p=[
+        'https://corsproxy.io/?url='+encodeURIComponent(direct),
+        'https://api.allorigins.win/raw?url='+encodeURIComponent(direct),
+        'https://cors.eu.org/'+direct,
+        'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(direct)
+      ];
+      for(const url of p){try{const r=await fetch(url,{signal:AbortSignal.timeout(7000)});if(r.ok){const d=await r.json();if(d.games)return d.games;}}catch(e){}}
       return[];
     }
-    const[nhlY,nhlT,bjYD,bjTD]=await Promise.all([fetchNHL(yestISO),fetchNHL(todayISO),fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date=${yestISO}&hydrate=linescore`).then(r=>r.json()).catch(()=>null),fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date=${todayISO}&hydrate=linescore`).then(r=>r.json()).catch(()=>null)]);
+
+    const[nhlY,nhlT,bjYD,bjTD]=await Promise.all([
+      fetchNHL(yestISO), fetchNHL(todayISO),
+      fetch('https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date='+yestISO+'&hydrate=linescore').then(r=>r.json()).catch(()=>null),
+      fetch('https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date='+todayISO+'&hydrate=linescore').then(r=>r.json()).catch(()=>null)
+    ]);
+
     let html='';
     const nhlYF=nhlY.filter(g=>['OFF','FINAL','OVER','F'].includes((g.gameState||'').toUpperCase()));
-    if(nhlYF.length) html+=buildNHLSection('🏒 NHL — Yesterday',nhlYF);
-    if(nhlT.length) html+=buildNHLSection('🏒 NHL — Today',nhlT);
-    if(!nhlYF.length&&!nhlT.length) html+=`<div class="sports-section"><div class="sports-league-title">🏒 NHL</div><div class="no-games">No games</div></div>`;
+    if(nhlYF.length) html+=buildNHL('&#x1F3D2; NHL - Yesterday',nhlYF);
+    if(nhlT.length)  html+=buildNHL('&#x1F3D2; NHL - Today',nhlT);
+    if(!nhlYF.length&&!nhlT.length) html+='<div class="sports-section"><div class="sports-league-title">&#x1F3D2; NHL</div><div class="no-games">No games today</div></div>';
     const bjY=bjYD?.dates?.[0]?.games||[], bjT=bjTD?.dates?.[0]?.games||[];
-    if(bjY.length||bjT.length){html+=`<div class="sports-section"><div class="sports-league-title">⚾ Blue Jays</div><div class="games-row">`;[...bjY,...bjT].forEach(g=>{html+=buildMLBChip(g);});html+=`</div></div>`;}
-    else html+=`<div class="sports-section"><div class="sports-league-title">⚾ Blue Jays</div><div class="no-games">No games</div></div>`;
+    if(bjY.length||bjT.length){html+='<div class="sports-section"><div class="sports-league-title">&#x26BE; Blue Jays</div><div class="games-row">';[...bjY,...bjT].forEach(g=>{html+=buildMLB(g);});html+='</div></div>';}
+    else html+='<div class="sports-section"><div class="sports-league-title">&#x26BE; Blue Jays</div><div class="no-games">No games today</div></div>';
     el.innerHTML=html;
-  }catch(e){el.innerHTML=`<div class="error-msg">Sports unavailable</div>`;}
+  }catch(e){el.innerHTML='<div class="error-msg">Sports unavailable</div>';}
 }
-function nhlLogo(a){return`<img src="https://assets.nhle.com/logos/nhl/svg/${a}_light.svg" onerror="this.style.display='none';this.nextSibling.style.display='block'" style="width:16px;height:16px;object-fit:contain"><span style="display:none;font-size:0.45rem;font-weight:600">${a}</span>`;}
-function mlbLogo(id,a){return`<img src="https://www.mlbstatic.com/team-logos/${id}.svg" onerror="this.style.display='none';this.nextSibling.style.display='block'" style="width:16px;height:16px;object-fit:contain"><span style="display:none;font-size:0.45rem;font-weight:600">${a}</span>`;}
-function buildNHLSection(label,games){
-  let html=`<div class="sports-section"><div class="sports-league-title">${label}</div><div class="games-row">`;
+
+function nhlLogo(a){return '<img src="https://assets.nhle.com/logos/nhl/svg/'+a+'_light.svg" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'" style="width:16px;height:16px;object-fit:contain"><span style="display:none;font-size:0.45rem;font-weight:600">'+a+'</span>';}
+function mlbLogo(id,a){return '<img src="https://www.mlbstatic.com/team-logos/'+id+'.svg" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'" style="width:16px;height:16px;object-fit:contain"><span style="display:none;font-size:0.45rem;font-weight:600">'+a+'</span>';}
+
+function buildNHL(label,games){
+  let html='<div class="sports-section"><div class="sports-league-title">'+label+'</div><div class="games-row">';
   games.forEach(g=>{
-    const home=g.homeTeam||{},away=g.awayTeam||{},state=(g.gameState||'').toUpperCase();
-    const isLive=state==='LIVE'||state==='CRIT',isFinal=['OFF','FINAL','OVER','F'].includes(state),isUp=!isLive&&!isFinal;
-    const chipClass=isLive?'live':isFinal?'final':'upcoming';
-    const hS=home.score??null,aS=away.score??null;
-    const hW=isFinal&&hS!==null&&hS>aS,aW=isFinal&&aS!==null&&aS>hS;
-    const hA=home.abbrev||home.triCode||'–',awA=away.abbrev||away.triCode||'–';
-    const status=isLive?`🔴 P${g.period||''}`:isFinal?'Final':fmtGameTime(g.startTimeUTC||g.gameDate);
-    html+=`<div class="game-chip ${chipClass}"><div class="game-teams"><div class="game-team"><div class="team-logo">${nhlLogo(awA)}</div><div class="game-team-name">${awA}</div><div class="game-team-score ${aW?'game-winner':''}">${isUp?'–':(aS??0)}</div></div><div class="game-vs">@</div><div class="game-team"><div class="team-logo">${nhlLogo(hA)}</div><div class="game-team-name">${hA}</div><div class="game-team-score ${hW?'game-winner':''}">${isUp?'–':(hS??0)}</div></div></div><div class="game-status ${isLive?'live-status':''}">${status}</div></div>`;
+    const home=g.homeTeam||{}, away=g.awayTeam||{}, state=(g.gameState||'').toUpperCase();
+    const isLive=state==='LIVE'||state==='CRIT', isFinal=['OFF','FINAL','OVER','F'].includes(state), isUp=!isLive&&!isFinal;
+    const cls=isLive?'live':isFinal?'final':'upcoming';
+    const hS=home.score??null, aS=away.score??null;
+    const hW=isFinal&&hS>aS, aW=isFinal&&aS>hS;
+    const hA=home.abbrev||'?', awA=away.abbrev||'?';
+    const stat=isLive?('&#x1F534; P'+(g.period||'')):isFinal?'Final':fmtGT(g.startTimeUTC||g.gameDate);
+    html+='<div class="game-chip '+cls+'"><div class="game-teams"><div class="game-team"><div class="team-logo">'+nhlLogo(awA)+'</div><div class="game-team-name">'+awA+'</div><div class="game-team-score'+(aW?' game-winner':'')+'">'+( isUp?'&ndash;':(aS??0))+'</div></div><div class="game-vs">@</div><div class="game-team"><div class="team-logo">'+nhlLogo(hA)+'</div><div class="game-team-name">'+hA+'</div><div class="game-team-score'+(hW?' game-winner':'')+'">'+( isUp?'&ndash;':(hS??0))+'</div></div></div><div class="game-status'+(isLive?' live-status':'')+'">'+stat+'</div></div>';
   });
   return html+'</div></div>';
 }
-function buildMLBChip(g){
-  const home=g.teams.home,away=g.teams.away,status=g.status?.detailedState||'';
-  const isFinal=status.includes('Final'),isLive=status.includes('Progress'),isUp=!isFinal&&!isLive;
-  const chipClass=isLive?'live':isFinal?'final':'upcoming';
-  const hS=home.score,aS=away.score,hW=isFinal&&hS>aS,aW=isFinal&&aS>hS;
-  return`<div class="game-chip ${chipClass}"><div class="game-teams"><div class="game-team"><div class="team-logo">${mlbLogo(away.team?.id,away.team?.abbreviation||'–')}</div><div class="game-team-name">${away.team?.abbreviation||'–'}</div><div class="game-team-score ${aW?'game-winner':''}">${isUp?'–':(aS??'–')}</div></div><div class="game-vs">@</div><div class="game-team"><div class="team-logo">${mlbLogo(home.team?.id,home.team?.abbreviation||'–')}</div><div class="game-team-name">${home.team?.abbreviation||'–'}</div><div class="game-team-score ${hW?'game-winner':''}">${isUp?'–':(hS??'–')}</div></div></div><div class="game-status ${isLive?'live-status':''}">${isFinal?'Final':isLive?'🔴 Live':fmtGameTime(g.gameDate)}</div></div>`;
+
+function buildMLB(g){
+  const home=g.teams.home, away=g.teams.away, st=g.status?.detailedState||'';
+  const isFinal=st.includes('Final'), isLive=st.includes('Progress'), isUp=!isFinal&&!isLive;
+  const cls=isLive?'live':isFinal?'final':'upcoming';
+  const hS=home.score, aS=away.score, hW=isFinal&&hS>aS, aW=isFinal&&aS>hS;
+  return '<div class="game-chip '+cls+'"><div class="game-teams"><div class="game-team"><div class="team-logo">'+mlbLogo(away.team?.id,away.team?.abbreviation||'?')+'</div><div class="game-team-name">'+(away.team?.abbreviation||'?')+'</div><div class="game-team-score'+(aW?' game-winner':'')+'">'+( isUp?'&ndash;':(aS??'&ndash;'))+'</div></div><div class="game-vs">@</div><div class="game-team"><div class="team-logo">'+mlbLogo(home.team?.id,home.team?.abbreviation||'?')+'</div><div class="game-team-name">'+(home.team?.abbreviation||'?')+'</div><div class="game-team-score'+(hW?' game-winner':'')+'">'+( isUp?'&ndash;':(hS??'&ndash;'))+'</div></div></div><div class="game-status'+(isLive?' live-status':'')+'">'+( isFinal?'Final':isLive?'&#x1F534; Live':fmtGT(g.gameDate))+'</div></div>';
 }
-function fmtGameTime(u){if(!u)return'–';try{return new Date(u).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZone:'America/Denver',timeZoneName:'short'});}catch{return'–';}}
+
+function fmtGT(u){if(!u)return '&ndash;';try{return new Date(u).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZone:'America/Denver',timeZoneName:'short'});}catch{return '&ndash;';}}
 loadSports(); setInterval(loadSports,60000);
 
-// ── SPOTIFY ───────────────────────────────────────────────────────
+// SPOTIFY
 const SPOTIFY_CLIENT_ID='2b39844dfc594778a56e1c069be9cdc0';
 const SPOTIFY_REDIRECT='https://rossmc05.github.io/family-dashboard/';
 const SPOTIFY_SCOPES='user-read-currently-playing user-read-playback-state';
@@ -479,7 +508,7 @@ async function exchangeCode(code){
   return null;
 }
 async function refreshToken(){
-  const ref=localStorage.getItem('spotify_refresh');if(!ref)return null;
+  const ref=localStorage.getItem('spotify_refresh'); if(!ref)return null;
   const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'refresh_token',refresh_token:ref,client_id:SPOTIFY_CLIENT_ID})});
   const d=await r.json();
   if(d.access_token){localStorage.setItem('spotify_token',d.access_token);localStorage.setItem('spotify_expiry',Date.now()+d.expires_in*1000);if(d.refresh_token)localStorage.setItem('spotify_refresh',d.refresh_token);return d.access_token;}
@@ -488,25 +517,68 @@ async function refreshToken(){
 async function getToken(){
   const code=new URLSearchParams(window.location.search).get('code');
   if(code){const t=await exchangeCode(code);if(t)return t;}
-  const tok=localStorage.getItem('spotify_token'),exp=localStorage.getItem('spotify_expiry');
+  const tok=localStorage.getItem('spotify_token'), exp=localStorage.getItem('spotify_expiry');
   if(tok&&exp){if(Date.now()<+exp-60000)return tok;const r=await refreshToken();if(r)return r;}
   return null;
 }
 async function loadSpotify(){
   const el=document.getElementById('spotify-content');
   const token=await getToken();
-  if(!token){el.innerHTML=`<div class="spotify-art-placeholder">🎵</div><button class="spotify-login" onclick="spotifyLogin()">Connect Spotify</button>`;return;}
+  if(!token){el.innerHTML='<div class="spotify-art-placeholder">&#127925;</div><button class="spotify-login" onclick="spotifyLogin()">Connect Spotify</button>';return;}
   try{
-    const r=await fetch('https://api.spotify.com/v1/me/player/currently-playing',{headers:{'Authorization':`Bearer ${token}`}});
-    if(r.status===204){el.innerHTML=`<div class="spotify-inner"><div class="spotify-art-placeholder">🎵</div><div class="spotify-info"><div class="spotify-track">Nothing playing</div><div class="spotify-artist">Open Spotify</div></div></div>`;return;}
-    if(r.status===401){const ref=await refreshToken();if(!ref){localStorage.removeItem('spotify_token');el.innerHTML=`<div class="spotify-art-placeholder">🎵</div><button class="spotify-login" onclick="spotifyLogin()">Reconnect Spotify</button>`;}return;}
-    const d=await r.json(),track=d.item,art=track?.album?.images?.[0]?.url;
-    el.innerHTML=`<div class="spotify-inner">${art?`<img class="spotify-art" src="${art}">`:'<div class="spotify-art-placeholder">🎵</div>'}<div class="spotify-info"><div class="spotify-track">${track?.name||'Unknown'}</div><div class="spotify-artist">${track?.artists?.map(a=>a.name).join(', ')||'–'}</div><div class="spotify-album">${track?.album?.name||'–'}</div><div class="spotify-status">${d.is_playing?'<span class="spotify-dot"></span> Now Playing':'⏸ Paused'}</div></div></div>`;
-  }catch(e){el.innerHTML=`<div class="error-msg">Spotify unavailable</div>`;}
+    const r=await fetch('https://api.spotify.com/v1/me/player/currently-playing',{headers:{'Authorization':'Bearer '+token}});
+    if(r.status===204){el.innerHTML='<div class="spotify-inner"><div class="spotify-art-placeholder">&#127925;</div><div class="spotify-info"><div class="spotify-track">Nothing playing</div><div class="spotify-artist">Open Spotify</div></div></div>';return;}
+    if(r.status===401){const ref=await refreshToken();if(!ref){localStorage.removeItem('spotify_token');el.innerHTML='<div class="spotify-art-placeholder">&#127925;</div><button class="spotify-login" onclick="spotifyLogin()">Reconnect Spotify</button>';}return;}
+    const d=await r.json(), track=d.item, art=track?.album?.images?.[0]?.url;
+    el.innerHTML='<div class="spotify-inner">'+(art?'<img class="spotify-art" src="'+art+'">':'<div class="spotify-art-placeholder">&#127925;</div>')+'<div class="spotify-info"><div class="spotify-track">'+(track?.name||'Unknown')+'</div><div class="spotify-artist">'+(track?.artists?.map(a=>a.name).join(', ')||'&ndash;')+'</div><div class="spotify-album">'+(track?.album?.name||'&ndash;')+'</div><div class="spotify-status">'+(d.is_playing?'<span class="spotify-dot"></span> Now Playing':'&#9208; Paused')+'</div></div></div>';
+  }catch(e){el.innerHTML='<div class="error-msg">Spotify unavailable</div>';}
 }
 loadSpotify(); setInterval(loadSpotify,10000);
 
-// ── PHOTOS ────────────────────────────────────────────────────────
+// JOKE
+async function loadJoke(force){
+  const el=document.getElementById('joke-content');
+  el.innerHTML='<div class="joke-loading">Thinking of a joke...</div>';
+  try{
+    const today=new Date().toDateString();
+    if(!force){
+      try{
+        const cached=localStorage.getItem('joke-cache');
+        if(cached){const c=JSON.parse(cached);if(c.date===today){renderJoke(c.setup,c.punchline,el);return;}}
+      }catch(e){}
+    }
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:200,
+        messages:[{role:'user',content:'Give me one funny, family-friendly kids joke for ages 5-12. Reply with ONLY valid JSON in this exact format, nothing else: {"setup":"...","punchline":"..."}'}]
+      })
+    });
+    const data=await res.json();
+    const raw=(data.content?.[0]?.text||'').replace(/```json|```/g,'').trim();
+    const joke=JSON.parse(raw);
+    try{localStorage.setItem('joke-cache',JSON.stringify({date:today,setup:joke.setup,punchline:joke.punchline}));}catch(e){}
+    renderJoke(joke.setup,joke.punchline,el);
+  }catch(e){
+    const fb=[
+      {setup:"Why can't Elsa have a balloon?",punchline:"Because she'll let it go!"},
+      {setup:"What do you call a fish without eyes?",punchline:"A fsh!"},
+      {setup:"Why did the math book look sad?",punchline:"It had too many problems!"},
+      {setup:"What do elves learn in school?",punchline:"The elf-abet!"},
+      {setup:"Why did the scarecrow win an award?",punchline:"Because he was outstanding in his field!"}
+    ];
+    const f=fb[Math.floor(Math.random()*fb.length)];
+    renderJoke(f.setup,f.punchline,el);
+  }
+}
+function renderJoke(setup,punchline,el){
+  el.innerHTML='<div class="joke-inner"><div class="joke-setup">'+setup+'</div><div class="joke-punchline">'+punchline+'</div><button class="joke-refresh" onclick="loadJoke(true)">New joke &#127922;</button></div>';
+}
+loadJoke();
+
+// PHOTOS
 const photoInput=document.getElementById('photo-input');
 const photoStrip=document.getElementById('photo-strip');
 let photoURLs=[];
@@ -520,7 +592,7 @@ function savePhotos(){try{localStorage.setItem('dashPhotos',JSON.stringify(photo
 photoInput.addEventListener('change',e=>{Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=ev=>{photoURLs.push(ev.target.result);savePhotos();};r.readAsDataURL(f);});e.target.value='';});
 renderPhotos();
 
-// ── BACKGROUND ────────────────────────────────────────────────────
+// BACKGROUND
 const bgColors=['linear-gradient(135deg,#0d1b2a 0%,#1b2838 40%,#2c3e50 100%)','linear-gradient(135deg,#1a0533 0%,#3d1054 40%,#6a2c70 100%)','linear-gradient(135deg,#0f2027 0%,#203a43 50%,#2c5364 100%)','linear-gradient(135deg,#200122 0%,#6f0000 100%)','linear-gradient(135deg,#093028 0%,#237a57 100%)'];
 const ss=document.getElementById('bg-slideshow');
 bgColors.forEach((bg,i)=>{const s=document.createElement('div');s.className='bg-slide'+(i===0?' active':'');s.style.background=bg;ss.appendChild(s);});
