@@ -8,26 +8,13 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 html, body { height:100%; overflow:auto; }
 body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#fff; }
-
 #bg-slideshow { position:fixed; inset:0; z-index:0; }
 .bg-slide { position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity 2s ease-in-out; }
 .bg-slide.active { opacity:1; }
 .bg-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.58); z-index:1; }
-
-.dashboard {
-  position:relative; z-index:2;
-  width:1080px; height:1920px;
-  margin:0 auto;
-  padding:14px;
-  display:grid;
-  grid-template-columns: 1.4fr 1.6fr;
-  grid-template-rows: 52px 380px 420px 420px 1fr 220px;
-  gap:10px;
-}
-
+.dashboard { position:relative; z-index:2; width:1080px; height:1920px; margin:0 auto; padding:14px; display:grid; grid-template-columns:1.4fr 1.6fr; grid-template-rows:52px 380px 420px 420px 1fr 220px; gap:10px; }
 .title-bar { grid-column:1/3; grid-row:1; display:flex; align-items:center; justify-content:center; }
 .title-bar h1 { font-size:2rem; font-weight:300; letter-spacing:3px; text-shadow:0 2px 10px rgba(0,0,0,0.5); }
-
 .sports-card   { grid-column:1/3; grid-row:2; overflow:hidden; }
 .weather-card  { grid-column:1;   grid-row:3; }
 .clockcal-card { grid-column:2;   grid-row:3; display:flex; flex-direction:column; gap:10px; }
@@ -36,10 +23,8 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
 .photos-card   { grid-column:2;   grid-row:5; }
 .spotify-card  { grid-column:1;   grid-row:6; }
 .joke-card     { grid-column:2;   grid-row:6; }
-
 .card { background:rgba(255,255,255,0.08); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,0.12); border-radius:14px; padding:12px; box-shadow:0 6px 24px rgba(0,0,0,0.3); overflow:hidden; }
 .card-title { font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.45); margin-bottom:8px; }
-
 /* WEATHER */
 .weather-main { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
 .weather-icon { font-size:3rem; }
@@ -55,20 +40,19 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
 .sun-set-svg  { stroke:rgba(255,140,60,0.9); fill:none; }
 .weather-forecast { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:10px; }
 .forecast-day { text-align:center; background:rgba(255,255,255,0.06); border-radius:8px; padding:8px 4px; }
-.forecast-day .day-name   { font-size:1rem;   color:rgba(255,255,255,0.6); }
+.forecast-day .day-name   { font-size:1rem; color:rgba(255,255,255,0.6); }
 .forecast-day .day-icon   { font-size:1.9rem; margin:4px 0; }
 .forecast-day .day-hi     { font-size:1.25rem; }
-.forecast-day .day-lo     { font-size:1rem;   color:rgba(255,255,255,0.5); }
+.forecast-day .day-lo     { font-size:1rem; color:rgba(255,255,255,0.5); }
 .forecast-day .day-precip { font-size:0.92rem; color:#7ecfff; margin-top:3px; }
 .hourly-label { font-size:0.6rem; text-transform:uppercase; letter-spacing:2px; color:rgba(255,255,255,0.4); margin-bottom:6px; }
 .hourly-row   { display:grid; grid-template-columns:repeat(8,1fr); gap:4px; }
 .hourly-item  { text-align:center; background:rgba(255,255,255,0.05); border-radius:6px; padding:5px 2px; }
-.hourly-time   { font-size:0.8rem;  color:rgba(255,255,255,0.5); margin-bottom:2px; }
+.hourly-time   { font-size:0.8rem; color:rgba(255,255,255,0.5); margin-bottom:2px; }
 .hourly-icon   { font-size:1.3rem; }
-.hourly-temp   { font-size:1rem;   font-weight:500; }
+.hourly-temp   { font-size:1rem; font-weight:500; }
 .hourly-precip { font-size:0.75rem; color:#7ecfff; margin-top:2px; }
-
-/* CLOCK + CALENDAR */
+/* CLOCK */
 .clock-section { text-align:center; padding:10px 0 8px; }
 #clock-time { font-size:3rem; font-weight:100; letter-spacing:4px; line-height:1; }
 #clock-date { font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:6px; }
@@ -78,23 +62,21 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
 .month-title { font-size:0.9rem; font-weight:500; }
 .month-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
 .month-weekday { text-align:center; font-size:0.55rem; color:rgba(255,255,255,0.4); padding:3px 0; text-transform:uppercase; }
-.month-day { text-align:center; padding:3px 1px; border-radius:5px; font-size:0.72rem; min-height:28px; line-height:1.2; overflow:visible; }
+.month-day { text-align:center; padding:3px 1px; border-radius:5px; font-size:0.72rem; min-height:28px; line-height:1.2; }
 .month-day.other-month { color:rgba(255,255,255,0.2); }
 .month-day.today-month { background:rgba(100,180,255,0.4); font-weight:700; }
 .evt-dot { display:block; width:5px; height:5px; background:#7ecfff; border-radius:50%; margin:2px auto 0; box-shadow:0 0 5px rgba(126,207,255,0.9); }
-
-/* NEXT 2 WEEKS */
+/* 2 WEEKS */
 .two-week-wrapper { display:flex; flex-direction:column; gap:8px; }
 .week-row { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
-.week-row + .week-row { border-top:1px solid rgba(255,255,255,0.1); padding-top:8px; }
+.week-row+.week-row { border-top:1px solid rgba(255,255,255,0.1); padding-top:8px; }
 .week-day-col { text-align:center; display:flex; flex-direction:column; align-items:stretch; }
 .week-day-name { font-size:0.72rem; color:rgba(255,255,255,0.5); text-transform:uppercase; margin-bottom:3px; }
 .week-day-num { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 4px; align-self:center; font-size:0.95rem; }
 .week-day-num.today { background:rgba(100,180,255,0.6); font-weight:700; }
 .week-event { font-size:0.68rem; background:rgba(100,200,120,0.25); border-left:2px solid rgba(100,200,120,0.8); border-radius:3px; padding:3px 5px; margin-bottom:3px; text-align:left; display:flex; flex-direction:column; gap:1px; height:52px; box-sizing:border-box; overflow:hidden; }
-.week-event-title { font-weight:500; white-space:normal; overflow:hidden; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+.week-event-title { font-weight:500; overflow:hidden; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
 .week-event-time { color:rgba(255,255,255,0.55); font-size:0.62rem; white-space:nowrap; flex-shrink:0; }
-
 /* UPCOMING */
 .event-item { display:flex; gap:8px; margin-bottom:7px; padding-bottom:7px; border-bottom:1px solid rgba(255,255,255,0.07); align-items:flex-start; }
 .event-item:last-child { border-bottom:none; margin-bottom:0; }
@@ -103,7 +85,6 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
 .badge-month { font-size:0.65rem; color:rgba(255,255,255,0.6); text-transform:uppercase; }
 .event-title { font-size:0.95rem; font-weight:500; }
 .event-time  { font-size:0.78rem; color:rgba(255,255,255,0.5); margin-top:2px; }
-
 /* SPORTS */
 .sports-section { margin-bottom:10px; }
 .sports-section:last-child { margin-bottom:0; }
@@ -124,8 +105,6 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
 .team-logo   { display:flex; align-items:center; justify-content:center; height:18px; margin-bottom:1px; }
 .team-logo img { width:16px; height:16px; object-fit:contain; }
 .no-games    { color:rgba(255,255,255,0.4); font-size:0.75rem; }
-
-
 /* SPOTIFY */
 .spotify-inner { display:flex; gap:10px; align-items:center; }
 .spotify-art   { width:60px; height:60px; border-radius:8px; object-fit:cover; flex-shrink:0; }
@@ -138,21 +117,18 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
 .spotify-dot    { width:6px; height:6px; border-radius:50%; background:#1DB954; display:inline-block; animation:pulse 1.5s infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 .spotify-login  { background:#1DB954; border:none; color:#000; padding:6px 12px; border-radius:20px; cursor:pointer; font-weight:600; font-size:0.75rem; width:100%; margin-top:6px; }
-
 /* JOKE */
 .joke-inner { display:flex; flex-direction:column; justify-content:center; height:100%; gap:10px; }
 .joke-setup     { font-size:0.92rem; font-weight:500; line-height:1.45; color:rgba(255,255,255,0.9); }
 .joke-punchline { font-size:0.92rem; color:#ffd97d; line-height:1.45; font-style:italic; }
 .joke-loading   { color:rgba(255,255,255,0.4); font-size:0.8rem; text-align:center; padding:10px; }
 .joke-refresh   { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:5px 12px; border-radius:6px; cursor:pointer; font-size:0.65rem; align-self:flex-start; }
-
 /* PHOTOS */
 .photo-strip { display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; height:110px; }
 .photo-strip::-webkit-scrollbar { display:none; }
 .photo-thumb { min-width:140px; height:110px; border-radius:8px; object-fit:cover; flex-shrink:0; cursor:pointer; }
 .photo-placeholder { min-width:80px; height:110px; border-radius:8px; background:rgba(255,255,255,0.08); display:flex; flex-direction:column; align-items:center; justify-content:center; color:rgba(255,255,255,0.4); font-size:0.65rem; text-align:center; padding:6px; flex-shrink:0; }
 .add-photo-btn { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.65rem; margin-top:6px; }
-
 .loading   { color:rgba(255,255,255,0.4); font-size:0.75rem; text-align:center; padding:10px; }
 .error-msg { color:rgba(255,150,150,0.8); font-size:0.7rem; padding:4px; }
 </style>
@@ -160,20 +136,16 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
 <body>
 <div id="bg-slideshow"></div>
 <div class="bg-overlay"></div>
-
 <div class="dashboard">
   <div class="title-bar"><h1>The McNaughtons' Little Life</h1></div>
-
   <div class="card sports-card">
     <div class="card-title">Scores &amp; Schedule</div>
     <div id="sports-content"><div class="loading">Loading...</div></div>
   </div>
-
   <div class="card weather-card">
     <div class="card-title">Weather - Calgary</div>
     <div id="weather-content"><div class="loading">Loading...</div></div>
   </div>
-
   <div class="card clockcal-card">
     <div class="clock-section">
       <div id="clock-time">--:--</div>
@@ -187,17 +159,14 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
     </div>
     <div id="monthly-content"><div class="loading">Loading...</div></div>
   </div>
-
   <div class="card weekly-card">
     <div class="card-title">Next 2 Weeks</div>
     <div id="weekly-content"><div class="loading">Loading...</div></div>
   </div>
-
   <div class="card upcoming-card">
     <div class="card-title">Upcoming Events</div>
     <div id="upcoming-content"><div class="loading">Loading...</div></div>
   </div>
-
   <div class="card photos-card">
     <div class="card-title">Family Photos</div>
     <div class="photo-strip" id="photo-strip">
@@ -206,7 +175,6 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
     <input type="file" id="photo-input" accept="image/*" multiple style="display:none">
     <button class="add-photo-btn" onclick="document.getElementById('photo-input').click()">+ Add Photos</button>
   </div>
-
   <div class="card spotify-card">
     <div class="card-title">&#127925; Now Playing</div>
     <div id="spotify-content">
@@ -214,13 +182,11 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
       <button class="spotify-login" onclick="spotifyLogin()">Connect Spotify</button>
     </div>
   </div>
-
   <div class="card joke-card">
     <div class="card-title">&#128514; Kids' Joke of the Day</div>
     <div id="joke-content"><div class="joke-loading">Loading joke...</div></div>
   </div>
 </div>
-
 <script>
 // CLOCK
 function updateClock(){
@@ -239,105 +205,75 @@ async function loadWeather(){
   try{
     const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=51.0447&longitude=-114.0719&current=temperature_2m,apparent_temperature,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset&hourly=temperature_2m,weather_code,precipitation_probability&temperature_unit=celsius&timezone=America%2FDenver&forecast_days=6');
     const d=await r.json();
-    const cur=d.current, daily=d.daily, code=cur.weather_code;
+    const cur=d.current,daily=d.daily,code=cur.weather_code;
     const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-    const fmtSun=t=>{
-      if(!t) return '--';
-      const dt=new Date(t);
-      const h=dt.getHours()%12||12, mn=String(dt.getMinutes()).padStart(2,'0');
-      return h+':'+mn+' '+(dt.getHours()<12?'AM':'PM');
-    };
-
+    const fmtSun=t=>{if(!t)return '--';const dt=new Date(t);const h=dt.getHours()%12||12,mn=String(dt.getMinutes()).padStart(2,'0');return h+':'+mn+' '+(dt.getHours()<12?'AM':'PM');};
     let fc='';
     for(let i=1;i<=4;i++){
       const dt=new Date(daily.time[i]+'T12:00:00');
-      const hi=daily.temperature_2m_max?.[i], lo=daily.temperature_2m_min?.[i], dc=daily.weather_code?.[i]??0;
+      const hi=daily.temperature_2m_max?.[i],lo=daily.temperature_2m_min?.[i],dc=daily.weather_code?.[i]??0;
       const precip=daily.precipitation_probability_max?.[i]??0;
-      fc+='<div class="forecast-day">'
-        +'<div class="day-name">'+days[dt.getDay()]+'</div>'
-        +'<div class="day-icon">'+(WX_ICONS[dc]||'&#x26C5;')+'</div>'
-        +'<div class="day-hi">'+(typeof hi==='number'?Math.round(hi)+'&deg;':'&ndash;')+'</div>'
-        +'<div class="day-lo">'+(typeof lo==='number'?Math.round(lo)+'&deg;':'&ndash;')+'</div>'
-        +'<div class="day-precip">'+precip+'%</div>'
-        +'</div>';
+      fc+='<div class="forecast-day"><div class="day-name">'+days[dt.getDay()]+'</div><div class="day-icon">'+(WX_ICONS[dc]||'&#x26C5;')+'</div><div class="day-hi">'+(typeof hi==='number'?Math.round(hi)+'&deg;':'&ndash;')+'</div><div class="day-lo">'+(typeof lo==='number'?Math.round(lo)+'&deg;':'&ndash;')+'</div><div class="day-precip">'+precip+'%</div></div>';
     }
-
-    const now8=new Date(); let si=0;
+    const now8=new Date();let si=0;
     for(let i=0;i<d.hourly.time.length;i++){if(new Date(d.hourly.time[i])>now8){si=i;break;}}
     let hourly='';
     for(let i=si;i<si+8&&i<d.hourly.time.length;i++){
-      const t=new Date(d.hourly.time[i]);
-      const hr=t.getHours();
+      const t=new Date(d.hourly.time[i]);const hr=t.getHours();
       const lbl=hr===0?'12am':hr<12?hr+'am':hr===12?'12pm':(hr-12)+'pm';
-      const hT=d.hourly.temperature_2m[i];
-      const hP=d.hourly.precipitation_probability[i]??0;
-      const hC=d.hourly.weather_code[i];
-      hourly+='<div class="hourly-item">'
-        +'<div class="hourly-time">'+lbl+'</div>'
-        +'<div class="hourly-icon">'+(WX_ICONS[hC]||'&#x26C5;')+'</div>'
-        +'<div class="hourly-temp">'+(typeof hT==='number'?Math.round(hT)+'&deg;':'&ndash;')+'</div>'
-        +'<div class="hourly-precip">'+hP+'%</div>'
-        +'</div>';
+      hourly+='<div class="hourly-item"><div class="hourly-time">'+lbl+'</div><div class="hourly-icon">'+(WX_ICONS[d.hourly.weather_code[i]]||'&#x26C5;')+'</div><div class="hourly-temp">'+(typeof d.hourly.temperature_2m[i]==='number'?Math.round(d.hourly.temperature_2m[i])+'&deg;':'&ndash;')+'</div><div class="hourly-precip">'+( d.hourly.precipitation_probability[i]??0)+'%</div></div>';
     }
-
-    const sunrise=daily.sunrise?.[0], sunset=daily.sunset?.[0];
+    const sunrise=daily.sunrise?.[0],sunset=daily.sunset?.[0];
     const sunriseSVG='<svg class="sun-svg sun-rise-svg" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/><path d="M5 19h14" stroke-dasharray="3 2"/></svg>';
     const sunsetSVG='<svg class="sun-svg sun-set-svg" viewBox="0 0 24 24" stroke-width="2"><circle cx="12" cy="9" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="4.22" y1="3.22" x2="5.64" y2="4.64"/><line x1="18.36" y1="4.64" x2="19.78" y2="3.22"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="20" y1="9" x2="22" y2="9"/><path d="M3 17h18"/><path d="M7 21h10"/></svg>';
-
-    el.innerHTML='<div class="weather-main">'
-      +'<div class="weather-icon">'+(WX_ICONS[code]||'&#x26C5;')+'</div>'
-      +'<div class="weather-temps-block">'
-        +'<div class="weather-temp">'+Math.round(cur.temperature_2m)+'&deg;C</div>'
-        +'<div class="weather-desc">'+(WX_DESC[code]||'&ndash;')+'</div>'
-        +'<div class="weather-feels">Feels like '+Math.round(cur.apparent_temperature)+'&deg;</div>'
-      +'</div>'
-      +'<div class="weather-sun-block">'
-        +'<div class="sun-item">'+sunriseSVG+fmtSun(sunrise)+'</div>'
-        +'<div class="sun-item sun-set">'+sunsetSVG+fmtSun(sunset)+'</div>'
-      +'</div>'
-    +'</div>'
-    +'<div class="weather-forecast">'+fc+'</div>'
-    +'<div class="hourly-label">Next 8 Hours</div>'
-    +'<div class="hourly-row">'+hourly+'</div>';
+    el.innerHTML='<div class="weather-main"><div class="weather-icon">'+(WX_ICONS[code]||'&#x26C5;')+'</div><div class="weather-temps-block"><div class="weather-temp">'+Math.round(cur.temperature_2m)+'&deg;C</div><div class="weather-desc">'+(WX_DESC[code]||'&ndash;')+'</div><div class="weather-feels">Feels like '+Math.round(cur.apparent_temperature)+'&deg;</div></div><div class="weather-sun-block"><div class="sun-item">'+sunriseSVG+fmtSun(sunrise)+'</div><div class="sun-item sun-set">'+sunsetSVG+fmtSun(sunset)+'</div></div></div><div class="weather-forecast">'+fc+'</div><div class="hourly-label">Next 8 Hours</div><div class="hourly-row">'+hourly+'</div>';
   }catch(e){el.innerHTML='<div class="error-msg">Weather unavailable</div>';}
 }
 loadWeather(); setInterval(loadWeather,600000);
 
 // CALENDAR
-const PROXY_URL='https://p58-caldav.icloud.com/published/2/MTAwMzMzOTgxMTAwMzMzOeRx7owgHoBn3si23dlCBoVPkDfkX3KzWwXgtKqyboafExi6t2dl4GIQtBaVq-ZyfDaJ6Bfa4ugJ5I8GjgjoqLs';
-let allEvents=[]; let viewYear=new Date().getFullYear(), viewMonth=new Date().getMonth();
+const ICS_URL='https://p58-caldav.icloud.com/published/2/MTAwMzMzOTgxMTAwMzMzOeRx7owgHoBn3si23dlCBoVPkDfkX3KzWwXgtKqyboafExi6t2dl4GIQtBaVq-ZyfDaJ6Bfa4ugJ5I8GjgjoqLs';
+let allEvents=[]; let viewYear=new Date().getFullYear(),viewMonth=new Date().getMonth();
 
 function parseICS(text){
   const events=[];
-  const blocks=text.split('BEGIN:VEVENT');
+  // Unfold ICS line continuations (CRLF or LF followed by whitespace)
+  const unfolded=text.replace(/\r\n[ \t]/g,'').replace(/\n[ \t]/g,'');
+  const blocks=unfolded.split('BEGIN:VEVENT');
   for(let i=1;i<blocks.length;i++){
     const b=blocks[i];
-    const get=k=>{const m=b.match(new RegExp(k+'[^:]*:([^\r\n]+)'));return m?m[1].trim():'';};
-    const dtraw=get('DTSTART'), dtendraw=get('DTEND'), title=get('SUMMARY').replace(/\\,/g,',').replace(/\\n/g,' ');
+    // Use multiline regex anchored to line start to avoid false matches
+    const getLine=k=>{const m=b.match(new RegExp('(?:^|\n)'+k+'(?:;[^:\r\n]*)?:([^\r\n]+)','m'));return m?m[1].trim():'';};
+    const dtraw=getLine('DTSTART'),dtendraw=getLine('DTEND');
+    const rawSummary=getLine('SUMMARY');
+    // Unescape all ICS special chars including & and common entities
+    const title=rawSummary
+      .replace(/\\,/g,',')
+      .replace(/\\n/g,' ')
+      .replace(/\\;/g,';')
+      .replace(/\\&/g,'&')
+      .replace(/\\\\/g,'\\')
+      .replace(/&amp;/g,'&')
+      .trim();
     if(!dtraw||!title) continue;
     const pd=s=>{
-      // Preserve Z suffix before stripping non-numeric chars
       const isUTC=s.endsWith('Z');
       const c=s.replace(/[^0-9T]/g,'');
       if(c.length===8) return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8));
       if(c.length>=15){
-        if(isUTC){
-          // Parse as UTC then let JS convert to local
-          return new Date(Date.UTC(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13)));
-        }
+        if(isUTC) return new Date(Date.UTC(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13)));
         return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13));
       }
       return null;
     };
-    const start=pd(dtraw), end=dtendraw?pd(dtendraw):null;
+    const start=pd(dtraw),end=dtendraw?pd(dtendraw):null;
     if(start&&!isNaN(start)) events.push({title,start,end});
   }
   return events.sort((a,b)=>a.start-b.start);
 }
 
 function getDemoEvents(){
-  const y=new Date().getFullYear(), m=new Date().getMonth();
+  const y=new Date().getFullYear(),m=new Date().getMonth();
   return[
     {title:'Luca appt w Braxtyn',start:new Date(y,m,3,11,0),end:new Date(y,m,3,12,0)},
     {title:'Ross field',start:new Date(y,m,5,7,0),end:new Date(y,m,5,9,0)},
@@ -351,7 +287,7 @@ function getDemoEvents(){
 
 function fmtTime(d){
   if(!d||d.getHours()===0&&d.getMinutes()===0) return 'All day';
-  const h=d.getHours()%12||12, mn=String(d.getMinutes()).padStart(2,'0');
+  const h=d.getHours()%12||12,mn=String(d.getMinutes()).padStart(2,'0');
   return h+':'+mn+' '+(d.getHours()<12?'AM':'PM');
 }
 function fmtTimeRange(start,end){
@@ -359,7 +295,7 @@ function fmtTimeRange(start,end){
   const s=fmtTime(start);
   if(!end) return s;
   const es=fmtTime(end);
-  const sp=start.getHours()<12?'AM':'PM', ep=end.getHours()<12?'AM':'PM';
+  const sp=start.getHours()<12?'AM':'PM',ep=end.getHours()<12?'AM':'PM';
   return (sp===ep?s.replace(/ (AM|PM)$/,''):s)+'\u2013'+es;
 }
 
@@ -368,29 +304,20 @@ const WDAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function renderAll(){renderUpcoming();renderWeekly();renderMonthly();}
 
 function renderUpcoming(){
-  const now=new Date(); now.setHours(0,0,0,0);
+  const now=new Date();now.setHours(0,0,0,0);
   const up=allEvents.filter(e=>e.start>=now).slice(0,8);
   if(!up.length){document.getElementById('upcoming-content').innerHTML='<div class="loading">No upcoming events</div>';return;}
-  document.getElementById('upcoming-content').innerHTML=up.map(e=>
-    '<div class="event-item">'
-    +'<div class="event-date-badge"><div class="badge-day">'+e.start.getDate()+'</div><div class="badge-month">'+MONTHS[e.start.getMonth()].slice(0,3)+'</div></div>'
-    +'<div><div class="event-title">'+e.title+'</div><div class="event-time">'+fmtTime(e.start)+'</div></div>'
-    +'</div>'
-  ).join('');
+  document.getElementById('upcoming-content').innerHTML=up.map(e=>'<div class="event-item"><div class="event-date-badge"><div class="badge-day">'+e.start.getDate()+'</div><div class="badge-month">'+MONTHS[e.start.getMonth()].slice(0,3)+'</div></div><div><div class="event-title">'+e.title+'</div><div class="event-time">'+fmtTime(e.start)+'</div></div></div>').join('');
 }
 
 function renderWeekly(){
-  const now=new Date(); now.setHours(0,0,0,0);
+  const now=new Date();now.setHours(0,0,0,0);
   function buildRow(offset){
     let row='<div class="week-row">';
     for(let d=offset;d<offset+7;d++){
-      const day=new Date(now); day.setDate(now.getDate()+d);
+      const day=new Date(now);day.setDate(now.getDate()+d);
       const evts=allEvents.filter(e=>e.start.toDateString()===day.toDateString());
-      row+='<div class="week-day-col">'
-        +'<div class="week-day-name">'+WDAYS[day.getDay()]+'</div>'
-        +'<div class="week-day-num'+(d===0?' today':'')+'">'+day.getDate()+'</div>'
-        +evts.slice(0,3).map(e=>'<div class="week-event"><span class="week-event-title">'+e.title+'</span><span class="week-event-time">'+fmtTimeRange(e.start,e.end)+'</span></div>').join('')
-        +'</div>';
+      row+='<div class="week-day-col"><div class="week-day-name">'+WDAYS[day.getDay()]+'</div><div class="week-day-num'+(d===0?' today':'')+'">'+day.getDate()+'</div>'+evts.slice(0,3).map(e=>'<div class="week-event"><span class="week-event-title">'+e.title+'</span><span class="week-event-time">'+fmtTimeRange(e.start,e.end)+'</span></div>').join('')+'</div>';
     }
     return row+'</div>';
   }
@@ -399,8 +326,8 @@ function renderWeekly(){
 
 function renderMonthly(){
   document.getElementById('month-title').textContent=MONTHS[viewMonth]+' '+viewYear;
-  const first=new Date(viewYear,viewMonth,1), last=new Date(viewYear,viewMonth+1,0);
-  const today=new Date(); today.setHours(0,0,0,0);
+  const first=new Date(viewYear,viewMonth,1),last=new Date(viewYear,viewMonth+1,0);
+  const today=new Date();today.setHours(0,0,0,0);
   let html='<div class="month-grid">';
   WDAYS.forEach(d=>html+='<div class="month-weekday">'+d[0]+'</div>');
   for(let i=0;i<first.getDay();i++){const p=new Date(viewYear,viewMonth,-first.getDay()+i+1);html+='<div class="month-day other-month">'+p.getDate()+'</div>';}
@@ -419,10 +346,10 @@ document.getElementById('next-month').onclick=()=>{viewMonth++;if(viewMonth>11){
 
 async function loadCalendar(){
   const proxies=[
-    'https://corsproxy.io/?url='+encodeURIComponent(PROXY_URL),
-    'https://proxy.cors.sh/'+PROXY_URL,
-    'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(PROXY_URL),
-    'https://cors.eu.org/'+PROXY_URL
+    'https://corsproxy.io/?url='+encodeURIComponent(ICS_URL),
+    'https://proxy.cors.sh/'+ICS_URL,
+    'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(ICS_URL),
+    'https://cors.eu.org/'+ICS_URL
   ];
   let text=null;
   for(const url of proxies){
@@ -441,69 +368,55 @@ async function loadSports(){
     const mtNow=new Date(now.getTime()+now.getTimezoneOffset()*60000+(-7*60)*60000);
     const pad=n=>String(n).padStart(2,'0');
     const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
-    const yest=new Date(mtNow); yest.setDate(mtNow.getDate()-1);
-    const todayISO=iso(mtNow), yestISO=iso(yest);
-
+    const yest=new Date(mtNow);yest.setDate(mtNow.getDate()-1);
+    const todayISO=iso(mtNow),yestISO=iso(yest);
     async function fetchNHL(date){
       const direct='https://api-web.nhle.com/v1/score/'+date;
-      const p=[
-        'https://corsproxy.io/?url='+encodeURIComponent(direct),
-        'https://api.allorigins.win/raw?url='+encodeURIComponent(direct),
-        'https://cors.eu.org/'+direct,
-        'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(direct)
-      ];
+      const p=['https://corsproxy.io/?url='+encodeURIComponent(direct),'https://api.allorigins.win/raw?url='+encodeURIComponent(direct),'https://cors.eu.org/'+direct,'https://api.codetabs.com/v1/proxy?quest='+encodeURIComponent(direct)];
       for(const url of p){try{const r=await fetch(url,{signal:AbortSignal.timeout(7000)});if(r.ok){const d=await r.json();if(d.games)return d.games;}}catch(e){}}
       return[];
     }
-
     const[nhlY,nhlT,bjYD,bjTD]=await Promise.all([
-      fetchNHL(yestISO), fetchNHL(todayISO),
+      fetchNHL(yestISO),fetchNHL(todayISO),
       fetch('https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date='+yestISO+'&hydrate=linescore').then(r=>r.json()).catch(()=>null),
       fetch('https://statsapi.mlb.com/api/v1/schedule?teamId=141&sportId=1&date='+todayISO+'&hydrate=linescore').then(r=>r.json()).catch(()=>null)
     ]);
-
     let html='';
     const nhlYF=nhlY.filter(g=>['OFF','FINAL','OVER','F'].includes((g.gameState||'').toUpperCase()));
     if(nhlYF.length) html+=buildNHL('&#x1F3D2; NHL - Yesterday',nhlYF);
     if(nhlT.length)  html+=buildNHL('&#x1F3D2; NHL - Today',nhlT);
     if(!nhlYF.length&&!nhlT.length) html+='<div class="sports-section"><div class="sports-league-title">&#x1F3D2; NHL</div><div class="no-games">No games today</div></div>';
-    const bjY=bjYD?.dates?.[0]?.games||[], bjT=bjTD?.dates?.[0]?.games||[];
+    const bjY=bjYD?.dates?.[0]?.games||[],bjT=bjTD?.dates?.[0]?.games||[];
     if(bjY.length||bjT.length){html+='<div class="sports-section"><div class="sports-league-title">&#x26BE; Blue Jays</div><div class="games-row">';[...bjY,...bjT].forEach(g=>{html+=buildMLB(g);});html+='</div></div>';}
     else html+='<div class="sports-section"><div class="sports-league-title">&#x26BE; Blue Jays</div><div class="no-games">No games today</div></div>';
     el.innerHTML=html;
   }catch(e){el.innerHTML='<div class="error-msg">Sports unavailable</div>';}
 }
-
 function nhlLogo(a){return '<img src="https://assets.nhle.com/logos/nhl/svg/'+a+'_light.svg" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'" style="width:16px;height:16px;object-fit:contain"><span style="display:none;font-size:0.45rem;font-weight:600">'+a+'</span>';}
 function mlbLogo(id,a){return '<img src="https://www.mlbstatic.com/team-logos/'+id+'.svg" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'block\'" style="width:16px;height:16px;object-fit:contain"><span style="display:none;font-size:0.45rem;font-weight:600">'+a+'</span>';}
-
 function buildNHL(label,games){
   let html='<div class="sports-section"><div class="sports-league-title">'+label+'</div><div class="games-row">';
   games.forEach(g=>{
-    const home=g.homeTeam||{}, away=g.awayTeam||{}, state=(g.gameState||'').toUpperCase();
-    const isLive=state==='LIVE'||state==='CRIT', isFinal=['OFF','FINAL','OVER','F'].includes(state), isUp=!isLive&&!isFinal;
+    const home=g.homeTeam||{},away=g.awayTeam||{},state=(g.gameState||'').toUpperCase();
+    const isLive=state==='LIVE'||state==='CRIT',isFinal=['OFF','FINAL','OVER','F'].includes(state),isUp=!isLive&&!isFinal;
     const cls=isLive?'live':isFinal?'final':'upcoming';
-    const hS=home.score??null, aS=away.score??null;
-    const hW=isFinal&&hS>aS, aW=isFinal&&aS>hS;
-    const hA=home.abbrev||'?', awA=away.abbrev||'?';
+    const hS=home.score??null,aS=away.score??null,hW=isFinal&&hS>aS,aW=isFinal&&aS>hS;
+    const hA=home.abbrev||'?',awA=away.abbrev||'?';
     const stat=isLive?('&#x1F534; P'+(g.period||'')):isFinal?'Final':fmtGT(g.startTimeUTC||g.gameDate);
     html+='<div class="game-chip '+cls+'"><div class="game-teams"><div class="game-team"><div class="team-logo">'+nhlLogo(awA)+'</div><div class="game-team-name">'+awA+'</div><div class="game-team-score'+(aW?' game-winner':'')+'">'+( isUp?'&ndash;':(aS??0))+'</div></div><div class="game-vs">@</div><div class="game-team"><div class="team-logo">'+nhlLogo(hA)+'</div><div class="game-team-name">'+hA+'</div><div class="game-team-score'+(hW?' game-winner':'')+'">'+( isUp?'&ndash;':(hS??0))+'</div></div></div><div class="game-status'+(isLive?' live-status':'')+'">'+stat+'</div></div>';
   });
   return html+'</div></div>';
 }
-
 function buildMLB(g){
-  const home=g.teams.home, away=g.teams.away, st=g.status?.detailedState||'';
-  const isFinal=st.includes('Final'), isLive=st.includes('Progress'), isUp=!isFinal&&!isLive;
+  const home=g.teams.home,away=g.teams.away,st=g.status?.detailedState||'';
+  const isFinal=st.includes('Final'),isLive=st.includes('Progress'),isUp=!isFinal&&!isLive;
   const cls=isLive?'live':isFinal?'final':'upcoming';
-  const hS=home.score, aS=away.score, hW=isFinal&&hS>aS, aW=isFinal&&aS>hS;
-  // MLB API nests abbreviation at team.abbreviation OR team.teamCode OR team.name
+  const hS=home.score,aS=away.score,hW=isFinal&&hS>aS,aW=isFinal&&aS>hS;
   const abbr=t=>t?.team?.abbreviation||t?.team?.teamCode||t?.team?.clubName||t?.team?.name||'?';
   const tid=t=>t?.team?.id||'';
-  const ha=abbr(home), aa=abbr(away);
+  const ha=abbr(home),aa=abbr(away);
   return '<div class="game-chip '+cls+'"><div class="game-teams"><div class="game-team"><div class="team-logo">'+mlbLogo(tid(away),aa)+'</div><div class="game-team-name">'+aa+'</div><div class="game-team-score'+(aW?' game-winner':'')+'">'+( isUp?'&ndash;':(aS??'&ndash;'))+'</div></div><div class="game-vs">@</div><div class="game-team"><div class="team-logo">'+mlbLogo(tid(home),ha)+'</div><div class="game-team-name">'+ha+'</div><div class="game-team-score'+(hW?' game-winner':'')+'">'+( isUp?'&ndash;':(hS??'&ndash;'))+'</div></div></div><div class="game-status'+(isLive?' live-status':'')+'">'+( isFinal?'Final':isLive?'&#x1F534; Live':fmtGT(g.gameDate))+'</div></div>';
 }
-
 function fmtGT(u){if(!u)return '&ndash;';try{return new Date(u).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZone:'America/Denver',timeZoneName:'short'});}catch{return '&ndash;';}}
 loadSports(); setInterval(loadSports,60000);
 
@@ -526,7 +439,7 @@ async function exchangeCode(code){
   return null;
 }
 async function refreshToken(){
-  const ref=localStorage.getItem('spotify_refresh'); if(!ref)return null;
+  const ref=localStorage.getItem('spotify_refresh');if(!ref)return null;
   const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'refresh_token',refresh_token:ref,client_id:SPOTIFY_CLIENT_ID})});
   const d=await r.json();
   if(d.access_token){localStorage.setItem('spotify_token',d.access_token);localStorage.setItem('spotify_expiry',Date.now()+d.expires_in*1000);if(d.refresh_token)localStorage.setItem('spotify_refresh',d.refresh_token);return d.access_token;}
@@ -535,7 +448,7 @@ async function refreshToken(){
 async function getToken(){
   const code=new URLSearchParams(window.location.search).get('code');
   if(code){const t=await exchangeCode(code);if(t)return t;}
-  const tok=localStorage.getItem('spotify_token'), exp=localStorage.getItem('spotify_expiry');
+  const tok=localStorage.getItem('spotify_token'),exp=localStorage.getItem('spotify_expiry');
   if(tok&&exp){if(Date.now()<+exp-60000)return tok;const r=await refreshToken();if(r)return r;}
   return null;
 }
@@ -547,7 +460,7 @@ async function loadSpotify(){
     const r=await fetch('https://api.spotify.com/v1/me/player/currently-playing',{headers:{'Authorization':'Bearer '+token}});
     if(r.status===204){el.innerHTML='<div class="spotify-inner"><div class="spotify-art-placeholder">&#127925;</div><div class="spotify-info"><div class="spotify-track">Nothing playing</div><div class="spotify-artist">Open Spotify</div></div></div>';return;}
     if(r.status===401){const ref=await refreshToken();if(!ref){localStorage.removeItem('spotify_token');el.innerHTML='<div class="spotify-art-placeholder">&#127925;</div><button class="spotify-login" onclick="spotifyLogin()">Reconnect Spotify</button>';}return;}
-    const d=await r.json(), track=d.item, art=track?.album?.images?.[0]?.url;
+    const d=await r.json(),track=d.item,art=track?.album?.images?.[0]?.url;
     el.innerHTML='<div class="spotify-inner">'+(art?'<img class="spotify-art" src="'+art+'">':'<div class="spotify-art-placeholder">&#127925;</div>')+'<div class="spotify-info"><div class="spotify-track">'+(track?.name||'Unknown')+'</div><div class="spotify-artist">'+(track?.artists?.map(a=>a.name).join(', ')||'&ndash;')+'</div><div class="spotify-album">'+(track?.album?.name||'&ndash;')+'</div><div class="spotify-status">'+(d.is_playing?'<span class="spotify-dot"></span> Now Playing':'&#9208; Paused')+'</div></div></div>';
   }catch(e){el.innerHTML='<div class="error-msg">Spotify unavailable</div>';}
 }
@@ -560,33 +473,16 @@ async function loadJoke(force){
   try{
     const today=new Date().toDateString();
     if(!force){
-      try{
-        const cached=localStorage.getItem('joke-cache');
-        if(cached){const c=JSON.parse(cached);if(c.date===today){renderJoke(c.setup,c.punchline,el);return;}}
-      }catch(e){}
+      try{const cached=localStorage.getItem('joke-cache');if(cached){const c=JSON.parse(cached);if(c.date===today){renderJoke(c.setup,c.punchline,el);return;}}}catch(e){}
     }
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:200,
-        messages:[{role:'user',content:'Give me one funny, family-friendly kids joke for ages 5-12. Reply with ONLY valid JSON in this exact format, nothing else: {"setup":"...","punchline":"..."}'}]
-      })
-    });
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:'Give me one funny, family-friendly kids joke for ages 5-12. Reply with ONLY valid JSON in this exact format, nothing else: {"setup":"...","punchline":"..."}'}]})});
     const data=await res.json();
     const raw=(data.content?.[0]?.text||'').replace(/```json|```/g,'').trim();
     const joke=JSON.parse(raw);
     try{localStorage.setItem('joke-cache',JSON.stringify({date:today,setup:joke.setup,punchline:joke.punchline}));}catch(e){}
     renderJoke(joke.setup,joke.punchline,el);
   }catch(e){
-    const fb=[
-      {setup:"Why can't Elsa have a balloon?",punchline:"Because she'll let it go!"},
-      {setup:"What do you call a fish without eyes?",punchline:"A fsh!"},
-      {setup:"Why did the math book look sad?",punchline:"It had too many problems!"},
-      {setup:"What do elves learn in school?",punchline:"The elf-abet!"},
-      {setup:"Why did the scarecrow win an award?",punchline:"Because he was outstanding in his field!"}
-    ];
+    const fb=[{setup:"Why can't Elsa have a balloon?",punchline:"Because she'll let it go!"},{setup:"What do you call a fish without eyes?",punchline:"A fsh!"},{setup:"Why did the math book look sad?",punchline:"It had too many problems!"},{setup:"What do elves learn in school?",punchline:"The elf-abet!"},{setup:"Why did the scarecrow win an award?",punchline:"Because he was outstanding in his field!"}];
     const f=fb[Math.floor(Math.random()*fb.length)];
     renderJoke(f.setup,f.punchline,el);
   }
