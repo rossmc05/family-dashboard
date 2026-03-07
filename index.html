@@ -345,11 +345,11 @@ function parseICS(text){
     const byDay=rparts['BYDAY']?rparts['BYDAY'].split(','):null;
 
     const dayMap={SU:0,MO:1,TU:2,WE:3,TH:4,FR:5,SA:6};
-    let stepMs=0;
-    if(freq==='DAILY') stepMs=interval*86400000;
-    else if(freq==='WEEKLY') stepMs=interval*7*86400000;
+    let stepDays=0;
+    if(freq==='DAILY') stepDays=interval;
+    else if(freq==='WEEKLY') stepDays=interval*7;
 
-    if(stepMs>0){
+    if(stepDays>0){
       let cur=new Date(baseStart);
       let n=0;
       while(cur<=winEnd){
@@ -361,7 +361,9 @@ function parseICS(text){
             events.push({title,start:new Date(cur),end});
           }
         }
-        cur=new Date(cur.getTime()+stepMs);
+        // Step by calendar days to preserve wall-clock time across DST changes
+        cur=new Date(cur);
+        cur.setDate(cur.getDate()+stepDays);
         n++;
         if(count&&n>=count) break;
         if(until&&cur>until) break;
