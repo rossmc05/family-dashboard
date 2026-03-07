@@ -241,13 +241,40 @@ function parseICS(text){
   const blocks=unfolded.split('BEGIN:VEVENT');
 
   // Parse a datetime string to a JS Date
+  // For UTC (Z suffix): parse as UTC, browser converts to local time correctly
+  // For TZID/floating: treat as America/Edmonton (Calgary) — UTC-7 MST / UTC-6 MDT
+  const CALGARY_OFFSET_MS = (() => {
+    // Detect current Calgary offset by checking DST
+    // MDT: second Sunday March to first Sunday November = UTC-6
+    // MST: rest of year = UTC-7
+    const now = new Date();
+    const yr = now.getFullYear();
+    // Second Sunday in March
+    const mar = new Date(yr, 2, 1);
+    while(mar.getDay()!==0) mar.setDate(mar.getDate()+1);
+    mar.setDate(mar.getDate()+7); // second Sunday
+    // First Sunday in November
+    const nov = new Date(yr, 10, 1);
+    while(nov.getDay()!==0) nov.setDate(nov.getDate()+1);
+    const isMDT = now >= mar && now < nov;
+    return isMDT ? 6*3600000 : 7*3600000; // ms to subtract from UTC
+  })();
+
   const pd=s=>{
     if(!s) return null;
     const isUTC=s.endsWith('Z');
     const c=s.replace(/[^0-9T]/g,'');
     if(c.length===8) return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8));
     if(c.length>=15){
-      if(isUTC) return new Date(Date.UTC(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13)));
+      if(isUTC){
+        // Parse as UTC then convert to Calgary local time explicitly
+        const utcMs = Date.UTC(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13));
+        // Return as a Date that represents Calgary local time stored as if it were local
+        const localMs = utcMs - CALGARY_OFFSET_MS;
+        const d = new Date(localMs);
+        return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes());
+      }
+      // TZID or floating — already in Calgary local time
       return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13));
     }
     return null;
