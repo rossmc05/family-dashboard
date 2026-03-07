@@ -237,47 +237,104 @@ let allEvents=[]; let viewYear=new Date().getFullYear(),viewMonth=new Date().get
 
 function parseICS(text){
   const events=[];
-  // Unfold ICS line continuations (CRLF or LF followed by whitespace)
   const unfolded=text.replace(/\r\n[ \t]/g,'').replace(/\r[ \t]/g,'').replace(/\n[ \t]/g,'');
   const blocks=unfolded.split('BEGIN:VEVENT');
+
+  // Parse a datetime string to a JS Date
+  const pd=s=>{
+    if(!s) return null;
+    const isUTC=s.endsWith('Z');
+    const c=s.replace(/[^0-9T]/g,'');
+    if(c.length===8) return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8));
+    if(c.length>=15){
+      if(isUTC) return new Date(Date.UTC(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13)));
+      return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13));
+    }
+    return null;
+  };
+
+  // Window: 30 days ago to 60 days ahead
+  const winStart=new Date(); winStart.setDate(winStart.getDate()-30); winStart.setHours(0,0,0,0);
+  const winEnd=new Date(); winEnd.setDate(winEnd.getDate()+60); winEnd.setHours(23,59,59,999);
+
   for(let i=1;i<blocks.length;i++){
     const b=blocks[i];
-    // Split into lines and find matching property key
     const bLines=b.split(/\n/);
     const getLine=k=>{
       for(const line of bLines){
         const l=line.replace(/\r$/,'');
         if(l===k||l.startsWith(k+':')||l.startsWith(k+';')){
-          const ci=l.indexOf(':');
-          return ci>=0?l.slice(ci+1).trim():'';
+          const ci=l.indexOf(':'); return ci>=0?l.slice(ci+1).trim():'';
         }
       }
       return '';
     };
-    const dtraw=getLine('DTSTART'),dtendraw=getLine('DTEND');
-    const rawSummary=getLine('SUMMARY');
-    // Unescape all ICS special chars including & and common entities
-    const title=rawSummary
-      .replace(/\\,/g,',')
-      .replace(/\\n/g,' ')
-      .replace(/\\;/g,';')
-      .replace(/\\&/g,'&')
-      .replace(/\\\\/g,'\\')
-      .replace(/&amp;/g,'&')
-      .trim();
-    if(!dtraw||!title) continue;
-    const pd=s=>{
-      const isUTC=s.endsWith('Z');
-      const c=s.replace(/[^0-9T]/g,'');
-      if(c.length===8) return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8));
-      if(c.length>=15){
-        if(isUTC) return new Date(Date.UTC(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13)));
-        return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13));
+    const getAllLines=k=>{
+      const results=[];
+      for(const line of bLines){
+        const l=line.replace(/\r$/,'');
+        if(l===k||l.startsWith(k+':')||l.startsWith(k+';')){
+          const ci=l.indexOf(':'); if(ci>=0) results.push(l.slice(ci+1).trim());
+        }
       }
-      return null;
+      return results;
     };
-    const start=pd(dtraw),end=dtendraw?pd(dtendraw):null;
-    if(start&&!isNaN(start)) events.push({title,start,end});
+
+    const dtraw=getLine('DTSTART'), dtendraw=getLine('DTEND');
+    const rawSummary=getLine('SUMMARY');
+    const title=rawSummary.replace(/\\,/g,',').replace(/\\n/g,' ').replace(/\\;/g,';').replace(/\\&/g,'&').replace(/\\\\/g,'\\').replace(/&amp;/g,'&').trim();
+    if(!dtraw||!title) continue;
+
+    const baseStart=pd(dtraw);
+    const baseEnd=dtendraw?pd(dtendraw):null;
+    if(!baseStart||isNaN(baseStart)) continue;
+
+    const duration=baseEnd?(baseEnd-baseStart):0;
+    const rrule=getLine('RRULE');
+    const exdates=getAllLines('EXDATE').map(s=>pd(s)).filter(d=>d&&!isNaN(d));
+
+    if(!rrule){
+      // Non-recurring: just add if in window
+      if(baseStart<=winEnd) events.push({title,start:baseStart,end:baseEnd});
+      continue;
+    }
+
+    // Parse RRULE — handle WEEKLY and DAILY recurrence for next 60 days
+    const rparts={};
+    rrule.split(';').forEach(p=>{const[k,v]=p.split('=');rparts[k]=v;});
+    const freq=rparts['FREQ']||'';
+    const interval=+(rparts['INTERVAL']||1);
+    const count=rparts['COUNT']?+rparts['COUNT']:null;
+    const until=rparts['UNTIL']?pd(rparts['UNTIL']):null;
+    const byDay=rparts['BYDAY']?rparts['BYDAY'].split(','):null;
+
+    const dayMap={SU:0,MO:1,TU:2,WE:3,TH:4,FR:5,SA:6};
+    let stepMs=0;
+    if(freq==='DAILY') stepMs=interval*86400000;
+    else if(freq==='WEEKLY') stepMs=interval*7*86400000;
+
+    if(stepMs>0){
+      let cur=new Date(baseStart);
+      let n=0;
+      while(cur<=winEnd){
+        if(cur>=winStart){
+          const isExcluded=exdates.some(ex=>ex.toDateString()===cur.toDateString());
+          const dayOK=!byDay||byDay.some(d=>dayMap[d]===cur.getDay());
+          if(!isExcluded&&dayOK){
+            const end=duration?new Date(cur.getTime()+duration):null;
+            events.push({title,start:new Date(cur),end});
+          }
+        }
+        cur=new Date(cur.getTime()+stepMs);
+        n++;
+        if(count&&n>=count) break;
+        if(until&&cur>until) break;
+        if(n>500) break; // safety
+      }
+    } else {
+      // Unsupported freq (MONTHLY etc) — just add base if in window
+      if(baseStart>=winStart&&baseStart<=winEnd) events.push({title,start:baseStart,end:baseEnd});
+    }
   }
   return events.sort((a,b)=>a.start-b.start);
 }
