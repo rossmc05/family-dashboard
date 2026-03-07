@@ -238,7 +238,7 @@ let allEvents=[]; let viewYear=new Date().getFullYear(),viewMonth=new Date().get
 function parseICS(text){
   const events=[];
   // Unfold ICS line continuations (CRLF or LF followed by whitespace)
-  const unfolded=text.replace(/\r\n[ \t]/g,'').replace(/\n[ \t]/g,'');
+  const unfolded=text.replace(/\r\n[ \t]/g,'').replace(/\r[ \t]/g,'').replace(/\n[ \t]/g,'');
   const blocks=unfolded.split('BEGIN:VEVENT');
   for(let i=1;i<blocks.length;i++){
     const b=blocks[i];
@@ -356,6 +356,11 @@ async function loadCalendar(){
     try{const r=await fetch(url,{signal:AbortSignal.timeout(8000),headers:{'Accept':'text/calendar, */*'}});const t=await r.text();if(t.includes('BEGIN:VCALENDAR')){text=t;break;}}catch(e){}
   }
   allEvents=text?parseICS(text):getDemoEvents();
+  // DEBUG - remove later
+  console.log('=== PARSED EVENTS ===');
+  allEvents.forEach(e=>console.log(e.start.toDateString()+' '+e.start.toTimeString().slice(0,5)+' | '+e.title));
+  console.log('=== RAW ICS SNIPPET (first 3000 chars) ===');
+  if(text) console.log(text.slice(0,3000));
   renderAll();
 }
 loadCalendar(); setInterval(loadCalendar,900000);
