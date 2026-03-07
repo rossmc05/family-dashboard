@@ -274,8 +274,17 @@ function parseICS(text){
         const d = new Date(localMs);
         return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes());
       }
-      // TZID or floating — stored as America/Edmonton local time, return as-is
-      return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13));
+      // TZID=America/Edmonton: convert local Edmonton time to UTC-based Date
+      // so Intl display with timeZone:'America/Edmonton' gives correct result
+      const yr=+c.slice(0,4),mo=+c.slice(4,6)-1,dy=+c.slice(6,8),hr=+c.slice(9,11),mi=+c.slice(11,13);
+      // Determine Edmonton offset for this date (MDT=UTC-6, MST=UTC-7)
+      // MDT: 2nd Sunday March - 1st Sunday November
+      const dstStart=new Date(yr,2,1); while(dstStart.getDay()!==0)dstStart.setDate(dstStart.getDate()+1); dstStart.setDate(dstStart.getDate()+7);
+      const dstEnd=new Date(yr,10,1); while(dstEnd.getDay()!==0)dstEnd.setDate(dstEnd.getDate()+1);
+      const testDate=new Date(Date.UTC(yr,mo,dy,hr,mi));
+      const isMDT=testDate>=dstStart&&testDate<dstEnd;
+      const offsetMs=(isMDT?6:7)*3600000;
+      return new Date(Date.UTC(yr,mo,dy,hr,mi)+offsetMs);
     }
     return null;
   };
