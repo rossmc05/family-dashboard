@@ -242,8 +242,18 @@ function parseICS(text){
   const blocks=unfolded.split('BEGIN:VEVENT');
   for(let i=1;i<blocks.length;i++){
     const b=blocks[i];
-    // Use multiline regex anchored to line start to avoid false matches
-    const getLine=k=>{const m=b.match(new RegExp('(?:^|\n)'+k+'(?:;[^:\r\n]*)?:([^\r\n]+)','m'));return m?m[1].trim():'';};
+    // Split into lines and find matching property key
+    const bLines=b.split(/\n/);
+    const getLine=k=>{
+      for(const line of bLines){
+        const l=line.replace(/\r$/,'');
+        if(l===k||l.startsWith(k+':')||l.startsWith(k+';')){
+          const ci=l.indexOf(':');
+          return ci>=0?l.slice(ci+1).trim():'';
+        }
+      }
+      return '';
+    };
     const dtraw=getLine('DTSTART'),dtendraw=getLine('DTEND');
     const rawSummary=getLine('SUMMARY');
     // Unescape all ICS special chars including & and common entities
