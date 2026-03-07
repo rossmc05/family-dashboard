@@ -497,7 +497,11 @@ function buildMLB(g){
   const isFinal=st.includes('Final'), isLive=st.includes('Progress'), isUp=!isFinal&&!isLive;
   const cls=isLive?'live':isFinal?'final':'upcoming';
   const hS=home.score, aS=away.score, hW=isFinal&&hS>aS, aW=isFinal&&aS>hS;
-  return '<div class="game-chip '+cls+'"><div class="game-teams"><div class="game-team"><div class="team-logo">'+mlbLogo(away.team?.id,away.team?.abbreviation||'?')+'</div><div class="game-team-name">'+(away.team?.abbreviation||'?')+'</div><div class="game-team-score'+(aW?' game-winner':'')+'">'+( isUp?'&ndash;':(aS??'&ndash;'))+'</div></div><div class="game-vs">@</div><div class="game-team"><div class="team-logo">'+mlbLogo(home.team?.id,home.team?.abbreviation||'?')+'</div><div class="game-team-name">'+(home.team?.abbreviation||'?')+'</div><div class="game-team-score'+(hW?' game-winner':'')+'">'+( isUp?'&ndash;':(hS??'&ndash;'))+'</div></div></div><div class="game-status'+(isLive?' live-status':'')+'">'+( isFinal?'Final':isLive?'&#x1F534; Live':fmtGT(g.gameDate))+'</div></div>';
+  // MLB API nests abbreviation at team.abbreviation OR team.teamCode OR team.name
+  const abbr=t=>t?.team?.abbreviation||t?.team?.teamCode||t?.team?.clubName||t?.team?.name||'?';
+  const tid=t=>t?.team?.id||'';
+  const ha=abbr(home), aa=abbr(away);
+  return '<div class="game-chip '+cls+'"><div class="game-teams"><div class="game-team"><div class="team-logo">'+mlbLogo(tid(away),aa)+'</div><div class="game-team-name">'+aa+'</div><div class="game-team-score'+(aW?' game-winner':'')+'">'+( isUp?'&ndash;':(aS??'&ndash;'))+'</div></div><div class="game-vs">@</div><div class="game-team"><div class="team-logo">'+mlbLogo(tid(home),ha)+'</div><div class="game-team-name">'+ha+'</div><div class="game-team-score'+(hW?' game-winner':'')+'">'+( isUp?'&ndash;':(hS??'&ndash;'))+'</div></div></div><div class="game-status'+(isLive?' live-status':'')+'">'+( isFinal?'Final':isLive?'&#x1F534; Live':fmtGT(g.gameDate))+'</div></div>';
 }
 
 function fmtGT(u){if(!u)return '&ndash;';try{return new Date(u).toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',timeZone:'America/Denver',timeZoneName:'short'});}catch{return '&ndash;';}}
