@@ -315,7 +315,7 @@ function renderAll(){renderUpcoming();renderWeekly();renderMonthly();}
 
 function renderUpcoming(){
   const now=new Date();now.setHours(0,0,0,0);
-  const up=allEvents.filter(e=>e.start>=now).slice(0,8);
+  const up=allEvents.filter(e=>e.start>=now||e.start.toDateString()===now.toDateString()).slice(0,8);
   if(!up.length){document.getElementById('upcoming-content').innerHTML='<div class="loading">No upcoming events</div>';return;}
   document.getElementById('upcoming-content').innerHTML=up.map(e=>'<div class="event-item"><div class="event-date-badge"><div class="badge-day">'+e.start.getDate()+'</div><div class="badge-month">'+MONTHS[e.start.getMonth()].slice(0,3)+'</div></div><div><div class="event-title">'+e.title+'</div><div class="event-time">'+fmtTime(e.start)+'</div></div></div>').join('');
 }
@@ -366,27 +366,7 @@ async function loadCalendar(){
     try{const r=await fetch(url,{signal:AbortSignal.timeout(8000),headers:{'Accept':'text/calendar, */*'}});const t=await r.text();if(t.includes('BEGIN:VCALENDAR')){text=t;break;}}catch(e){}
   }
   allEvents=text?parseICS(text):getDemoEvents();
-  // Show debug info in the upcoming card temporarily
-  const dbg=document.getElementById('upcoming-content');
-  let dbgHtml='<div style="font-size:0.6rem;line-height:1.6;color:#fff;overflow:auto;height:100%">';
-  dbgHtml+='<b>SOURCE: '+(text?'LIVE ICS':'DEMO FALLBACK')+'</b><br>';
-  dbgHtml+='<b>EVENTS PARSED ('+allEvents.length+'):</b><br>';
-  allEvents.forEach(e=>dbgHtml+=e.start.toLocaleDateString('en-CA',{month:'short',day:'numeric'})+' '+e.start.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit'})+' — '+e.title+'<br>');
-  if(text){
-    // Show raw VEVENT blocks containing willa or swim
-    const lower=text.toLowerCase();
-    ['willa','swim','luca'].forEach(kw=>{
-      const idx=lower.indexOf(kw);
-      if(idx>=0){
-        const start=text.lastIndexOf('BEGIN:VEVENT',idx);
-        const end=text.indexOf('END:VEVENT',idx)+10;
-        if(start>=0&&end>start) dbgHtml+='<br><b>RAW BLOCK ('+kw+'):</b><br><pre style="font-size:0.5rem;white-space:pre-wrap">'+text.slice(start,end).replace(/</g,'&lt;')+'</pre>';
-      }
-    });
-  }
-  dbgHtml+='</div>';
-  dbg.innerHTML=dbgHtml;
-  renderWeekly();renderMonthly();
+  renderAll();
 }
 loadCalendar(); setInterval(loadCalendar,900000);
 
