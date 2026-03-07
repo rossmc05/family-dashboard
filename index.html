@@ -274,7 +274,7 @@ function parseICS(text){
         const d = new Date(localMs);
         return new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), d.getUTCHours(), d.getUTCMinutes());
       }
-      // TZID or floating — already in Calgary local time
+      // TZID or floating — stored as America/Edmonton local time, return as-is
       return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13));
     }
     return null;
@@ -380,16 +380,21 @@ function getDemoEvents(){
 }
 
 function fmtTime(d){
-  if(!d||d.getHours()===0&&d.getMinutes()===0) return 'All day';
-  const h=d.getHours()%12||12,mn=String(d.getMinutes()).padStart(2,'0');
-  return h+':'+mn+' '+(d.getHours()<12?'AM':'PM');
+  if(!d) return '';
+  // Always display in Calgary/Edmonton time regardless of browser timezone
+  const str=d.toLocaleTimeString('en-CA',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'America/Edmonton'});
+  // Check if midnight = all day
+  const h=+d.toLocaleString('en-CA',{hour:'numeric',hour12:false,timeZone:'America/Edmonton'});
+  const m=d.getMinutes();
+  if(h===0&&m===0) return 'All day';
+  return str.replace('a.m.','AM').replace('p.m.','PM').replace(' a.m.',' AM').replace(' p.m.',' PM');
 }
 function fmtTimeRange(start,end){
-  if(start.getHours()===0&&start.getMinutes()===0) return 'All day';
   const s=fmtTime(start);
+  if(s==='All day'||s==='') return 'All day';
   if(!end) return s;
   const es=fmtTime(end);
-  const sp=start.getHours()<12?'AM':'PM',ep=end.getHours()<12?'AM':'PM';
+  const sp=s.slice(-2),ep=es.slice(-2);
   return (sp===ep?s.replace(/ (AM|PM)$/,''):s)+'\u2013'+es;
 }
 
