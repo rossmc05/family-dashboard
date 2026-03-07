@@ -125,6 +125,7 @@ body { font-family:'Segoe UI',system-ui,sans-serif; background:#1a1a2e; color:#f
 .team-logo img { width:16px; height:16px; object-fit:contain; }
 .no-games    { color:rgba(255,255,255,0.4); font-size:0.75rem; }
 
+
 /* SPOTIFY */
 .spotify-inner { display:flex; gap:10px; align-items:center; }
 .spotify-art   { width:60px; height:60px; border-radius:8px; object-fit:cover; flex-shrink:0; }
@@ -315,7 +316,20 @@ function parseICS(text){
     const get=k=>{const m=b.match(new RegExp(k+'[^:]*:([^\r\n]+)'));return m?m[1].trim():'';};
     const dtraw=get('DTSTART'), dtendraw=get('DTEND'), title=get('SUMMARY').replace(/\\,/g,',').replace(/\\n/g,' ');
     if(!dtraw||!title) continue;
-    const pd=s=>{s=s.replace(/[^0-9T]/g,'');if(s.length===8)return new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8));if(s.length>=15)return new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8),+s.slice(9,11),+s.slice(11,13));return null;};
+    const pd=s=>{
+      // Preserve Z suffix before stripping non-numeric chars
+      const isUTC=s.endsWith('Z');
+      const c=s.replace(/[^0-9T]/g,'');
+      if(c.length===8) return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8));
+      if(c.length>=15){
+        if(isUTC){
+          // Parse as UTC then let JS convert to local
+          return new Date(Date.UTC(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13)));
+        }
+        return new Date(+c.slice(0,4),+c.slice(4,6)-1,+c.slice(6,8),+c.slice(9,11),+c.slice(11,13));
+      }
+      return null;
+    };
     const start=pd(dtraw), end=dtendraw?pd(dtendraw):null;
     if(start&&!isNaN(start)) events.push({title,start,end});
   }
