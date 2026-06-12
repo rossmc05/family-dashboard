@@ -1,0 +1,29 @@
+name: Refresh calendar
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # every 15 minutes
+  workflow_dispatch:          # lets you run it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download calendar from iCloud
+        run: |
+          curl -fsSL --retry 3 -o calendar.ics \
+            "https://p58-caldav.icloud.com/published/2/MTAwMzMzOTgxMTAwMzMzOeRx7owgHoBn3si23dlCBoVPkDfkX3KzWwXgtKqyboafExi6t2dl4GIQtBaVq-ZyfDaJ6Bfa4ugJ5I8GjgjoqLs"
+          grep -q "BEGIN:VCALENDAR" calendar.ics
+
+      - name: Commit if changed
+        run: |
+          git config user.name "calendar-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add calendar.ics
+          git diff --cached --quiet || git commit -m "Update calendar"
+          git push
