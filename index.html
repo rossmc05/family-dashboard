@@ -289,10 +289,9 @@
     <div class="card photos-card">
       <div class="card-title">Family Photos</div>
       <div class="photo-strip" id="photo-strip">
-        <div class="photo-placeholder">📷<br/>Click Add</div>
+        <div class="photo-placeholder">📷<br/>Choose a folder</div>
       </div>
-      <input type="file" id="photo-input" accept="image/*" multiple style="display:none">
-      <button class="add-photo-btn" onclick="document.getElementById('photo-input').click()">+ Add Photos</button>
+      <button class="add-photo-btn" id="photo-folder-btn" onclick="chooseFolder()">📁 Choose Photo Folder</button>
     </div>
   </div>
 
@@ -623,19 +622,76 @@ async function loadSpotify(){
 }
 loadSpotify(); setInterval(loadSpotify,10000);
 
-// ── PHOTOS ────────────────────────────────────────────────────────
-const photoInput=document.getElementById('photo-input');
+// ── PHOTOS — linked to a folder on this PC ─────────────────────────
 const photoStrip=document.getElementById('photo-strip');
+const photoFolderBtn=document.getElementById('photo-folder-btn');
+let photoDirHandle=null;
 let photoURLs=[];
-try{photoURLs=JSON.parse(localStorage.getItem('dashPhotos')||'[]');}catch(e){}
+const IMG_EXT=/\.(jpe?g|png|gif|webp)$/i;
+
+// small IndexedDB wrapper — folder handles can't be stored in localStorage
+function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open('dashboardDB',1);r.onupgradeneeded=()=>r.result.createObjectStore('handles');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+async function idbGet(k){try{const db=await idbOpen();return await new Promise((res,rej)=>{const tx=db.transaction('handles','readonly').objectStore('handles').get(k);tx.onsuccess=()=>res(tx.result);tx.onerror=()=>rej(tx.error);});}catch(e){return null;}}
+async function idbSet(k,v){try{const db=await idbOpen();return await new Promise((res,rej)=>{const tx=db.transaction('handles','readwrite');tx.objectStore('handles').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);});}catch(e){}}
+
 function renderPhotos(){
-  if(!photoURLs.length)return;
+  if(!photoURLs.length){photoStrip.innerHTML='<div class="photo-placeholder">📷<br/>No photos found</div>';return;}
   photoStrip.innerHTML='';
-  photoURLs.forEach((src,i)=>{const img=document.createElement('img');img.className='photo-thumb';img.src=src;img.title='Click to remove';img.onclick=()=>{photoURLs.splice(i,1);savePhotos();};photoStrip.appendChild(img);});
+  photoURLs.forEach(src=>{const img=document.createElement('img');img.className='photo-thumb';img.src=src;photoStrip.appendChild(img);});
 }
-function savePhotos(){try{localStorage.setItem('dashPhotos',JSON.stringify(photoURLs));}catch(e){}renderPhotos();}
-photoInput.addEventListener('change',e=>{Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=ev=>{photoURLs.push(ev.target.result);savePhotos();};r.readAsDataURL(f);});e.target.value='';});
-renderPhotos();
+
+async function loadPhotosFromFolder(){
+  if(!photoDirHandle) return;
+  try{
+    const perm=await photoDirHandle.queryPermission({mode:'read'});
+    if(perm!=='granted'){ photoFolderBtn.textContent='🔌 Reconnect Photo Folder'; photoFolderBtn.style.display='block'; return; }
+    photoFolderBtn.style.display='none';
+    const urls=[];
+    for await (const [name,entry] of photoDirHandle.entries()){
+      if(entry.kind==='file'&&IMG_EXT.test(name)){
+        const file=await entry.getFile();
+        urls.push(URL.createObjectURL(file));
+      }
+    }
+    photoURLs.forEach(u=>{try{URL.revokeObjectURL(u);}catch(e){}});
+    photoURLs=urls;
+    renderPhotos();
+  }catch(e){ /* folder moved/deleted — leave last-loaded photos showing */ }
+}
+
+async function chooseFolder(){
+  if(!window.showDirectoryPicker){
+    photoStrip.innerHTML='<div class="photo-placeholder">📷<br/>Folder access needs Chrome or Edge</div>';
+    return;
+  }
+  try{
+    const handle=await window.showDirectoryPicker();
+    photoDirHandle=handle;
+    await idbSet('photoDir',handle);
+    await loadPhotosFromFolder();
+  }catch(e){ /* user cancelled the picker */ }
+}
+
+async function reconnectOrChoose(){
+  if(photoDirHandle){
+    try{
+      const req=await photoDirHandle.requestPermission({mode:'read'});
+      if(req==='granted'){ await loadPhotosFromFolder(); return; }
+    }catch(e){}
+  }
+  await chooseFolder();
+}
+photoFolderBtn.onclick=reconnectOrChoose;
+
+(async function initPhotoFolder(){
+  if(!window.showDirectoryPicker){
+    photoStrip.innerHTML='<div class="photo-placeholder">📷<br/>Folder access needs Chrome or Edge</div>';
+    return;
+  }
+  const handle=await idbGet('photoDir');
+  if(handle){ photoDirHandle=handle; await loadPhotosFromFolder(); }
+})();
+setInterval(loadPhotosFromFolder,5*60*1000); // pick up newly added photos every 5 minutes
 
 // ── BACKGROUND — slow drifting warm paper tints ───────────────────
 const bgColors=[
