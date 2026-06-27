@@ -646,12 +646,26 @@ async function loadPhotosFromFolder(){
     const perm=await photoDirHandle.queryPermission({mode:'read'});
     if(perm!=='granted'){ photoFolderBtn.textContent='🔌 Reconnect Photo Folder'; photoFolderBtn.style.display='block'; return; }
     photoFolderBtn.style.display='none';
-    const urls=[];
+
+    // collect filenames only first — cheap, no file reads yet
+    const names=[];
     for await (const [name,entry] of photoDirHandle.entries()){
-      if(entry.kind==='file'&&IMG_EXT.test(name)){
+      if(entry.kind==='file'&&IMG_EXT.test(name)) names.push(name);
+    }
+    if(!names.length){photoURLs.forEach(u=>{try{URL.revokeObjectURL(u);}catch(e){}});photoURLs=[];renderPhotos();return;}
+
+    // for a big library, only pull a random rotating sample into memory —
+    // no need to load all 1.2GB just to fill a small scrolling strip
+    const MAX_PHOTOS=30;
+    const sample=names.length<=MAX_PHOTOS?names:names.sort(()=>Math.random()-0.5).slice(0,MAX_PHOTOS);
+
+    const urls=[];
+    for(const name of sample){
+      try{
+        const entry=await photoDirHandle.getFileHandle(name);
         const file=await entry.getFile();
         urls.push(URL.createObjectURL(file));
-      }
+      }catch(e){ /* file may have been moved/deleted since listing — skip it */ }
     }
     photoURLs.forEach(u=>{try{URL.revokeObjectURL(u);}catch(e){}});
     photoURLs=urls;
@@ -691,7 +705,7 @@ photoFolderBtn.onclick=reconnectOrChoose;
   const handle=await idbGet('photoDir');
   if(handle){ photoDirHandle=handle; await loadPhotosFromFolder(); }
 })();
-setInterval(loadPhotosFromFolder,5*60*1000); // pick up newly added photos every 5 minutes
+setInterval(loadPhotosFromFolder,2*60*1000); // reshuffle the rotating sample + pick up new photos every 2 minutes
 
 // ── BACKGROUND — slow drifting warm paper tints ───────────────────
 const bgColors=[
