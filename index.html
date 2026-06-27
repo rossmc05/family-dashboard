@@ -66,7 +66,6 @@
   /* Row 3: Upcoming | Spotify + Photos stacked */
   .upcoming-card  { grid-column:1; grid-row:4; overflow:hidden; }
   .media-stack    { grid-column:2; grid-row:4; display:flex; flex-direction:column; gap:10px; }
-  .media-stack .photos-card { flex:1; }
 
   /* Row 4: Sports full width on the bottom */
   .sports-card    { grid-column:1/3; grid-row:5; overflow:hidden; }
@@ -214,15 +213,18 @@
     box-shadow:0 2px 5px rgba(221,156,78,0.4);
   }
 
-  /* ── PHOTOS ── */
-  .photo-strip { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; height:110px; }
-  .photo-strip::-webkit-scrollbar { display:none; }
-  .photo-thumb {
-    min-width:140px; height:106px; border-radius:4px; object-fit:cover; flex-shrink:0; cursor:pointer;
-    border:4px solid #fff; box-shadow:0 2px 6px rgba(70,61,49,0.22);
+  /* ── PHOTOS — 2-up slideshow ── */
+  .photo-slideshow { display:flex; gap:8px; height:110px; }
+  .photo-frame {
+    flex:1; height:100%; min-width:0; border-radius:6px; overflow:hidden;
+    background:var(--paper); border:4px solid #fff; box-shadow:0 2px 6px rgba(70,61,49,0.22); position:relative;
   }
-  .photo-thumb:nth-child(odd)  { transform:rotate(-1deg); }
-  .photo-thumb:nth-child(even) { transform:rotate(1.2deg); }
+  .photo-slide-img {
+    width:100%; height:100%; object-fit:cover; display:block;
+    opacity:0; transition:opacity 1.2s ease;
+  }
+  .photo-slide-img.show { opacity:1; }
+  @media (prefers-reduced-motion: reduce){ .photo-slide-img{transition:none} }
   .photo-placeholder { min-width:80px; height:106px; border-radius:6px; background:var(--paper); border:1px dashed var(--ink-faint); display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--ink-faint); font-size:0.65rem; text-align:center; padding:6px; flex-shrink:0; font-weight:700; }
   .add-photo-btn {
     background:var(--paper); border:1px solid var(--line); color:var(--ink-soft);
@@ -288,8 +290,9 @@
 
     <div class="card photos-card">
       <div class="card-title">Family Photos</div>
-      <div class="photo-strip" id="photo-strip">
-        <div class="photo-placeholder">📷<br/>Choose a folder</div>
+      <div class="photo-slideshow" id="photo-slideshow">
+        <div class="photo-frame"><img class="photo-slide-img" id="photo-slide-0"></div>
+        <div class="photo-frame"><img class="photo-slide-img" id="photo-slide-1"></div>
       </div>
       <button class="add-photo-btn" id="photo-folder-btn" onclick="chooseFolder()">📁 Choose Photo Folder</button>
     </div>
@@ -622,11 +625,13 @@ async function loadSpotify(){
 }
 loadSpotify(); setInterval(loadSpotify,10000);
 
-// ── PHOTOS — linked to a folder on this PC ─────────────────────────
-const photoStrip=document.getElementById('photo-strip');
+// ── PHOTOS — linked to a folder on this PC, 2-up rotating slideshow ─
+const photoSlides=[document.getElementById('photo-slide-0'),document.getElementById('photo-slide-1')];
 const photoFolderBtn=document.getElementById('photo-folder-btn');
 let photoDirHandle=null;
-let photoURLs=[];
+let photoPool=[];        // filenames only — cheap to hold even for a huge folder
+let photoPoolIdx=0;
+let currentSlideURLs=[null,null];
 const IMG_EXT=/\.(jpe?g|png|gif|webp)$/i;
 
 // small IndexedDB wrapper — folder handles can't be stored in localStorage
@@ -634,55 +639,63 @@ function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open('dashbo
 async function idbGet(k){try{const db=await idbOpen();return await new Promise((res,rej)=>{const tx=db.transaction('handles','readonly').objectStore('handles').get(k);tx.onsuccess=()=>res(tx.result);tx.onerror=()=>rej(tx.error);});}catch(e){return null;}}
 async function idbSet(k,v){try{const db=await idbOpen();return await new Promise((res,rej)=>{const tx=db.transaction('handles','readwrite');tx.objectStore('handles').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);});}catch(e){}}
 
-function renderPhotos(){
-  if(!photoURLs.length){photoStrip.innerHTML='<div class="photo-placeholder">📷<br/>No photos found</div>';return;}
-  photoStrip.innerHTML='';
-  photoURLs.forEach(src=>{const img=document.createElement('img');img.className='photo-thumb';img.src=src;photoStrip.appendChild(img);});
+// refresh the list of filenames in the folder (cheap — no image data read yet)
+async function refreshPhotoPool(){
+  if(!photoDirHandle) return false;
+  const perm=await photoDirHandle.queryPermission({mode:'read'});
+  if(perm!=='granted'){ photoFolderBtn.textContent='🔌 Reconnect Photo Folder'; photoFolderBtn.style.display='block'; return false; }
+  photoFolderBtn.style.display='none';
+  const names=[];
+  for await (const [name,entry] of photoDirHandle.entries()){
+    if(entry.kind==='file'&&IMG_EXT.test(name)) names.push(name);
+  }
+  // shuffle so the pair rotation works through the library in a random order
+  photoPool=names.sort(()=>Math.random()-0.5);
+  photoPoolIdx=0;
+  return photoPool.length>0;
 }
 
-async function loadPhotosFromFolder(){
+// show the next pair of photos with a crossfade
+async function showNextPair(){
   if(!photoDirHandle) return;
   try{
-    const perm=await photoDirHandle.queryPermission({mode:'read'});
-    if(perm!=='granted'){ photoFolderBtn.textContent='🔌 Reconnect Photo Folder'; photoFolderBtn.style.display='block'; return; }
-    photoFolderBtn.style.display='none';
-
-    // collect filenames only first — cheap, no file reads yet
-    const names=[];
-    for await (const [name,entry] of photoDirHandle.entries()){
-      if(entry.kind==='file'&&IMG_EXT.test(name)) names.push(name);
+    if(!photoPool.length){
+      const got=await refreshPhotoPool();
+      if(!got) return; // no folder chosen yet, or it's empty
     }
-    if(!names.length){photoURLs.forEach(u=>{try{URL.revokeObjectURL(u);}catch(e){}});photoURLs=[];renderPhotos();return;}
-
-    // for a big library, only pull a random rotating sample into memory —
-    // no need to load all 1.2GB just to fill a small scrolling strip
-    const MAX_PHOTOS=30;
-    const sample=names.length<=MAX_PHOTOS?names:names.sort(()=>Math.random()-0.5).slice(0,MAX_PHOTOS);
-
-    const urls=[];
-    for(const name of sample){
+    for(let i=0;i<2;i++){
+      if(photoPoolIdx>=photoPool.length){ await refreshPhotoPool(); if(!photoPool.length) break; }
+      const name=photoPool[photoPoolIdx++];
       try{
-        const entry=await photoDirHandle.getFileHandle(name);
-        const file=await entry.getFile();
-        urls.push(URL.createObjectURL(file));
+        const handle=await photoDirHandle.getFileHandle(name);
+        const file=await handle.getFile();
+        const url=URL.createObjectURL(file);
+        const oldURL=currentSlideURLs[i];
+        const img=photoSlides[i];
+        img.classList.remove('show');
+        // wait for the fade-out, then swap the image and fade back in
+        setTimeout(()=>{
+          img.src=url;
+          img.classList.add('show');
+          if(oldURL) try{URL.revokeObjectURL(oldURL);}catch(e){}
+        },i===0?0:250); // stagger the two frames slightly for a nicer feel
+        currentSlideURLs[i]=url;
       }catch(e){ /* file may have been moved/deleted since listing — skip it */ }
     }
-    photoURLs.forEach(u=>{try{URL.revokeObjectURL(u);}catch(e){}});
-    photoURLs=urls;
-    renderPhotos();
-  }catch(e){ /* folder moved/deleted — leave last-loaded photos showing */ }
+  }catch(e){ /* folder moved/disconnected — leave last-shown photos up */ }
 }
 
 async function chooseFolder(){
   if(!window.showDirectoryPicker){
-    photoStrip.innerHTML='<div class="photo-placeholder">📷<br/>Folder access needs Chrome or Edge</div>';
+    photoFolderBtn.textContent='Folder access needs Chrome or Edge';
     return;
   }
   try{
     const handle=await window.showDirectoryPicker();
     photoDirHandle=handle;
     await idbSet('photoDir',handle);
-    await loadPhotosFromFolder();
+    photoPool=[];photoPoolIdx=0;
+    await showNextPair();
   }catch(e){ /* user cancelled the picker */ }
 }
 
@@ -690,7 +703,7 @@ async function reconnectOrChoose(){
   if(photoDirHandle){
     try{
       const req=await photoDirHandle.requestPermission({mode:'read'});
-      if(req==='granted'){ await loadPhotosFromFolder(); return; }
+      if(req==='granted'){ photoPool=[];photoPoolIdx=0; await showNextPair(); return; }
     }catch(e){}
   }
   await chooseFolder();
@@ -699,13 +712,14 @@ photoFolderBtn.onclick=reconnectOrChoose;
 
 (async function initPhotoFolder(){
   if(!window.showDirectoryPicker){
-    photoStrip.innerHTML='<div class="photo-placeholder">📷<br/>Folder access needs Chrome or Edge</div>';
+    photoFolderBtn.textContent='Folder access needs Chrome or Edge';
+    photoFolderBtn.style.display='block';
     return;
   }
   const handle=await idbGet('photoDir');
-  if(handle){ photoDirHandle=handle; await loadPhotosFromFolder(); }
+  if(handle){ photoDirHandle=handle; await showNextPair(); }
 })();
-setInterval(loadPhotosFromFolder,2*60*1000); // reshuffle the rotating sample + pick up new photos every 2 minutes
+setInterval(showNextPair,5*60*1000); // new pair every 5 minutes
 
 // ── BACKGROUND — slow drifting warm paper tints ───────────────────
 const bgColors=[
